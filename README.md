@@ -1,17 +1,35 @@
 # Overview
 
-I spent an intense week taking Dave Beazley's [Compiler Class](https://www.dabeaz.com/compiler.html), in which each student writes a [compiler](https://en.wikipedia.org/wiki/Compiler) from scratch, using no outside libraries[^1] or frameworks.
+I spent one intense week taking Dave Beazley's [Compiler Class](https://www.dabeaz.com/compiler.html), in which each student writes a [compiler](https://en.wikipedia.org/wiki/Compiler) from scratch, using no outside libraries[^1] or frameworks.
 
 > [!NOTE]
-> TODO: Include simple image or code block of code in -> assembly out
+> TODO: Include a simple image or code block example of code in -> assembly out
 
-I deeply enjoyed the experience, learned a lot, found it a bit brain-burning, and by the end had written a fully working[^2] compiler in Python for a simple language.
+I deeply enjoyed the experience, learned a lot, found it a bit brain-burning, and by the end had written a fully working[^2] compiler for a simple language.
 
 [^1]: Depending what we mean by "no outside libraries". The compiler we each wrote generates machine-agnostic LLVM assembly code, but if we want to run the result on our computer we still use Clang to compile this 'intermediate representation' assembly code down to the machine code for the specific chip architecture we're using.
 
 [^2]: Well... 'Fully Working' meaning the compiler passed every test I threw at it and produced correct-looking assembly when inspected by eye on those test cases, and I was able to write a few programs using it... but it may have bugs or edge cases, and the code certainly contains some non-ideal, hacky, or just-good-enough-for-now ways of doing things-- it was only a one week project, after all.
 
-After the class I did some light cleanup and moved my work to this repo for potential future playing around.
+After the class I did some light cleanup and moved my work to this repo for potential future playing around if inspiration strikes.
+
+# Usage
+
+To compile a simple program that raises a number to a power (this also generates the intermediate .ll LLVM assembly and .s machine code from the compilation, for inspection):
+
+```
+./compile.sh programs/pow.wb 
+programs/pow.exe                // computes and prints 3 ^ (2 + 2) = 81
+```
+
+```
+./run.sh programs/pow.wb        // combines both of the above steps
+```
+
+And a work-in-progress prototype that partially compiles a program, then transpiles it to Python, as a quick way of sanity-checking program logic for more complex programs.
+```
+gen_python.sh programs/pow.wb
+```
 
 # Language
 
@@ -37,17 +55,17 @@ while n < 30 {             // Looping (while)
 ```
 
 
-The [Wabbish Language Specification](Wabbish-Specification.md) is a living document containing the specification for the language my compiler supports (the syntax and list of valid operators, expressions, statements, and so on).
+The [Wabbish Language Specification](docs/Wabbish-Specification.md) is a living document with the specification for the language my compiler supports (the syntax and list of valid operators, expressions, statements, and so on).
 
 # Design Approach
 
-At a high level, the compiler is organized into a series of passes that each perform a task such as tokenizing, parsing, or code generation.
+At a high level, a compiler is organized into a series of passes that each perform a task such as tokenizing, parsing, or code generation.
 
-At a lower level, it is a 'nano-pass' compiler with dozens of steps. Each pass ingests the current program representation (i.e. its [Abstract Syntax Tree](https://en.wikipedia.org/wiki/Abstract_syntax_tree)), performs one particular transformation or simplification of it (often in a recursive way, descending down into depths of nested `if`, `while`, and `function` structures), and returns the result. 
+At a lower level, this is a 'nano-pass' compiler with dozens of passes. Each pass ingests the current program representation (i.e. its [Abstract Syntax Tree](https://en.wikipedia.org/wiki/Abstract_syntax_tree)), performs one particular transformation or simplification of it (often in a recursive way, descending down into depths of nested `if`, `while`, and `function` structures), and returns the result. 
 
-By running each of these passes in order, you eventually transform the text of the program into the equivalent assembly code.
+By running each of these passes in order, we eventually transform the text of the program into the equivalent assembly code.
 
-This design approach makes it easier to design, debug, reason about, and test each step, as each of these compiler passes is implemented as its own small Python program in its own file.
+This design approach makes it easier to design, debug, reason about, and test each step of the process, as each of these compiler passes is implemented as its own small program. I chose to develop in Python because I was comfortable working quickly in it.
 
 ## Compilation Steps
 
@@ -67,5 +85,6 @@ These are most of the passes the compiler performs, with simplified explanations
 * "LLVM codegen" (multiple steps): translate various data structures (which by this point are "organized like assembly language") into the equivalent LLVM assembly code representation
 * "LLVM function entry": add LLVM variable initialization code to assembly code function blocks
 
+# Next Steps
 
-
+I kept a quick running [TODO list](docs/TODO.md) during and after the class with some ideas...
