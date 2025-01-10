@@ -6,11 +6,11 @@ entry:
     store i32 %.arg_x, i32* %x
     br label %L1
 L1:
-    %.r0 = load i32, i32* %x
-    %.r1 = add i32 %.r0, 1
-    store i32 %.r1, i32* %x
-    %.r2 = load i32, i32* %x
-    ret i32 %.r2
+    %.r1 = load i32, i32* %x
+    %.r2 = add i32 %.r1, 1
+    store i32 %.r2, i32* %x
+    %.r3 = load i32, i32* %x
+    ret i32 %.r3
 }
 @x = global i32 0
 
@@ -19,11 +19,11 @@ entry:
     br label %L2
 L2:
     store i32 10, i32* @x
-    %.r3 = load i32, i32* @x
-    %.r4 = call i32 (i32) @add1(i32 %.r3)
-    %.r5 = add i32 1035, %.r4
-    call i32 (i32) @_print_int(i32 %.r5)
-    %.r6 = load i32, i32* @x
+    %.r4 = load i32, i32* @x
+    %.r5 = call i32 (i32) @add1(i32 %.r4)
+    %.r6 = add i32 1035, %.r5
     call i32 (i32) @_print_int(i32 %.r6)
+    %.r7 = load i32, i32* @x
+    call i32 (i32) @_print_int(i32 %.r7)
     ret i32 0
 }

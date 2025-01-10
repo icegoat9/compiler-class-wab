@@ -1,0 +1,6 @@
+// Simple loop, to look at generated code
+var x = 1;
+while x <= 10 {
+    print x;
+    x = x + 1;
+}

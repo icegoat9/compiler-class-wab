@@ -6,8 +6,16 @@ I spent one intense week taking Dave Beazley's [Compiler Class](https://www.dabe
 
 I deeply enjoyed the experience, learned a lot, found it a bit brain-burning, and by the end had written a fully working compiler for a simple language. I do expect it has bugs, edge cases, and blocks of hacky or non-ideal code, given the fast timeline-- the goal was the learning process...
 
-> [!NOTE]
-> TODO: Include a simple image or code block example of code in -> assembly out
+``` llvm
+while x <= 10 {
+        ...
+%.r2 = icmp sle i32 %.r1, 10
+br i1 %.r2, label %L2, label %L3
+        ...
+subs	w8, w8, #10
+cset	w8, gt
+tbnz	w8, #0, LBB0_4
+```
 
 After the class I did some light cleanup and moved my work to this repo for potential future playing around if inspiration strikes.
 
@@ -15,45 +23,44 @@ After the class I did some light cleanup and moved my work to this repo for pote
 
 We wrote compilers for subsets of a small imperative programming language 'Wabbit' created by the course instructor, which includes expressions, variables, printing, basic flow control, and user-defined functions, allowing programs such as this:
 
-```
+``` c
 // fib.wb -  Compute fibonacci numbers
 
-// A function declaration
-func fibonacci(n int) int {
-    if n > 1 {              // Conditionals
-        return fibonacci(n-1) + fibonacci(n-2);
+// Custom Functions
+func fib(n) {
+    if n > 1 {                          // Conditionals
+        return fib(n-1) + fib(n-2);
     } else {
         return 1;
     }
 }
 
-var n int = 0;             // Variable declaration
+var n = 0;                 // Variable declaration
 while n < 30 {             // Looping (while)
-    print fibonacci(n);    // Printing
+    print fib(n);          // Printing
     n = n + 1;             // Assignment
 }
 ```
 
-I implemented the core of this language, and at the end experimented with adding some other features that were interesting to me, the [Wabbish Language Specification](docs/Wabbish-Specification.md) is a living document where I keep the full specification for the language this compiler supports.
+I implemented the core of this language, and at the end experimented with adding some other features that seemed interestin. The [Wabbish Language Specification](docs/Wabbish-Specification.md) is a living document where I keep the full specification for the language this compiler supports.
 
 # Usage
 
 To compile a simple program that raises a number to a power (this also generates the intermediate .ll LLVM assembly and .s machine code from the compilation, for inspection):
 
-```
+``` sh
 ./compile.sh programs/pow.wb 
 programs/pow.exe                // computes and prints 3 ^ (2 + 2) = 81
 ```
 
-```
+``` sh
 ./run.sh programs/pow.wb        // combines both of the above steps
 ```
 
 And a work-in-progress prototype that partially compiles a program, then transpiles it to a minimal subset of Python, as a quick way of sanity-checking program logic for more complex programs.
-```
+``` sh
 ./gen_python.sh programs/pow.wb
 ```
-
 
 # Design Approach
 
