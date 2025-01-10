@@ -2,8 +2,8 @@
 
 I spent an intense week taking Dave Beazley's [Compiler Class](https://www.dabeaz.com/compiler.html), in which each student writes a [compiler](https://en.wikipedia.org/wiki/Compiler) from scratch, using no outside libraries[^1] or frameworks.
 
-[!NOTE]
-TODO: Include simple image or code block of code in -> assembly out
+> [!NOTE]
+> TODO: Include simple image or code block of code in -> assembly out
 
 I deeply enjoyed the experience, learned a lot, found it a bit brain-burning, and by the end had written a fully working[^2] compiler in Python for a simple language.
 
