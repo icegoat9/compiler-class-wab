@@ -1,0 +1,19 @@
+// unary.wb
+//
+// Tests of the unary operator
+
+
+var x = 2;
+var y = 5;
+
+print -2;
+print -x;        // -> -2
+print -x + y;    // -> 3
+print -(x + y);  // -> -7
+
+// later-added tests
+print 3 + -2;
+print -4 + 5;
+print -(4 + 5);
+print --2;      // -> 2... maybe shouldn't be allowed
+print ---2;      // -> -2... maybe shouldn't be allowed

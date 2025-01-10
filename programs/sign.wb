@@ -1,0 +1,17 @@
+// sign.wb
+// simple program to track through compile process
+
+func sign(n) {
+    if n > 0 {
+        return 1;
+    }
+    elif n < 0 {
+        return -1;
+    }
+    else {
+        return 0;
+    }
+}
+
+var x = -6;
+print sign(x);

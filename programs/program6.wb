@@ -1,0 +1,39 @@
+// number experiment
+
+// 'concatenate' two numbers that are 1 to 4 digits long each
+func concat(a,b) {
+    var out = 0;
+    var scale = 1;
+    out = out + b;
+    if 999 < out {
+        scale = 10000;
+    }
+    else {
+        if 99 < out {
+            scale = 1000;
+        }
+        else {
+            if 9 < out {
+                scale = 100;
+            }
+            else {
+                scale = 10;
+            }
+        }
+    }
+    out = out + (scale * a);
+    return out;
+}
+
+// merge into concatenation of sums {a+b}{b+c}
+// e.g. a,b,c = 4,8,6 -> output 1214
+func merge(a,b,c) {
+    return concat(a + b, b + c);
+}
+
+var a = 12;
+var b = 345;
+print concat(a, b);
+print merge(4,8,6);
+
+

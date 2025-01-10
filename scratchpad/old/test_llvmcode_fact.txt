@@ -1,0 +1,176 @@
+[94moplist[]: [0m [][0m
+[94mstack: [0m [][0m
+[94moplist[]: [0m [LLVM(op='%.r0 = load i32, i32* %n')][0m
+[94mstack: [0m ['%.r0'][0m
+[94moplist[]: [0m [LLVM(op='%.r0 = load i32, i32* %n')][0m
+[94mstack: [0m ['%.r0', '2'][0m
+[94moplist[]: [0m [LLVM(op='%.r0 = load i32, i32* %n'), LLVM(op='%.r1 = icmp slt i32 %.r0, 2')][0m
+[94mstack: [0m ['%.r1'][0m
+[94moplist[]: [0m [][0m
+[94mstack: [0m [][0m
+[94moplist[]: [0m [][0m
+[94mstack: [0m ['1'][0m
+[94moplist[]: [0m [LLVM(op='ret i32 1')][0m
+[94mstack: [0m [][0m
+[94moplist[]: [0m [][0m
+[94mstack: [0m [][0m
+[94moplist[]: [0m [LLVM(op='%x = alloca i32')][0m
+[94mstack: [0m [][0m
+[94moplist[]: [0m [LLVM(op='%x = alloca i32')][0m
+[94mstack: [0m ['1'][0m
+[94moplist[]: [0m [LLVM(op='%x = alloca i32'), LLVM(op='store i32 1, i32* %x')][0m
+[94mstack: [0m [][0m
+[94moplist[]: [0m [LLVM(op='%x = alloca i32'), LLVM(op='store i32 1, i32* %x'), LLVM(op='%result = alloca i32')][0m
+[94mstack: [0m [][0m
+[94moplist[]: [0m [LLVM(op='%x = alloca i32'), LLVM(op='store i32 1, i32* %x'), LLVM(op='%result = alloca i32')][0m
+[94mstack: [0m ['1'][0m
+[94moplist[]: [0m [LLVM(op='%x = alloca i32'), LLVM(op='store i32 1, i32* %x'), LLVM(op='%result = alloca i32'), LLVM(op='store i32 1, i32* %result')][0m
+[94mstack: [0m [][0m
+[94moplist[]: [0m [][0m
+[94mstack: [0m [][0m
+[94moplist[]: [0m [LLVM(op='%.r2 = load i32, i32* %x')][0m
+[94mstack: [0m ['%.r2'][0m
+[94moplist[]: [0m [LLVM(op='%.r2 = load i32, i32* %x'), LLVM(op='%.r3 = load i32, i32* %n')][0m
+[94mstack: [0m ['%.r2', '%.r3'][0m
+[94moplist[]: [0m [LLVM(op='%.r2 = load i32, i32* %x'), LLVM(op='%.r3 = load i32, i32* %n'), LLVM(op='%.r4 = icmp slt i32 %.r2, %.r3')][0m
+[94mstack: [0m ['%.r4'][0m
+[94moplist[]: [0m [][0m
+[94mstack: [0m [][0m
+[94moplist[]: [0m [LLVM(op='%.r5 = load i32, i32* %result')][0m
+[94mstack: [0m ['%.r5'][0m
+[94moplist[]: [0m [LLVM(op='%.r5 = load i32, i32* %result'), LLVM(op='%.r6 = load i32, i32* %x')][0m
+[94mstack: [0m ['%.r5', '%.r6'][0m
+[94moplist[]: [0m [LLVM(op='%.r5 = load i32, i32* %result'), LLVM(op='%.r6 = load i32, i32* %x'), LLVM(op='%.r7 = mul i32 %.r5, %.r6')][0m
+[94mstack: [0m ['%.r7'][0m
+[94moplist[]: [0m [LLVM(op='%.r5 = load i32, i32* %result'), LLVM(op='%.r6 = load i32, i32* %x'), LLVM(op='%.r7 = mul i32 %.r5, %.r6'), LLVM(op='store i32 %.r7, i32* %result')][0m
+[94mstack: [0m [][0m
+[94moplist[]: [0m [LLVM(op='%.r5 = load i32, i32* %result'), LLVM(op='%.r6 = load i32, i32* %x'), LLVM(op='%.r7 = mul i32 %.r5, %.r6'), LLVM(op='store i32 %.r7, i32* %result'), LLVM(op='%.r8 = load i32, i32* %x')][0m
+[94mstack: [0m ['%.r8'][0m
+[94moplist[]: [0m [LLVM(op='%.r5 = load i32, i32* %result'), LLVM(op='%.r6 = load i32, i32* %x'), LLVM(op='%.r7 = mul i32 %.r5, %.r6'), LLVM(op='store i32 %.r7, i32* %result'), LLVM(op='%.r8 = load i32, i32* %x')][0m
+[94mstack: [0m ['%.r8', '1'][0m
+[94moplist[]: [0m [LLVM(op='%.r5 = load i32, i32* %result'), LLVM(op='%.r6 = load i32, i32* %x'), LLVM(op='%.r7 = mul i32 %.r5, %.r6'), LLVM(op='store i32 %.r7, i32* %result'), LLVM(op='%.r8 = load i32, i32* %x'), LLVM(op='%.r9 = add i32 %.r8, 1')][0m
+[94mstack: [0m ['%.r9'][0m
+[94moplist[]: [0m [LLVM(op='%.r5 = load i32, i32* %result'), LLVM(op='%.r6 = load i32, i32* %x'), LLVM(op='%.r7 = mul i32 %.r5, %.r6'), LLVM(op='store i32 %.r7, i32* %result'), LLVM(op='%.r8 = load i32, i32* %x'), LLVM(op='%.r9 = add i32 %.r8, 1'), LLVM(op='store i32 %.r9, i32* %x')][0m
+[94mstack: [0m [][0m
+[94moplist[]: [0m [][0m
+[94mstack: [0m [][0m
+[94moplist[]: [0m [LLVM(op='%.r10 = load i32, i32* %result')][0m
+[94mstack: [0m ['%.r10'][0m
+[94moplist[]: [0m [LLVM(op='%.r10 = load i32, i32* %result'), LLVM(op='%.r11 = load i32, i32* %n')][0m
+[94mstack: [0m ['%.r10', '%.r11'][0m
+[94moplist[]: [0m [LLVM(op='%.r10 = load i32, i32* %result'), LLVM(op='%.r11 = load i32, i32* %n'), LLVM(op='%.r12 = mul i32 %.r10, %.r11')][0m
+[94mstack: [0m ['%.r12'][0m
+[94moplist[]: [0m [LLVM(op='%.r10 = load i32, i32* %result'), LLVM(op='%.r11 = load i32, i32* %n'), LLVM(op='%.r12 = mul i32 %.r10, %.r11'), LLVM(op='ret i32 %.r12')][0m
+[94mstack: [0m [][0m
+[94moplist[]: [0m [][0m
+[94mstack: [0m [][0m
+[94moplist[]: [0m [][0m
+[94mstack: [0m ['0'][0m
+[94moutput-in-progress:[0m [BLOCK(label='L9', instructions=[LLVM(op='%.r0 = load i32, i32* %n'), LLVM(op='%.r1 = icmp slt i32 %.r0, 2'), LLVM(op='br i1 %.r1, label %L1, label %L2')]), BLOCK(label='L1', instructions=[LLVM(op='ret i32 1'), LLVM(op='br label %L5')]), BLOCK(label='L2', instructions=[LLVM(op='%x = alloca i32'), LLVM(op='store i32 1, i32* %x'), LLVM(op='%result = alloca i32'), LLVM(op='store i32 1, i32* %result'), LLVM(op='br label %L10')]), BLOCK(label='L10', instructions=[LLVM(op='%.r2 = load i32, i32* %x'), LLVM(op='%.r3 = load i32, i32* %n'), LLVM(op='%.r4 = icmp slt i32 %.r2, %.r3'), LLVM(op='br i1 %.r4, label %L3, label %L4')]), BLOCK(label='L3', instructions=[LLVM(op='%.r5 = load i32, i32* %result'), LLVM(op='%.r6 = load i32, i32* %x'), LLVM(op='%.r7 = mul i32 %.r5, %.r6'), LLVM(op='store i32 %.r7, i32* %result'), LLVM(op='%.r8 = load i32, i32* %x'), LLVM(op='%.r9 = add i32 %.r8, 1'), LLVM(op='store i32 %.r9, i32* %x'), LLVM(op='br label %L10')]), BLOCK(label='L4', instructions=[LLVM(op='%.r10 = load i32, i32* %result'), LLVM(op='%.r11 = load i32, i32* %n'), LLVM(op='%.r12 = mul i32 %.r10, %.r11'), LLVM(op='ret i32 %.r12'), LLVM(op='br label %L5')]), BLOCK(label='L5', instructions=[LLVM(op='ret i32 0')])][0m
+[94moplist[]: [0m [][0m
+[94mstack: [0m [][0m
+[94moplist[]: [0m [][0m
+[94mstack: [0m ['1'][0m
+[94moplist[]: [0m [LLVM(op='store i32 1, i32* @x')][0m
+[94mstack: [0m [][0m
+[94moplist[]: [0m [][0m
+[94mstack: [0m [][0m
+[94moplist[]: [0m [LLVM(op='%.r13 = load i32, i32* @x')][0m
+[94mstack: [0m ['%.r13'][0m
+[94moplist[]: [0m [LLVM(op='%.r13 = load i32, i32* @x')][0m
+[94mstack: [0m ['%.r13', '10'][0m
+[94moplist[]: [0m [LLVM(op='%.r13 = load i32, i32* @x'), LLVM(op='%.r14 = icmp slt i32 %.r13, 10')][0m
+[94mstack: [0m ['%.r14'][0m
+[94moplist[]: [0m [][0m
+[94mstack: [0m [][0m
+[94moplist[]: [0m [LLVM(op='%.r15 = load i32, i32* @x')][0m
+[94mstack: [0m ['%.r15'][0m
+[94moplist[]: [0m [LLVM(op='%.r15 = load i32, i32* @x'), LLVM(op='%.r16 = call i32 (i32) @name(i32 %.r15)')][0m
+[94mstack: [0m ['%.r16'][0m
+[94moplist[]: [0m [LLVM(op='%.r15 = load i32, i32* @x'), LLVM(op='%.r16 = call i32 (i32) @name(i32 %.r15)'), LLVM(op='call i32 (i32) @_print_int(i32 %.r16)')][0m
+[94mstack: [0m [][0m
+[94moplist[]: [0m [LLVM(op='%.r15 = load i32, i32* @x'), LLVM(op='%.r16 = call i32 (i32) @name(i32 %.r15)'), LLVM(op='call i32 (i32) @_print_int(i32 %.r16)'), LLVM(op='%.r17 = load i32, i32* @x')][0m
+[94mstack: [0m ['%.r17'][0m
+[94moplist[]: [0m [LLVM(op='%.r15 = load i32, i32* @x'), LLVM(op='%.r16 = call i32 (i32) @name(i32 %.r15)'), LLVM(op='call i32 (i32) @_print_int(i32 %.r16)'), LLVM(op='%.r17 = load i32, i32* @x')][0m
+[94mstack: [0m ['%.r17', '1'][0m
+[94moplist[]: [0m [LLVM(op='%.r15 = load i32, i32* @x'), LLVM(op='%.r16 = call i32 (i32) @name(i32 %.r15)'), LLVM(op='call i32 (i32) @_print_int(i32 %.r16)'), LLVM(op='%.r17 = load i32, i32* @x'), LLVM(op='%.r18 = add i32 %.r17, 1')][0m
+[94mstack: [0m ['%.r18'][0m
+[94moplist[]: [0m [LLVM(op='%.r15 = load i32, i32* @x'), LLVM(op='%.r16 = call i32 (i32) @name(i32 %.r15)'), LLVM(op='call i32 (i32) @_print_int(i32 %.r16)'), LLVM(op='%.r17 = load i32, i32* @x'), LLVM(op='%.r18 = add i32 %.r17, 1'), LLVM(op='store i32 %.r18, i32* @x')][0m
+[94mstack: [0m [][0m
+[94moplist[]: [0m [][0m
+[94mstack: [0m [][0m
+[94moplist[]: [0m [][0m
+[94mstack: [0m ['0'][0m
+[94moutput-in-progress:[0m [BLOCK(label='L6', instructions=[LLVM(op='store i32 1, i32* @x'), LLVM(op='br label %L11')]), BLOCK(label='L11', instructions=[LLVM(op='%.r13 = load i32, i32* @x'), LLVM(op='%.r14 = icmp slt i32 %.r13, 10'), LLVM(op='br i1 %.r14, label %L7, label %L8')]), BLOCK(label='L7', instructions=[LLVM(op='%.r15 = load i32, i32* @x'), LLVM(op='%.r16 = call i32 (i32) @name(i32 %.r15)'), LLVM(op='call i32 (i32) @_print_int(i32 %.r16)'), LLVM(op='%.r17 = load i32, i32* @x'), LLVM(op='%.r18 = add i32 %.r17, 1'), LLVM(op='store i32 %.r18, i32* @x'), LLVM(op='br label %L11')]), BLOCK(label='L8', instructions=[LLVM(op='ret i32 0')])][0m
+[94moutput-in-progress:[0m [Function(name=Name(str='fact'), params=[Name(str='n')], statements=[BLOCK(label='L9', instructions=[LLVM(op='%.r0 = load i32, i32* %n'), LLVM(op='%.r1 = icmp slt i32 %.r0, 2'), LLVM(op='br i1 %.r1, label %L1, label %L2')]), BLOCK(label='L1', instructions=[LLVM(op='ret i32 1'), LLVM(op='br label %L5')]), BLOCK(label='L2', instructions=[LLVM(op='%x = alloca i32'), LLVM(op='store i32 1, i32* %x'), LLVM(op='%result = alloca i32'), LLVM(op='store i32 1, i32* %result'), LLVM(op='br label %L10')]), BLOCK(label='L10', instructions=[LLVM(op='%.r2 = load i32, i32* %x'), LLVM(op='%.r3 = load i32, i32* %n'), LLVM(op='%.r4 = icmp slt i32 %.r2, %.r3'), LLVM(op='br i1 %.r4, label %L3, label %L4')]), BLOCK(label='L3', instructions=[LLVM(op='%.r5 = load i32, i32* %result'), LLVM(op='%.r6 = load i32, i32* %x'), LLVM(op='%.r7 = mul i32 %.r5, %.r6'), LLVM(op='store i32 %.r7, i32* %result'), LLVM(op='%.r8 = load i32, i32* %x'), LLVM(op='%.r9 = add i32 %.r8, 1'), LLVM(op='store i32 %.r9, i32* %x'), LLVM(op='br label %L10')]), BLOCK(label='L4', instructions=[LLVM(op='%.r10 = load i32, i32* %result'), LLVM(op='%.r11 = load i32, i32* %n'), LLVM(op='%.r12 = mul i32 %.r10, %.r11'), LLVM(op='ret i32 %.r12'), LLVM(op='br label %L5')]), BLOCK(label='L5', instructions=[LLVM(op='ret i32 0')])]), GlobalVar(name=Name(str='x')), Function(name=Name(str='main'), params=[], statements=[BLOCK(label='L6', instructions=[LLVM(op='store i32 1, i32* @x'), LLVM(op='br label %L11')]), BLOCK(label='L11', instructions=[LLVM(op='%.r13 = load i32, i32* @x'), LLVM(op='%.r14 = icmp slt i32 %.r13, 10'), LLVM(op='br i1 %.r14, label %L7, label %L8')]), BLOCK(label='L7', instructions=[LLVM(op='%.r15 = load i32, i32* @x'), LLVM(op='%.r16 = call i32 (i32) @name(i32 %.r15)'), LLVM(op='call i32 (i32) @_print_int(i32 %.r16)'), LLVM(op='%.r17 = load i32, i32* @x'), LLVM(op='%.r18 = add i32 %.r17, 1'), LLVM(op='store i32 %.r18, i32* @x'), LLVM(op='br label %L11')]), BLOCK(label='L8', instructions=[LLVM(op='ret i32 0')])])][0m
+func fact(n) {
+   BLOCK(label='L9', [
+      LLVM(op='%.r0 = load i32, i32* %n')
+      LLVM(op='%.r1 = icmp slt i32 %.r0, 2')
+      LLVM(op='br i1 %.r1, label %L1, label %L2')
+   ])
+   BLOCK(label='L1', [
+      LLVM(op='ret i32 1')
+      LLVM(op='br label %L5')
+   ])
+   BLOCK(label='L2', [
+      LLVM(op='%x = alloca i32')
+      LLVM(op='store i32 1, i32* %x')
+      LLVM(op='%result = alloca i32')
+      LLVM(op='store i32 1, i32* %result')
+      LLVM(op='br label %L10')
+   ])
+   BLOCK(label='L10', [
+      LLVM(op='%.r2 = load i32, i32* %x')
+      LLVM(op='%.r3 = load i32, i32* %n')
+      LLVM(op='%.r4 = icmp slt i32 %.r2, %.r3')
+      LLVM(op='br i1 %.r4, label %L3, label %L4')
+   ])
+   BLOCK(label='L3', [
+      LLVM(op='%.r5 = load i32, i32* %result')
+      LLVM(op='%.r6 = load i32, i32* %x')
+      LLVM(op='%.r7 = mul i32 %.r5, %.r6')
+      LLVM(op='store i32 %.r7, i32* %result')
+      LLVM(op='%.r8 = load i32, i32* %x')
+      LLVM(op='%.r9 = add i32 %.r8, 1')
+      LLVM(op='store i32 %.r9, i32* %x')
+      LLVM(op='br label %L10')
+   ])
+   BLOCK(label='L4', [
+      LLVM(op='%.r10 = load i32, i32* %result')
+      LLVM(op='%.r11 = load i32, i32* %n')
+      LLVM(op='%.r12 = mul i32 %.r10, %.r11')
+      LLVM(op='ret i32 %.r12')
+      LLVM(op='br label %L5')
+   ])
+   BLOCK(label='L5', [
+      LLVM(op='ret i32 0')
+   ])
+}
+
+global x;
+func main() {
+   BLOCK(label='L6', [
+      LLVM(op='store i32 1, i32* @x')
+      LLVM(op='br label %L11')
+   ])
+   BLOCK(label='L11', [
+      LLVM(op='%.r13 = load i32, i32* @x')
+      LLVM(op='%.r14 = icmp slt i32 %.r13, 10')
+      LLVM(op='br i1 %.r14, label %L7, label %L8')
+   ])
+   BLOCK(label='L7', [
+      LLVM(op='%.r15 = load i32, i32* @x')
+      LLVM(op='%.r16 = call i32 (i32) @name(i32 %.r15)')
+      LLVM(op='call i32 (i32) @_print_int(i32 %.r16)')
+      LLVM(op='%.r17 = load i32, i32* @x')
+      LLVM(op='%.r18 = add i32 %.r17, 1')
+      LLVM(op='store i32 %.r18, i32* @x')
+      LLVM(op='br label %L11')
+   ])
+   BLOCK(label='L8', [
+      LLVM(op='ret i32 0')
+   ])
+}
+
+

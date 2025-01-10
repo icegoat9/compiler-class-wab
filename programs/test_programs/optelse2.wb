@@ -1,0 +1,13 @@
+// Test of optional else clause
+
+// variable of optelse.wb but without unary negation operator (not implemented yet)
+
+func abs(x) {
+   if x < 0 {
+      return 0 - x;
+   }
+   return x;
+}
+
+print abs(2);
+print abs(0-2);

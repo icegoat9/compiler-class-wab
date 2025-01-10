@@ -1,0 +1,55 @@
+[32minitial single-block BLOCK, While, IfElse tests PASSED[0m
+--- BLOCKed program:
+[94mProgram(statements=[BLOCK(label='L1', instructions=[PUSH(3), STORE_GLOBAL('x')]), IfElse(condition=EXPR(instructions=[LOAD_GLOBAL('x'), PUSH(4), LT()]), iflist=[BLOCK(label='L2', instructions=[PUSH(5), STORE_GLOBAL('min')])], elselist=[BLOCK(label='L3', instructions=[])]), BLOCK(label='L4', instructions=[LOAD_GLOBAL('min'), PRINT(), PUSH(0), RETURN()])])[0m
+--- after Control Flow processing:
+[94mProgram(statements=[BLOCK(label='L1', instructions=[PUSH(3), STORE_GLOBAL('x'), GOTO(label='L99')]), BLOCK(label='L99', instructions=[LOAD_GLOBAL('x'), PUSH(4), LT(), CBRANCH(iftrue='L2', iffalse='L3')]), BLOCK(label='L2', instructions=[PUSH(5), STORE_GLOBAL('min'), GOTO(label='L4')]), BLOCK(label='L3', instructions=[GOTO(label='L4')]), BLOCK(label='L4', instructions=[LOAD_GLOBAL('min'), PRINT(), PUSH(0), RETURN(), GOTO(label='L100')])])[0m
+--- BLOCKed program:
+[94mBLOCK(label='L1',
+   PUSH(3)
+   STORE_GLOBAL('x')
+])
+if EXPR([LOAD_GLOBAL('x'), PUSH(4), LT()]) {
+   BLOCK(label='L2',
+      PUSH(5)
+      STORE_GLOBAL('min')
+   ])
+} else {
+   BLOCK(label='L3',
+      
+   ])
+}
+BLOCK(label='L4',
+   LOAD_GLOBAL('min')
+   PRINT()
+   PUSH(0)
+   RETURN()
+])
+[0m
+--- after Control Flow processing:
+[94mBLOCK(label='L1',
+   PUSH(3)
+   STORE_GLOBAL('x')
+   GOTO(label='L99')
+])
+BLOCK(label='L99',
+   LOAD_GLOBAL('x')
+   PUSH(4)
+   LT()
+   CBRANCH(iftrue='L2', iffalse='L3')
+])
+BLOCK(label='L2',
+   PUSH(5)
+   STORE_GLOBAL('min')
+   GOTO(label='L4')
+])
+BLOCK(label='L3',
+   GOTO(label='L4')
+])
+BLOCK(label='L4',
+   LOAD_GLOBAL('min')
+   PRINT()
+   PUSH(0)
+   RETURN()
+   GOTO(label='L100')
+])
+[0m

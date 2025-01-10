@@ -1,0 +1,78 @@
+func fact(n) {
+    BLOCK(label='L10',
+        LOAD_LOCAL('n')
+        PUSH(2)
+        LT()
+        CBRANCH(consequence='L0', alternative='L1')
+    ]
+    BLOCK(label='L0',
+        PUSH(1)
+        RETURN()
+        GOTO(label='L4')
+    ]
+    BLOCK(label='L1',
+        LOCAL('x')
+        PUSH(1)
+        STORE_LOCAL('x')
+        LOCAL('result')
+        PUSH(1)
+        STORE_LOCAL('result')
+        GOTO(label='L9')
+    ]
+    BLOCK(label='L9',
+        LOAD_LOCAL('x')
+        LOAD_LOCAL('n')
+        LT()
+        CBRANCH(consequence='L2', alternative='L3')
+    ]
+    BLOCK(label='L2',
+        LOAD_LOCAL('result')
+        LOAD_LOCAL('x')
+        MUL()
+        STORE_LOCAL('result')
+        LOAD_LOCAL('x')
+        PUSH(1)
+        ADD()
+        STORE_LOCAL('x')
+        GOTO(label='L9')
+    ]
+    BLOCK(label='L3',
+        LOAD_LOCAL('result')
+        LOAD_LOCAL('n')
+        MUL()
+        RETURN()
+        GOTO(label='L4')
+    ]
+    BLOCK(label='L4',
+        PUSH(0)
+        RETURN()
+    ]
+}
+global x;
+func main() {
+    BLOCK(label='L5',
+        PUSH(1)
+        STORE_GLOBAL('x')
+        GOTO(label='L8')
+    ]
+    BLOCK(label='L8',
+        LOAD_GLOBAL('x')
+        PUSH(10)
+        LT()
+        CBRANCH(consequence='L6', alternative='L7')
+    ]
+    BLOCK(label='L6',
+        LOAD_GLOBAL('x')
+        CALL('fact', 1)
+        PRINT()
+        LOAD_GLOBAL('x')
+        PUSH(1)
+        ADD()
+        STORE_GLOBAL('x')
+        GOTO(label='L8')
+    ]
+    BLOCK(label='L7',
+        PUSH(0)
+        RETURN()
+    ]
+}

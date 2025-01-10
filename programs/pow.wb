@@ -1,0 +1,15 @@
+// pow.wb 
+// simple x to the power of n implementation,
+//  to trace through the iterative compilation to machine code
+
+func pow(x, n) {
+    var out=1;
+    var i=0;
+    while i<n {
+        out=out*x;
+        i=i+1;
+    }
+    return out;
+}
+var x = pow(3, 2+2);
+print x;
