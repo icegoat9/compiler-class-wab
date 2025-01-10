@@ -2,12 +2,12 @@
 
 I spent one intense week taking Dave Beazley's [Compiler Class](https://www.dabeaz.com/compiler.html), in which each student writes a [compiler](https://en.wikipedia.org/wiki/Compiler) from scratch, using no outside libraries[^1] or frameworks.
 
+[^1]: Depending what we mean by "no outside libraries". The compiler we each wrote generates machine-agnostic LLVM assembly code, but if we want to run the result on our computer we still use Clang to compile this 'intermediate representation' assembly code down to the machine code for the specific chip architecture we're using.
+
+I deeply enjoyed the experience, learned a lot, found it a bit brain-burning, and by the end had written a fully working compiler for a simple language. I do expect it has bugs, edge cases, and blocks of hacky or non-ideal code, given the fast timeline-- the goal was the learning process...
+
 > [!NOTE]
 > TODO: Include a simple image or code block example of code in -> assembly out
-
-I deeply enjoyed the experience, learned a lot, found it a bit brain-burning, and by the end had written a fully working compiler for a simple language (though I expect it has bugs, edge cases, and chunks of hacky or non-ideal code, given the fast timeline-- the goal was the learning process rather than producing something useful).
-
-[^1]: Depending what we mean by "no outside libraries". The compiler we each wrote generates machine-agnostic LLVM assembly code, but if we want to run the result on our computer we still use Clang to compile this 'intermediate representation' assembly code down to the machine code for the specific chip architecture we're using.
 
 After the class I did some light cleanup and moved my work to this repo for potential future playing around if inspiration strikes.
 
