@@ -2,9 +2,9 @@ Running notes-to-self document during and after class.
 
 ## Current Status
 
-The compiler runs all the test programs in [programs/test_programs](programs/test_programs) as intended.
+The compiler runs all the test programs in [/programs/test_programs](/programs/test_programs) as intended.
 
-See [programs/](programs/) for some sample programs I've written in the language.
+See [/programs/](/programs/) for some sample programs in the language.
 
 ### Language Compatibility
 See [Wabbish-Specification.md](Wabbish-Specification.md) for details, but generally:

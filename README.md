@@ -4,7 +4,7 @@ I spent one intense week taking Dave Beazley's [Compiler Class](https://www.dabe
 
 [^1]: Depending what we mean by "no outside libraries". The compiler we each wrote generates machine-agnostic LLVM assembly code, but if we want to run the result on our computer we still use Clang to compile this 'intermediate representation' assembly code down to the machine code for the specific chip architecture we're using.
 
-I deeply enjoyed the experience, learned a lot, found it a bit brain-burning, and by the end had written a fully working compiler for a simple language. I do expect it has bugs, edge cases, and blocks of hacky or non-ideal code, given the fast timeline-- the goal was the learning process...
+I deeply enjoyed the experience, learned a lot, found it a bit brain-burning, and by the end had written a fully working compiler for a simple language. I do expect it has not-yet-found bugs, edge cases, and certainly contains some hacky or non-ideal code, given the fast timeline, but the experience of building it was the real goal...
 
 ``` llvm
 while x <= 10 {
@@ -42,7 +42,7 @@ while n < 30 {             // Looping (while)
 }
 ```
 
-I implemented the core of this language, and at the end experimented with adding some other features that seemed interestin. The [Wabbish Language Specification](docs/Wabbish-Specification.md) is a living document where I keep the full specification for the language this compiler supports.
+I implemented the core of this language, and at the end experimented with adding some other features that seemed interestin. The [Wabbish Language Specification](docs/Wabbish-Specification.md) is a living document where I keep a full specification for the language this compiler supports.
 
 # Usage
 
