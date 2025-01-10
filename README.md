@@ -5,35 +5,15 @@ I spent one intense week taking Dave Beazley's [Compiler Class](https://www.dabe
 > [!NOTE]
 > TODO: Include a simple image or code block example of code in -> assembly out
 
-I deeply enjoyed the experience, learned a lot, found it a bit brain-burning, and by the end had written a fully working[^2] compiler for a simple language.
+I deeply enjoyed the experience, learned a lot, found it a bit brain-burning, and by the end had written a fully working compiler for a simple language (though I expect it has bugs, edge cases, and chunks of hacky or non-ideal code, given the fast timeline-- the goal was the learning process rather than producing something useful).
 
 [^1]: Depending what we mean by "no outside libraries". The compiler we each wrote generates machine-agnostic LLVM assembly code, but if we want to run the result on our computer we still use Clang to compile this 'intermediate representation' assembly code down to the machine code for the specific chip architecture we're using.
 
-[^2]: Well... 'Fully Working' meaning the compiler passed every test I threw at it and produced correct-looking assembly when inspected by eye on those test cases, and I was able to write a few programs using it... but it may have bugs or edge cases, and the code certainly contains some non-ideal, hacky, or just-good-enough-for-now ways of doing things-- it was only a one week project, after all.
-
 After the class I did some light cleanup and moved my work to this repo for potential future playing around if inspiration strikes.
-
-# Usage
-
-To compile a simple program that raises a number to a power (this also generates the intermediate .ll LLVM assembly and .s machine code from the compilation, for inspection):
-
-```
-./compile.sh programs/pow.wb 
-programs/pow.exe                // computes and prints 3 ^ (2 + 2) = 81
-```
-
-```
-./run.sh programs/pow.wb        // combines both of the above steps
-```
-
-And a work-in-progress prototype that partially compiles a program, then transpiles it to Python, as a quick way of sanity-checking program logic for more complex programs.
-```
-gen_python.sh programs/pow.wb
-```
 
 # Language
 
-We wrote compilers for subsets of a small imperative programming language 'Wabbit' by the course instructor, including expressions, variables, printing, basic flow control, and user-defined functions, allowing programs such as this:
+We wrote compilers for subsets of a small imperative programming language 'Wabbit' created by the course instructor, which includes expressions, variables, printing, basic flow control, and user-defined functions, allowing programs such as this:
 
 ```
 // fib.wb -  Compute fibonacci numbers
@@ -54,8 +34,26 @@ while n < 30 {             // Looping (while)
 }
 ```
 
+I implemented the core of this language, and at the end experimented with adding some other features that were interesting to me, the [Wabbish Language Specification](docs/Wabbish-Specification.md) is a living document where I keep the full specification for the language this compiler supports.
 
-The [Wabbish Language Specification](docs/Wabbish-Specification.md) is a living document with the specification for the language my compiler supports (the syntax and list of valid operators, expressions, statements, and so on).
+# Usage
+
+To compile a simple program that raises a number to a power (this also generates the intermediate .ll LLVM assembly and .s machine code from the compilation, for inspection):
+
+```
+./compile.sh programs/pow.wb 
+programs/pow.exe                // computes and prints 3 ^ (2 + 2) = 81
+```
+
+```
+./run.sh programs/pow.wb        // combines both of the above steps
+```
+
+And a work-in-progress prototype that partially compiles a program, then transpiles it to Python, as a quick way of sanity-checking program logic for more complex programs.
+```
+gen_python.sh programs/pow.wb
+```
+
 
 # Design Approach
 
