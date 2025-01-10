@@ -1,4 +1,12 @@
 #compile_to_python.py
+#
+# Wrapper for other compile passes and gen_python.py:
+#
+# Perform the first part of the compilation process (tokenization, parsing, and the pre-assembly-language
+#  rewriting / simplication steps), then translate the AST to an equivalent set of Python statements.
+#
+# Early work-in-progress (TBD: explicit variable scope in Python translation)
+#
 
 from model import *
 from format import *
@@ -40,7 +48,7 @@ def compile_python(program: Program, debug: bool = False) -> str:
 if __name__ == "__main__":
 
     argparser = argparse.ArgumentParser(
-        prog="compile.py",
+        prog="compile_to_python.py",
         description="""Compile a Wab .wb program and pass through AST cleanup / rewrite steps, then translate to Python?""",
     )
 
