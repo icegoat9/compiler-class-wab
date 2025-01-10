@@ -6,7 +6,7 @@ if [ $# -eq 0 ]; then
     echo ""
     echo "Usage: $0 <filename.wb>    (you may also omit the .wb extension)"
     echo "For example:"
-    echo "  ./compile.sh programs/test_programs/program1.wb"
+    echo "  $0 programs/test_programs/program1.wb"
     echo "  programs/test_programs/program1.exe"
     echo ""
     exit 1

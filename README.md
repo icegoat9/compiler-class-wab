@@ -49,9 +49,9 @@ programs/pow.exe                // computes and prints 3 ^ (2 + 2) = 81
 ./run.sh programs/pow.wb        // combines both of the above steps
 ```
 
-And a work-in-progress prototype that partially compiles a program, then transpiles it to Python, as a quick way of sanity-checking program logic for more complex programs.
+And a work-in-progress prototype that partially compiles a program, then transpiles it to a minimal subset of Python, as a quick way of sanity-checking program logic for more complex programs.
 ```
-gen_python.sh programs/pow.wb
+./gen_python.sh programs/pow.wb
 ```
 
 
