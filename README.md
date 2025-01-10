@@ -70,16 +70,16 @@ This design approach makes it easier to design, debug, reason about, and test ea
 These are most of the passes the compiler performs, with simplified explanations to remind myself later-- there are many additional details and steps documented in the relevant code.
 
 * "tokenize input text" (e.g. `"x=1"` -> `["x", "=", "1"]`)
-* "parse tokens" into data structure (e.g. `["x", "=", "1"]` -> `[[Variable "x", Operator "=", Integer 1]]`)
+* "parse tokens into AST" into data structure (e.g. `["x", "=", "1"]` -> `[[Variable "x", Operator "=", Integer 1]]`)
 * "elif rewrite": Rewrite `if..elif..else` blocks as nested `if..else` blocks (so that later compiler steps only need to understand if..else, not elif)
 * "fold constants": Pre-compute math on constants (e.g. `4 * 5` -> `20`), repeat recursively as needed
 * "deinit": separate variable declaration from assignment (e.g. `var x = 1;` -> `var x; x = 1;`)
 * "resolve": infer and resolve variable scopes and make explicit in program representation (`global` and `local`)
 * "unscript": move certain top-level statements to a `main()` function
 * "default_returns": add an explicit `return 0` to the end of all functions, which simplifies later steps
-* "expr_instructions": convert expressions to the conceptually different stack machine representations, which are how low-level processor instructions operate (for example, rather than saying x + 2, you push 2 and the current value of x to the stack, then run the 'add' operator, which pulls the top two elements of the stack)
+* "expr_instructions": convert expressions to the conceptually different stack machine representations, which are how low-level processor instructions operate (for example rather than saying `ADD(X,2)`, you push 2 and the current value of x to the stack, then run the 'add' operator, which pulls the top two elements of the stack)
 * "block statements": merge groups of statements into blocks with labels that can be used for assembly language's GOTO-style flow control
-* "block flow": convert if / while / function flow control to assembly code style GOTO / BRANCH structures 
+* "control flow": convert if / while / function flow control to assembly code style GOTO / BRANCH structures 
 * "LLVM codegen" (multiple steps): translate various data structures (which by this point are "organized like assembly language") into the equivalent LLVM assembly code representation
 * "LLVM function entry": add LLVM variable initialization code to assembly code function blocks
 

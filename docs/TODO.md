@@ -71,7 +71,7 @@ I kept quick and dirty during-class To-Dos and also in quick TODO items at the t
       (basically, reinstate the commented-out print() statements in the if __main__ bodies, but hide behind a print flag)
 * [X] Rewrite this top-level to-do list
 
-**General during-class todo (a bit out of date):**
+**General during-class todo (a bit out of date, to review and purge):**
 * [X] Parser testing on programs w/ file
 * [X] Clean up tokenizing of == vs = (operator chars iterate)
 * [X] Blocks and Statements work (tough)
