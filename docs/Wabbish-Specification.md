@@ -264,7 +264,20 @@ as is the statement:
 print f(2 + 3, 4 + 5);    // OK
 ```
 
-## 10. Formal Syntax
+## 10. Command-line Arguments
+
+An experimental compile mode (with flag -arg) gives the user program access to up to two command-line arguments when it is run.
+
+In particular, top-level user code has access to special system variables `argc`, `arg1`, and `arg2` without need to declare them.
+
+`argc` holds the number of command-line arguments passed to the executable (typically 0, 1, or 2, though if three or more arguments are passed argc will hold that number though it's unlikely to be relevant).
+
+`arg1` and `arg2` will hold the first two arguments passed (set to 0 for any omitted arguments: argc can be used to determine if arg1 and/or arg2 are valid to distinguish between "argument omitted" and "0 passed as argument"). These parameters are converted to integers (positive or negative).
+
+**Note:** These system arg variables are provided with top-level local scope, not global scope. That is, they are accessible in top-level user code, but not within any user-defined functions.
+
+
+## 11. Formal Syntax
 
 The following grammar is a description of Wabbish syntax written as a PEG
 (Parsing Expression Grammar). Tokens are specified in ALLCAPS and are

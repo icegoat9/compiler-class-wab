@@ -41,7 +41,7 @@ func printval(x) {
 printval(10);
 ```
 
-## X. [not implemented] Command-Line Argument
+## X. [implemented but not fully tested] Command-Line Argument
 
 Compiled programs (with the help of a bit of wrapper code built into the compiler) accept one command-line argument, and pass it to the Wabbish program in the special reserved variable `arg`. If no command-line argument is present, `arg` has a value of 0. For example, this program would display the square of the passed argument:
 

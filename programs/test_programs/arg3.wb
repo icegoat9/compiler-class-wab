@@ -1,0 +1,29 @@
+// arg3.c
+// test scope of command-line arguments
+
+var y = 55;
+
+func subscope() {
+    print y;
+    //print z;  // invalid, not defined in this scope
+}
+
+func testscope(x) {
+    print x;
+    print y;
+    var z=66;
+    // this will likely fail to pick up the system-level argc
+    // print argc;  // invalid, not defined in this scope
+    var w = subscope();
+}
+
+print argc;
+if argc > 0 {
+    print arg1;
+    if argc > 1 {
+        print arg2;
+    }
+}
+
+print testscope(99);
+
