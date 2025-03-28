@@ -5,7 +5,7 @@
 
 if [ $# -eq 0 ]; then
     echo ""
-    echo "Usage: $0 <filename.wb>    (you may also omit the .wb extension)"
+    echo "Usage: $0 <filename.wb>     (you may also omit the .wb extension)"
     echo "For example:"
     echo "  $0 programs/test_programs/program1.wb"
     echo "  programs/test_programs/program1.exe"
@@ -20,10 +20,11 @@ FILE=$(BASENAME $FILEPATH)
 
 BLUE="\033[1;34m"
 RED="\033[1;31m"
+YELLOW="\033[1;33m"
 RESETCOLOR="\033[0m"
 #FILEPATH=${FILE%/*}
 
-echo "${RED}Warning: WIP testing, argument-parsing mode not fully implemented.$RESETCOLOR"
+echo "${YELLOW}Caution:$RESETCOLOR Argument-parsing compiler mode not fully implemented and tested."
 
 # echo simplified version of commands run, without all the relative path prefixes
 # -c flag compiles in "expect command-line arguments" mode

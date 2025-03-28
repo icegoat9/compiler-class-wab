@@ -81,8 +81,8 @@ These are most of the passes the compiler performs, with simplified explanations
 * "elif rewrite": Rewrite `if..elif..else` blocks as nested `if..else` blocks (so that later compiler steps only need to understand if..else, not elif)
 * "fold constants": Pre-compute math on constants (e.g. `4 * 5` -> `20`), repeat recursively as needed
 * "deinit": separate variable declaration from assignment (e.g. `var x = 1;` -> `var x; x = 1;`)
-* "resolve": infer and resolve variable scopes and make explicit in program representation (`global` and `local`)
 * "unscript": move certain top-level statements to a `main()` function
+* "resolve_scope": infer and resolve variable scopes and make explicit in program representation (`global` and `local`)
 * "default_returns": add an explicit `return 0` to the end of all functions, which simplifies later steps
 * "expr_instructions": convert expressions to the conceptually different stack machine representations, which are how low-level processor instructions operate (for example rather than saying `ADD(X,2)`, you push 2 and the current value of x to the stack, then run the 'add' operator, which pulls the top two elements of the stack)
 * "block statements": merge groups of statements into blocks with labels that can be used for assembly language's GOTO-style flow control

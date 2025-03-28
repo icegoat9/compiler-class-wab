@@ -1,0 +1,346 @@
+-- SOURCE (programs/test_programs/program4.wb):
+[36m// Program 4 : Functions (from Project 1)
+
+func add1(x) {
+    x = x + 1;
+    return x;
+}
+
+var x = 10;
+print (23 * 45) + add1(x);   // -> 1046
+print x;                     // -> 10[0m
+-- TOKENS:
+[Token(toktype='FUNC', tokvalue='func', sourceline=3, sourcecol=4),
+ Token(toktype='NAME', tokvalue='add1', sourceline=3, sourcecol=9),
+ Token(toktype='LPAREN', tokvalue='(', sourceline=3, sourcecol=10),
+ Token(toktype='NAME', tokvalue='x', sourceline=3, sourcecol=11),
+ Token(toktype='RPAREN', tokvalue=')', sourceline=3, sourcecol=12),
+ Token(toktype='LBRACE', tokvalue='{', sourceline=3, sourcecol=14),
+ Token(toktype='NAME', tokvalue='x', sourceline=4, sourcecol=5),
+ Token(toktype='ASSIGN', tokvalue='=', sourceline=4, sourcecol=7),
+ Token(toktype='NAME', tokvalue='x', sourceline=4, sourcecol=9),
+ Token(toktype='PLUS', tokvalue='+', sourceline=4, sourcecol=11),
+ Token(toktype='INTEGER', tokvalue='1', sourceline=4, sourcecol=13),
+ Token(toktype='SEMI', tokvalue=';', sourceline=4, sourcecol=14),
+ Token(toktype='RETURN', tokvalue='return', sourceline=5, sourcecol=10),
+ Token(toktype='NAME', tokvalue='x', sourceline=5, sourcecol=12),
+ Token(toktype='SEMI', tokvalue=';', sourceline=5, sourcecol=13),
+ Token(toktype='RBRACE', tokvalue='}', sourceline=6, sourcecol=1),
+ Token(toktype='VAR', tokvalue='var', sourceline=8, sourcecol=3),
+ Token(toktype='NAME', tokvalue='x', sourceline=8, sourcecol=5),
+ Token(toktype='ASSIGN', tokvalue='=', sourceline=8, sourcecol=7),
+ Token(toktype='INTEGER', tokvalue='10', sourceline=8, sourcecol=10),
+ Token(toktype='SEMI', tokvalue=';', sourceline=8, sourcecol=11),
+ Token(toktype='PRINT', tokvalue='print', sourceline=9, sourcecol=5),
+ Token(toktype='LPAREN', tokvalue='(', sourceline=9, sourcecol=7),
+ Token(toktype='INTEGER', tokvalue='23', sourceline=9, sourcecol=9),
+ Token(toktype='TIMES', tokvalue='*', sourceline=9, sourcecol=11),
+ Token(toktype='INTEGER', tokvalue='45', sourceline=9, sourcecol=14),
+ Token(toktype='RPAREN', tokvalue=')', sourceline=9, sourcecol=15),
+ Token(toktype='PLUS', tokvalue='+', sourceline=9, sourcecol=17),
+ Token(toktype='NAME', tokvalue='add1', sourceline=9, sourcecol=22),
+ Token(toktype='LPAREN', tokvalue='(', sourceline=9, sourcecol=23),
+ Token(toktype='NAME', tokvalue='x', sourceline=9, sourcecol=24),
+ Token(toktype='RPAREN', tokvalue=')', sourceline=9, sourcecol=25),
+ Token(toktype='SEMI', tokvalue=';', sourceline=9, sourcecol=26),
+ Token(toktype='PRINT', tokvalue='print', sourceline=10, sourcecol=5),
+ Token(toktype='NAME', tokvalue='x', sourceline=10, sourcecol=7),
+ Token(toktype='SEMI', tokvalue=';', sourceline=10, sourcecol=8)]
+-- PARSED PROGRAM:
+[36mProgram(statements=[Function(name=Name(str='add1'), params=[Name(str='x')], statements=[Assign(left=Name(str='x'), right=Add(left=Name(str='x'), right=Integer(n=1))), Return(value=Name(str='x'))]), DeclareValue(left=Name(str='x'), right=Integer(n=10)), Print(value=Add(left=Multiply(left=Integer(n=23), right=Integer(n=45)), right=CallFn(name=Name(str='add1'), params=[Name(str='x')]))), Print(value=Name(str='x'))])[0m
+-- FORMATTED PROGRAM:
+[36mfunc add1(x) {
+   x = x + 1;
+   return x;
+}
+
+var x = 10;
+print (23 * 45) + add1(x);
+print x;
+[0m
+[94m--input AST representation from parser--[0m
+Program(statements=[Function(name=Name(str='add1'), params=[Name(str='x')], statements=[Assign(left=Name(str='x'), right=Add(left=Name(str='x'), right=Integer(n=1))), Return(value=Name(str='x'))]), DeclareValue(left=Name(str='x'), right=Integer(n=10)), Print(value=Add(left=Multiply(left=Integer(n=23), right=Integer(n=45)), right=CallFn(name=Name(str='add1'), params=[Name(str='x')]))), Print(value=Name(str='x'))])
+[94m--compiler pass 0: input from parser [0m(run through human-readable formatter)[0m
+func add1(x) {
+   x = x + 1;
+   return x;
+}
+
+var x = 10;
+print (23 * 45) + add1(x);
+print x;
+
+[94m--compiler pass 1: elif_rewrite [0m(rewrite if..elif.else clauses as nested if..else)[0m
+func add1(x) {
+   x = x + 1;
+   return x;
+}
+
+var x = 10;
+print (23 * 45) + add1(x);
+print x;
+
+[94m--compiler pass 2: fold constants [0m(pre-compute math on constants)[0m
+func add1(x) {
+   x = x + 1;
+   return x;
+}
+
+var x = 10;
+print 1035 + add1(x);
+print x;
+
+[94m--compiler pass 3: deinit [0m(separate variable declartion from assignment)[0m
+func add1(x) {
+   x = x + 1;
+   return x;
+}
+
+var x;
+x = 10;
+print 1035 + add1(x);
+print x;
+
+[94m--compiler pass 4: resolve [0m(resolve variable scope and make explicit in data structure)[0m
+func add1(x) {
+   local[x] = local[x] + 1;
+   return local[x];
+}
+
+global x;
+global[x] = 10;
+print 1035 + add1(global[x]);
+print global[x];
+
+[94m--compiler pass 5: unscript [0m(move top-level statements to main() except globalvar)[0m
+func add1(x) {
+   local[x] = local[x] + 1;
+   return local[x];
+}
+
+global x;
+func main() {
+   global[x] = 10;
+   print 1035 + add1(global[x]);
+   print global[x];
+}
+
+
+[94m--compiler pass 6: defaultreturns [0m(add return 0 to functions, to simplify assembly codegen)[0m
+func add1(x) {
+   local[x] = local[x] + 1;
+   return local[x];
+}
+
+global x;
+func main() {
+   global[x] = 10;
+   print 1035 + add1(global[x]);
+   print global[x];
+   return 0;
+}
+
+
+[94m--compiler pass 7: expr_instructions [0m(expressions -> stack machine representation)[0m
+func add1(x) {
+   local[x] = EXPR([LOAD_LOCAL('x'), PUSH(1), ADD()]);
+   return EXPR([LOAD_LOCAL('x')]);
+}
+
+global x;
+func main() {
+   global[x] = EXPR([PUSH(10)]);
+   print EXPR([PUSH(1035), LOAD_GLOBAL('x'), CALL('add1',1), ADD()]);
+   print EXPR([LOAD_GLOBAL('x')]);
+   return EXPR([PUSH(0)]);
+}
+
+
+[94m--compiler pass 8: statement_instructions [0m(statements -> stack machine representation)[0m
+func add1(x) {
+   STATEMENT([
+      LOAD_LOCAL('x')
+      PUSH(1)
+      ADD()
+      STORE_LOCAL('x')
+   ])
+   STATEMENT([
+      LOAD_LOCAL('x')
+      RETURN()
+   ])
+}
+
+global x;
+func main() {
+   STATEMENT([
+      PUSH(10)
+      STORE_GLOBAL('x')
+   ])
+   STATEMENT([
+      PUSH(1035)
+      LOAD_GLOBAL('x')
+      CALL('add1',1)
+      ADD()
+      PRINT()
+   ])
+   STATEMENT([
+      LOAD_GLOBAL('x')
+      PRINT()
+   ])
+   STATEMENT([
+      PUSH(0)
+      RETURN()
+   ])
+}
+
+
+[94m--compiler pass 9: blocks statements [0m(merge statements into BLOCK data structures with labels)[0m
+func add1(x) {
+   BLOCK(label='L1', [
+      LOAD_LOCAL('x')
+      PUSH(1)
+      ADD()
+      STORE_LOCAL('x')
+      LOAD_LOCAL('x')
+      RETURN()
+   ])
+}
+
+global x;
+func main() {
+   BLOCK(label='L2', [
+      PUSH(10)
+      STORE_GLOBAL('x')
+      PUSH(1035)
+      LOAD_GLOBAL('x')
+      CALL('add1',1)
+      ADD()
+      PRINT()
+      LOAD_GLOBAL('x')
+      PRINT()
+      PUSH(0)
+      RETURN()
+   ])
+}
+
+
+[94m--compiler pass 10: block flow [0m(convert If/While/Func flow control to GOTO / BRANCH structure)[0m
+func add1(x) {
+   BLOCK(label='L1', [
+      LOAD_LOCAL('x')
+      PUSH(1)
+      ADD()
+      STORE_LOCAL('x')
+      LOAD_LOCAL('x')
+      RETURN()
+   ])
+}
+
+global x;
+func main() {
+   BLOCK(label='L2', [
+      PUSH(10)
+      STORE_GLOBAL('x')
+      PUSH(1035)
+      LOAD_GLOBAL('x')
+      CALL('add1',1)
+      ADD()
+      PRINT()
+      LOAD_GLOBAL('x')
+      PRINT()
+      PUSH(0)
+      RETURN()
+   ])
+}
+
+
+[94m--compiler pass 11: LLVM initial codegen [0m(convert pseudo state machine to LLVM instructions)[0m
+func add1(x) {
+   BLOCK(label='L1', [
+      LLVM '%.r1 = load i32, i32* %x'
+      LLVM '%.r2 = add i32 %.r1, 1'
+      LLVM 'store i32 %.r2, i32* %x'
+      LLVM '%.r3 = load i32, i32* %x'
+      LLVM 'ret i32 %.r3'
+   ])
+}
+
+global x;
+func main() {
+   BLOCK(label='L2', [
+      LLVM 'store i32 10, i32* @x'
+      LLVM '%.r4 = load i32, i32* @x'
+      LLVM '%.r5 = call i32 (i32) @add1(i32 %.r4)'
+      LLVM '%.r6 = add i32 1035, %.r5'
+      LLVM 'call i32 (i32) @_print_int(i32 %.r6)'
+      LLVM '%.r7 = load i32, i32* @x'
+      LLVM 'call i32 (i32) @_print_int(i32 %.r7)'
+      LLVM 'ret i32 0'
+   ])
+}
+
+
+[94m--compiler pass 12: LLVM function entry [0m(add LLVM variable initialization code to functions)[0m
+func add1(.arg_x) {
+   BLOCK(label='entry', [
+      LLVM '%x = alloca i32'
+      LLVM 'store i32 %.arg_x, i32* %x'
+      LLVM 'br label %L1'
+   ])
+   BLOCK(label='L1', [
+      LLVM '%.r1 = load i32, i32* %x'
+      LLVM '%.r2 = add i32 %.r1, 1'
+      LLVM 'store i32 %.r2, i32* %x'
+      LLVM '%.r3 = load i32, i32* %x'
+      LLVM 'ret i32 %.r3'
+   ])
+}
+
+global x;
+func main() {
+   BLOCK(label='entry', [
+      LLVM 'br label %L2'
+   ])
+   BLOCK(label='L2', [
+      LLVM 'store i32 10, i32* @x'
+      LLVM '%.r4 = load i32, i32* @x'
+      LLVM '%.r5 = call i32 (i32) @add1(i32 %.r4)'
+      LLVM '%.r6 = add i32 1035, %.r5'
+      LLVM 'call i32 (i32) @_print_int(i32 %.r6)'
+      LLVM '%.r7 = load i32, i32* @x'
+      LLVM 'call i32 (i32) @_print_int(i32 %.r7)'
+      LLVM 'ret i32 0'
+   ])
+}
+
+
+[94m--LLVM-compatible output--[0m (convert our final internal data structure to string)[0m
+declare i32 @_print_int(i32)
+
+define i32 @add1(i32 %.arg_x) {
+entry:
+    %x = alloca i32
+    store i32 %.arg_x, i32* %x
+    br label %L1
+L1:
+    %.r1 = load i32, i32* %x
+    %.r2 = add i32 %.r1, 1
+    store i32 %.r2, i32* %x
+    %.r3 = load i32, i32* %x
+    ret i32 %.r3
+}
+@x = global i32 0
+
+define i32 @main() {
+entry:
+    br label %L2
+L2:
+    store i32 10, i32* @x
+    %.r4 = load i32, i32* @x
+    %.r5 = call i32 (i32) @add1(i32 %.r4)
+    %.r6 = add i32 1035, %.r5
+    call i32 (i32) @_print_int(i32 %.r6)
+    %.r7 = load i32, i32* @x
+    call i32 (i32) @_print_int(i32 %.r7)
+    ret i32 0
+}

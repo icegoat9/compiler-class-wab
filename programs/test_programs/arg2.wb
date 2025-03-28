@@ -4,12 +4,6 @@
 
 // code below should be wrapped in a mainuser(argc,arg1) { [user code] }
 //  function by a compiler pass.
-// not yet working as our compiler has no reference to these variables and throws
-//  an undefined variable error (but if we define argc and arg1 here those will be
-//  which are confused with parameters passed by the wrapper)
-// TODO: perhaps modify resolve_scope to manually add argc and arg1 as local-scope variables
-//       for the created mainuser() function? Or add an optional compiler pass that does that?
-//       (also would want to add them as reserved words as well?)
 
 print argc;
 if argc > 0 {

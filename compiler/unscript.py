@@ -20,9 +20,8 @@ from resolve_scope import *
 
 def unscript_toplevel(prog: Program, argmode: bool=False) -> Program:
     """Wrap all user code except variable and function declartions in a main() function.
-       WIP: If argmode==true, instead wrap in mainuser() and assume we'll link this with a
-            helper function in C with a main() that passes command-line arguments to mainuser().
-            argmode is not yet implemented in the rest of the compiler chain."""
+       WIP: If argmode==true, instead wrap in mainuser() and assume we'll link the output with a
+        helper function in C with a main() that passes command-line arguments to mainuser()."""
     newprog = []
     main = []
 
@@ -34,11 +33,10 @@ def unscript_toplevel(prog: Program, argmode: bool=False) -> Program:
                 main.append(s)
 
     if argmode:
-        # Assumes compiled with a linked wrapper that passes argc and arg1 to main_user())
-        # HACK/TODO: this mainuserignored() is never used, mainuser() defined in user code called instead
-        #            (since generating mainuser() only here leads to global vs. local variable scope issues)
-        # newprog.append(Function(Name("mainuser"), [Name("argc"), Name("arg1")], main))
-        newprog.append(Function(Name("mainuserignored"), [Name("argc"), Name("arg1")], main))
+        # Assumes this will be linked to a wrapper that passes argc and arg1 to this user code function
+        # The following resolve_scope compiler pass will see argc and arg1 being used in user code,
+        #   match them to the mainuser(argc,arg1) function signature, and scope them as local variables
+        newprog.append(Function(Name("mainuser"), [Name("argc"), Name("arg1")], main))
     else: 
         newprog.append(Function(Name("main"), [], main))
     return Program(newprog)

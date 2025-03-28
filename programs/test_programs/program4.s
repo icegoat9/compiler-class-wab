@@ -1,5 +1,5 @@
 	.section	__TEXT,__text,regular,pure_instructions
-	.build_version macos, 14, 0
+	.build_version macos, 15, 0
 	.globl	_add1                           ; -- Begin function add1
 	.p2align	2
 _add1:                                  ; @add1
@@ -24,15 +24,15 @@ _main:                                  ; @main
 	.cfi_startproc
 ; %bb.0:                                ; %entry
 	sub	sp, sp, #32
-	.cfi_def_cfa_offset 32
 	stp	x29, x30, [sp, #16]             ; 16-byte Folded Spill
+	.cfi_def_cfa_offset 32
 	.cfi_offset w30, -8
 	.cfi_offset w29, -16
 	b	LBB1_1
 LBB1_1:                                 ; %L2
 	adrp	x8, _x@PAGE
 	str	x8, [sp, #8]                    ; 8-byte Folded Spill
-	mov	w9, #10
+	mov	w9, #10                         ; =0xa
 	str	w9, [x8, _x@PAGEOFF]
 	ldr	w0, [x8, _x@PAGEOFF]
 	bl	_add1
@@ -41,7 +41,7 @@ LBB1_1:                                 ; %L2
 	ldr	x8, [sp, #8]                    ; 8-byte Folded Reload
 	ldr	w0, [x8, _x@PAGEOFF]
 	bl	__print_int
-	mov	w0, #0
+	mov	w0, #0                          ; =0x0
 	ldp	x29, x30, [sp, #16]             ; 16-byte Folded Reload
 	add	sp, sp, #32
 	ret
