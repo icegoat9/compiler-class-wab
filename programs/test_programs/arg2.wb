@@ -1,13 +1,16 @@
-// arg2.c - WIP (not working)
+// arg2.c
 // test a feature to allow passing of command-line arguments
-//  (which would set globals argc and arg1)
+//  (which would set globals argc, arg1, arg2)
 
-// code below should be wrapped in a mainuser(argc,arg1) { [user code] }
+// code below should be wrapped in a mainuser(argc,arg1,arg2) { [user code] }
 //  function by a compiler pass.
 
 print argc;
 if argc > 0 {
     print arg1;
+    if argc > 1 {
+        print arg2;
+    }
 }
 
 

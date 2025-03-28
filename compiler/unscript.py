@@ -5,8 +5,8 @@ This allows later compiler steps to treat the top-level program as a mix of only
 definition and function definitions and treat the contents of the "main" function in the same way
 as any other function.
 
-Previous compiler stage: resolve.py
-Next compiler stage: defaultreturns.py"""
+Previous compiler stage: deinit.py
+Next compiler stage: resolve.py"""
 
 #
 # Cleanup TODO
@@ -20,8 +20,8 @@ from resolve_scope import *
 
 def unscript_toplevel(prog: Program, argmode: bool=False) -> Program:
     """Wrap all user code except variable and function declartions in a main() function.
-       WIP: If argmode==true, instead wrap in mainuser() and assume we'll link the output with a
-        helper function in C with a main() that passes command-line arguments to mainuser()."""
+       If argmode==true, instead wrap in mainuser() and assume we'll link the output with a
+        helper function in C with a main() that passes up to two command-line arguments to mainuser()."""
     newprog = []
     main = []
 
@@ -33,10 +33,10 @@ def unscript_toplevel(prog: Program, argmode: bool=False) -> Program:
                 main.append(s)
 
     if argmode:
-        # Assumes this will be linked to a wrapper that passes argc and arg1 to this user code function
-        # The following resolve_scope compiler pass will see argc and arg1 being used in user code,
-        #   match them to the mainuser(argc,arg1) function signature, and scope them as local variables
-        newprog.append(Function(Name("mainuser"), [Name("argc"), Name("arg1")], main))
+        # Assumes this will be linked to a wrapper that passes argc,arg1,arg2 to this user code function
+        # The following resolve_scope compiler pass will see those arg variables being used in user code,
+        #   match them to the mainuser(argc,arg1,arg2) function signature, and scope them as local variables
+        newprog.append(Function(Name("mainuser"), [Name("argc"), Name("arg1"), Name("arg2")], main))
     else: 
         newprog.append(Function(Name("main"), [], main))
     return Program(newprog)

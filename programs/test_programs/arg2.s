@@ -12,22 +12,33 @@ _mainuser:                              ; @mainuser
 	.cfi_offset w29, -16
 	str	w0, [sp, #12]
 	str	w1, [sp, #8]
+	str	w2, [sp, #4]
 	b	LBB0_1
 LBB0_1:                                 ; %L1
 	ldr	w0, [sp, #12]
 	bl	__print_int
 	b	LBB0_2
-LBB0_2:                                 ; %L4
+LBB0_2:                                 ; %L5
 	ldr	w8, [sp, #12]
 	subs	w8, w8, #0
 	cset	w8, le
-	tbnz	w8, #0, LBB0_4
+	tbnz	w8, #0, LBB0_6
 	b	LBB0_3
 LBB0_3:                                 ; %L2
 	ldr	w0, [sp, #8]
 	bl	__print_int
 	b	LBB0_4
-LBB0_4:                                 ; %L3
+LBB0_4:                                 ; %L6
+	ldr	w8, [sp, #12]
+	subs	w8, w8, #1
+	cset	w8, le
+	tbnz	w8, #0, LBB0_6
+	b	LBB0_5
+LBB0_5:                                 ; %L3
+	ldr	w0, [sp, #4]
+	bl	__print_int
+	b	LBB0_6
+LBB0_6:                                 ; %L4
 	mov	w0, #0                          ; =0x0
 	ldp	x29, x30, [sp, #16]             ; 16-byte Folded Reload
 	add	sp, sp, #32

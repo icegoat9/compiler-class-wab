@@ -2,8 +2,8 @@
 """Resolve variable scope across entire program AST: replace each variable definition or use with an
 explicit Global or Local classification (by subtituting in new Local and Global subclasses for objects).
 
-Previous compiler stage: deinit.py
-Next compiler stage: unscript.py"""
+Previous compiler stage: unscript.py
+Next compiler stage: defaultreturns.py"""
 
 #
 # Cleanup TODO
