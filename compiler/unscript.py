@@ -18,8 +18,11 @@ from model import *
 from format import *
 from resolve_scope import *
 
-
-def unscript_toplevel(prog: Program) -> Program:
+def unscript_toplevel(prog: Program, argmode: bool=False) -> Program:
+    """Wrap all user code except variable and function declartions in a main() function.
+       WIP: If argmode==true, instead wrap in mainuser() and assume we'll link this with a
+            helper function in C with a main() that passes command-line arguments to mainuser().
+            argmode is not yet implemented in the rest of the compiler chain."""
     newprog = []
     main = []
 
@@ -30,7 +33,14 @@ def unscript_toplevel(prog: Program) -> Program:
             case _:
                 main.append(s)
 
-    newprog.append(Function(Name("main"), [], main))
+    if argmode:
+        # Assumes compiled with a linked wrapper that passes argc and arg1 to main_user())
+        # HACK/TODO: this mainuserignored() is never used, mainuser() defined in user code called instead
+        #            (since generating mainuser() only here leads to global vs. local variable scope issues)
+        # newprog.append(Function(Name("mainuser"), [Name("argc"), Name("arg1")], main))
+        newprog.append(Function(Name("mainuserignored"), [Name("argc"), Name("arg1")], main))
+    else: 
+        newprog.append(Function(Name("main"), [], main))
     return Program(newprog)
 
 

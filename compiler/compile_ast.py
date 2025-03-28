@@ -30,7 +30,7 @@ import llvmformat
 from printcolor import *
 from pprint import pprint
 
-def compile(program: Program, llvm_str_output: bool = True, debug: bool = False) -> Program:
+def compile(program: Program, llvm_str_output: bool = True, debug: bool = False, argmode: bool = False) -> Program:
     """Apply the full sequence of compiler 'micro-passes', as transformations to the AST.
     
     Input is a freshed parsed Program AST (the output of parser.py), output is by default an
@@ -38,6 +38,9 @@ def compile(program: Program, llvm_str_output: bool = True, debug: bool = False)
     
     However, if llvm_str_output = False, output is the fully compiled AST of LLVM instructions,
     without the final format-as-LLVM-program step, which may be useful for debugging.
+
+    (WIP, unimplemented) If argmode is True, compile into a main function expecting
+       arguments (to be passed from a C helper function linked in later)
     """
     if debug:
         printcolor("--input AST representation from parser--")
@@ -48,7 +51,7 @@ def compile(program: Program, llvm_str_output: bool = True, debug: bool = False)
                    ("fold constants", "pre-compute math on constants", foldconstants.fold_constants),
                    ("deinit", "separate variable declartion from assignment", deinit.deinit_variables),
                    ("resolve", "resolve variable scope and make explicit in data structure", resolve_scope.resolve_scopes),
-                   ("unscript", "move top-level statements to main() except globalvar", unscript.unscript_toplevel),
+                   ("unscript", "move top-level statements to main() except globalvar", unscript.unscript_toplevel, argmode),
                    ("defaultreturns", "add return 0 to functions, to simplify assembly codegen", defaultreturns.add_returns),
                    ("expr_instructions", "expressions -> stack machine representation", expression_instructions.expr_program),
                    ("statement_instructions", "statements -> stack machine representation", statement_instructions.program_statement_instructions),
@@ -59,7 +62,12 @@ def compile(program: Program, llvm_str_output: bool = True, debug: bool = False)
                    )
 
     for i,c in enumerate(compile_fns):
-        program = c[2](program)
+        if len(c) == 3:
+            # most compiler passes take only the output of the previous pass as input
+            program = c[2](program)
+        elif len(c) == 4:
+            # some passes take an extra argument
+            program = c[2](program, c[3])
         if debug:
             printcolor("--compiler pass %d: %s %s(%s)" % (i, c[0], ansicode.reset, c[1]))
             print(format_program(program))
@@ -84,13 +92,14 @@ if __name__ == "__main__":
     argparser.add_argument("filename", help="filename of Wab program")
     argparser.add_argument("-v", "--verbose", help="print output of intemediate process steps", action="store_true")
     argparser.add_argument("-a", "--ast_output", help="leave output as AST not LLVM text format", action="store_true")
+    argparser.add_argument("-c", "--cmd_args", help="support command-line args through wrapper to be linked in", action="store_true")
     argparser.add_argument("-p", "--prettyprint", help="(if ast_output) pretty-print final output", action="store_true")
     argparser.add_argument("-f", "--format_ast", help="(if ast_output) run output through AST formatter", action="store_true")
     args = argparser.parse_args()
 
     prog = parser_ast.parse_file(args.filename, debug=args.verbose)
 
-    compiled = compile(prog, llvm_str_output=not(args.ast_output), debug=args.verbose)
+    compiled = compile(prog, llvm_str_output=not(args.ast_output), debug=args.verbose, argmode=args.cmd_args)
 
     if args.prettyprint:
         pprint(compiled, width=120)

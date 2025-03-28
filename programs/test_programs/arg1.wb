@@ -1,0 +1,19 @@
+// arg1.c
+// test a feature to allow passing of command-line arguments
+//  (which would set globals argc and arg1)
+
+// dummy line to have some content in main program
+//  (error if zero lines of top-level code, to fix)
+var temp=77;
+
+// for this first test we must  wrap user code in mainuser(), which has
+//  a function prototype in the helper C function that will pass arguments to this.
+// the goal would be to auto-wrap user code in this function in a compiler pass
+
+func mainuser(argc,arg1) {
+    print argc;
+    if argc > 0 {
+        print arg1;
+    }
+}
+
