@@ -3,8 +3,8 @@
 
 Run this early after parsing, as later compiler passes don't understand For structures.
 
-This iteratively / recursively descends into If / Elif / Else / While structures as these
-structures may be nested within each other.
+This iteratively / recursively descends into structures such as If / While, as there could
+be For structures nested within those.
 
 Previous compiler stage: elif_rewrite.py
 Next compiler stage: fold_constants.py
@@ -15,10 +15,11 @@ Next compiler stage: fold_constants.py
 #     (whichever one runs first needs to understand the structures of the other to
 #      descend into it recursively, but not vice-versa)
 # [X] modify elif_rewrite.py to handle For structures
-# [ ] test in case of pre-existing loop variable declaration
-# [X] assertion-based unit tests
-#   [ ] more complex nested For and nested withing (function, if, while, etc)
-# [ ] call as a compiler pass in the top-level compile_ast
+# [ ] BUG: handle case of pre-existing loop variable declaration
+# [X] assertion-based unit test
+#   [~] more complex nested For and Func/If/While/etc tests 
+#       (tested manually at the test_programs level, just not as assertion unit tests here)
+# [X] call as a compiler pass in the top-level compile_ast
 
 from model import *
 from format import *
@@ -61,6 +62,7 @@ def for_statement(s: Statement) -> list[Statement]:
             # condition = Relation(op, left, right)
             # increment = Assign(name, value)
             return [
+                # TODO: handle case of pre-existing loop variable declaration
                 DeclareValue(init.left, init.right),
                 While(
                     condition,

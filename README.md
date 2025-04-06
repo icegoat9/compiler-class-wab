@@ -79,6 +79,7 @@ These are most of the passes the compiler performs, with simplified explanations
 * "tokenize input text" (e.g. `"x=1"` -> `["x", "=", "1"]`)
 * "parse tokens into AST" into data structure (e.g. `["x", "=", "1"]` -> `[[Variable "x", Operator "=", Integer 1]]`)
 * "elif rewrite": Rewrite `if..elif..else` blocks as nested `if..else` blocks (so that later compiler steps only need to understand if..else, not elif)
+* "for rewrite": Rewrite `for...` blocks as equivalent `while...` blocks (to allow use of for without later compiler steps needing to understand it)
 * "fold constants": Pre-compute math on constants (e.g. `4 * 5` -> `20`), repeat recursively as needed
 * "deinit": separate variable declaration from assignment (e.g. `var x = 1;` -> `var x; x = 1;`)
 * "unscript": move certain top-level statements to a `main()` function
