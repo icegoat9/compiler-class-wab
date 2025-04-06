@@ -12,6 +12,7 @@ from model import *
 from format import *
 import deinit
 import elif_rewrite
+import for_rewrite
 import foldconstants
 import resolve_scope
 import unscript
@@ -29,6 +30,7 @@ def compile_python(program: Program, debug: bool = False) -> str:
     
     compile_fns = (("input from parser", "run through human-readable formatter", (lambda x:x)),
                    ("elif_rewrite", "rewrite if..elif.else clauses as nested if..else", elif_rewrite.elif_program),
+                   ("for_rewrite", "rewrite for clauses as while", for_rewrite.for_program),
                    ("fold constants", "pre-compute math on constants", foldconstants.fold_constants),
                    ("deinit", "separate variable declartion from assignment", deinit.deinit_variables),
                    ("resolve", "resolve variable scope and make explicit in data structure", resolve_scope.resolve_scopes),
