@@ -14,6 +14,7 @@ from model import *
 from format import *
 import deinit
 import elif_rewrite
+import for_rewrite
 import foldconstants
 import resolve_scope
 import unscript
@@ -48,6 +49,7 @@ def compile(program: Program, llvm_str_output: bool = True, debug: bool = False,
     
     compile_fns = (("input from parser", "run through human-readable formatter", (lambda x:x)),
                    ("elif_rewrite", "rewrite if..elif.else clauses as nested if..else", elif_rewrite.elif_program),
+                   ("for_rewrite", "rewrite for loops as whiles", for_rewrite.for_program),
                    ("fold constants", "pre-compute math on constants", foldconstants.fold_constants),
                    ("deinit", "separate variable declartion from assignment", deinit.deinit_variables),
                    ("unscript", "move top-level statements to main() except globalvar", unscript.unscript_toplevel, argmode),

@@ -1,0 +1,14 @@
+// fact_for.wb
+// factorial, using (newer) for function to shorten code
+
+func fact(n) {
+    var result = 1;
+    for x = 1; x <= n; x = x + 1; {
+        result = result * x;
+    }
+    return result;
+}
+
+for x = 1; x < 10; x = x + 1; {
+    print fact(x);
+}

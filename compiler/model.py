@@ -187,6 +187,13 @@ class While(Statement):
     statements: list[Statement]
 
 @dataclass
+class For(Statement):
+    init: Assign
+    condition: Relation
+    increment: Assign
+    statements: list[Statement]
+
+@dataclass
 class Function(Statement):
     name: Name
     params: list[Name]

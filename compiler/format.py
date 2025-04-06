@@ -90,6 +90,14 @@ def fmt_statement(s: Statement, indent: int = 0) -> str:
                 fmt_statements(statements, indent + 1),
                 FORMAT_TAB * indent,
             )
+        case For(init, condition, increment, statements):
+            return "for %s %s; %s {\n%s%s}\n" % (
+                fmt_statement(init).rstrip(),  # remove newline
+                fmt_expr(condition),
+                fmt_statement(increment).rstrip(),  # remove newline
+                fmt_statements(statements, indent + 1),
+                FORMAT_TAB * indent,
+            )
         case Return(x):
             return "return %s;\n" % fmt_expr(x)
         case Function(name, params, statements):

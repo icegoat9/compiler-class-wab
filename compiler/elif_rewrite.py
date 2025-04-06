@@ -4,13 +4,18 @@
 Run this early after parsing (currently staged as the first operation after the parser), 
 as most later compiler passes only understand how to traverse If..Else structures.
 
-This iteratively / recursively descends into If / Elif / Else / While structures as these
-structures may be nested within each other."""
+This iteratively / recursively descends into If / Elif / Else / While / For structures as these
+structures may be nested within each other.
+
+Previous compiler stage: none (parsing)
+Next compiler stage: for_rewrite.py
+"""
 
 # Cleanup TODO
 # [X] docstrings
 # [X] conceptual description / high-level comments
 # [X] assertion-based unit tests
+# [ ] add unit test for structure within a For statement? (new untested language feature)
 
 from model import *
 from format import *
@@ -44,8 +49,10 @@ def elif_statement(s: Statement) -> list[Statement]:
     match s:
         case IfElse(relation, iflist, elselist):
             return [IfElse(relation, elif_statements(iflist), elif_statements(elselist))]
-        case While(relation, iflist):
-            return [While(relation, elif_statements(iflist))]
+        case While(relation, body):
+            return [While(relation, elif_statements(body))]
+        case For(init, condition, increment, body):
+            return [For(init, condition, increment, elif_statements(body))]
         case Function(name, params, body):
             return [Function(name, params, elif_statements(body))]
         case IfElifElse(relation, iflist, elifs, elselist):

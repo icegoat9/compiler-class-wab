@@ -48,7 +48,9 @@ I kept quick and dirty during-class To-Dos and also in quick TODO items at the t
     * [ ] check we can handle zero-argument expressions (or temp workaround using an ignored argument)
     * [ ] add compile_ast command-line arg, or move input (and args?) into standard linked helper fns 
     * [ ] add tests, support in formatter, etc
-* [ ] for loops (via a similar approach to ifelse.py where they would be rewritten as while() loops early in the compiler passes so later compile steps don't need to understand them)
+* [x] for loops (via a similar approach to ifelse.py where they would be rewritten as while() loops early in the compiler passes so later compile steps don't need to understand them)
+  * [ ] improve syntax to remove third ; and/or shift to commas?
+  * [ ] fix compile error if loop variable is previously declared in scope (or make local in scope?)
 * [ ] more robust error messages (especially at the parser level)
 * [ ] Explore type support (float, char, maybe string)
   * Maybe a simpler fixed-length string, via implementing fixed-length-only array support

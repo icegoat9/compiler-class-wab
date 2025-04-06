@@ -208,6 +208,18 @@ while a < b {
 
 Like `if`, a relation must appear after the `while` keyword.
 
+### 8.1 For Loops (In Development)
+
+Use `for` to create a loop with an incrementing index, following the example syntax below (note the three mandatory semicolons in the for statement):
+
+```
+for i = 1; i <= 10; i = i + 1; {
+  print i * i;
+}
+```
+
+*Note: The implementation is in-development and has some known bugs. In particular, the compiler will currently raise an error if index variable i has previously been declared in the current scope. I may also revise the syntax to omit the third semicolon, shift to commas, or so on.*
+
 ## 9. Functions
 
 A function is defined using `func` like this:
@@ -316,6 +328,8 @@ if_statement : IF relation LBRACE statements RBRACE { ELIF relation LBRACE state
 
 while_statement : WHILE relation LBRACE statements RBRACE
 
+for_statement : FOR init SEMI relation SEMI increment SEMI LBRACE statements RBRACE
+
 func_definition : FUNC NAME LPAREN parameters RPAREN LBRACE statements RBRACE
 
 parameters : NAME { COMMA NAME }
@@ -376,6 +390,7 @@ PRINT   = "print"
 RETURN  = "return"
 VAR     = "var"
 WHILE   = "while"
+FOR     = "for"
 ```
 
 

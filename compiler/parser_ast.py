@@ -123,6 +123,8 @@ class Parser:
             return self.parse_if_elif()
         elif self.checkahead("WHILE"):
             return self.parse_while()
+        elif self.checkahead("FOR"):
+            return self.parse_for()
         elif self.checkahead("FUNC"):
             return self.parse_func()
         elif self.checkahead("RETURN"):
@@ -245,6 +247,18 @@ class Parser:
         body = self.parse_statements()
         self.expect("RBRACE")
         return While(test, body)
+
+    def parse_for(self) -> For:
+        self.expect("FOR")
+        init = self.parse_assign()
+        # self.expect("SEMI")
+        condition = self.parse_relation()
+        self.expect("SEMI")
+        increment = self.parse_assign()
+        self.expect("LBRACE")
+        body = self.parse_statements()
+        self.expect("RBRACE")
+        return For(init,condition,increment,body)
 
     def parse_if_simple(self) -> IfElse:  # obsolete, replaced by more general below
         self.expect("IF")
@@ -439,9 +453,16 @@ if __name__ == "__main__":
             Relation(RelationOp("<"), Integer(1), Integer(1)),
             [DeclareValue(Name("x"), Integer(1)), Print(Integer(1))],
         ),
+        "for i = 1; i < 2; i = 3; { print i; }": For(
+            Assign(Name("i"), Integer(1)),
+            Relation(RelationOp("<"), Name("i"), Integer(2)),
+            Assign(Name("i"), Integer(3)),
+            [Print(Name("i"))],
+        ),
         "func f(x, y) { print 1; }": Function(Name("f"), [Name("x"), Name("y")], [Print(Integer(1))]),
     }
     for text, tokens in tests.items():
+        print(Parser(tokenize(text)).parse_statement())
         assert_equal_verbose(Parser(tokenize(text)).parse_statement(), tokens)
 
     printcolor("PASSED", ansicode.green)
@@ -574,6 +595,7 @@ if __name__ == "__main__":
         # test error messages (with line numbers?) returned when parsing various incorrect code
         tests = [
             "while 2 < 3 {\n  print 1 ;",  # missing closing brace
+            "for i=1;i<5;i=i+1 {\n  print 1 ;",  # missing third semicolon
             "var x=5;\nx = 2 < 3;\nprint x;",  # comparison used as value / term
             "print 2 + 3;\nfoo;",  # standalone string foo
             "print if 2 < 3 {} else {};",

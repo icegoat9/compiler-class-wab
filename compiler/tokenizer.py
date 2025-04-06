@@ -42,7 +42,7 @@ _symbols = {
 _symbolchars = "+-*/<>!=;(){},"
 
 # creates dict of reserved keywords { "var": "VAR", ... }
-_keywords = {x: x.upper() for x in ("var", "print", "if", "else", "while", "func", "return", "elif")}
+_keywords = {x: x.upper() for x in ("var", "print", "if", "else", "while", "func", "return", "elif", "for")}
 
 # create a quick reversed Token -> text dict ("LT": "<", etc) for symbols and keywords from the above,
 #  for use in debugging and printing
@@ -190,6 +190,7 @@ if __name__ == "__main__":
             Token("PRINT", "print"),
             Token("VAR", "var"),
             Token("WHILE", "while"),
+            Token("FOR", "for"),
             Token("RETURN", "return"),
             Token("FUNC", "func"),
         ],
