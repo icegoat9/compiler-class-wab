@@ -200,6 +200,10 @@ def create_llvm(block: BLOCK) -> BLOCK:
             case PRINT():
                 val = stack.pop()
                 ops.append(LLVM(f"call i32 (i32) @_print_int(i32 {val})"))
+            # case INPUT():
+            #     result = next_register()
+            #     ops.append(LLVM(f"{result} = call i32 (i32) @_scan_int()"))
+            #     stack.append(result)
             case _:
                 raise TypeError(f"No LLVM(translation available for instruction {instr}")
     return BLOCK(block.label, ops)

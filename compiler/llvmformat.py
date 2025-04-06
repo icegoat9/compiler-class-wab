@@ -17,6 +17,7 @@ from printcolor import *
 
 def format_llvm(program : Program) -> str:
     output = [ 'declare i32 @_print_int(i32)' ]
+    # output = [ 'declare i32 @_print_int(i32)', 'declare i32 @_scan_int()' ]
     for s in program.statements:
         match s:
             case GlobalVar(name):

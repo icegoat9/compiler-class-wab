@@ -33,13 +33,20 @@ I kept quick and dirty during-class To-Dos and also in quick TODO items at the t
 
 (some ideas fleshed out in more detail in [Future-Specification.md](Future-Specification.md))
 
-* [ ] Some features from the class Wabbi language spec that seem useful 
+* [ ] Some unimplemented features from the class Wabbi language spec that seem useful 
   * Optional value assignment on variable declaration
   * Expression statements
   * Zero-parameter functions
 * [ ] Look into other runtime.c integration with OS
-  * [ ] command-line arguments for compiled binaries (makes more useful)
-  * [ ] simple terminal/keypress input reading
+  * [x] command-line arguments for compiled binaries (makes more useful)
+  * [ ] simple terminal/keypress input reading (number entry or arrow keys?)
+    * [~] scanf wrapper to compile in
+    * [~] add _int_scanf() LLVM definition to LLVM program header in llvmformat
+    * [~] generate stack and register calls for Input() in llvmcode
+    * [ ] add definition of INPUT() expression in model.py
+    * [ ] handle INPUT() in all earlier compiler passes
+    * [ ] check we can handle zero-argument expressions (or temp workaround using an ignored argument)
+    * [ ] add compile_ast command-line arg, or move input (and args?) into standard linked helper fns 
 * [ ] for loops (via a similar approach to ifelse.py where they would be rewritten as while() loops early in the compiler passes so later compile steps don't need to understand them)
 * [ ] more robust error messages (especially at the parser level)
 * [ ] Explore type support (float, char, maybe string)
