@@ -83,8 +83,8 @@ LBB1_2:                                 ; %L8
                                         ; =>This Inner Loop Header: Depth=1
 	adrp	x8, _x@PAGE
 	ldr	w8, [x8, _x@PAGEOFF]
-	subs	w8, w8, #10
-	cset	w8, ge
+	subs	w8, w8, #9
+	cset	w8, gt
 	tbnz	w8, #0, LBB1_4
 	b	LBB1_3
 LBB1_3:                                 ; %L5

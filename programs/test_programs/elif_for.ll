@@ -9,7 +9,7 @@ L1:
     br label %L8
 L8:
     %.r1 = load i32, i32* @i
-    %.r2 = icmp slt i32 %.r1, 10
+    %.r2 = icmp sle i32 %.r1, 9
     br i1 %.r2, label %L9, label %L7
 L9:
     %.r3 = load i32, i32* @i
@@ -29,7 +29,7 @@ L3:
     br label %L11
 L11:
     %.r8 = load i32, i32* %j
-    %.r9 = icmp slt i32 %.r8, 4
+    %.r9 = icmp sle i32 %.r8, 3
     br i1 %.r9, label %L4, label %L6
 L4:
     %.r10 = load i32, i32* @i

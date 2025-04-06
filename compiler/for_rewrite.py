@@ -57,16 +57,27 @@ def for_statement(s: Statement) -> list[Statement]:
             return [While(relation, for_statements(iflist))]
         case Function(name, params, body):
             return [Function(name, params, for_statements(body))]
-        case For(init, condition, increment, body):
-            # init = Assign(name, value)
-            # condition = Relation(op, left, right)
-            # increment = Assign(name, value)
+        # case For(init, condition, increment, body):
+        #     init = Assign(name, value)
+        #     condition = Relation(op, left, right)
+        #     increment = Assign(name, value)
+        #     return [
+        #         # TODO: handle case of pre-existing loop variable declaration
+        #         DeclareValue(init.left, init.right),
+        #         While(
+        #             condition,
+        #             for_statements(body) + [increment],
+        #         )
+        #     ]
+        # WIP alternate syntax
+        case For(name, startval, endval, body):
+            # for i=1,10 { foo; }
             return [
                 # TODO: handle case of pre-existing loop variable declaration
-                DeclareValue(init.left, init.right),
+                DeclareValue(name, startval),
                 While(
-                    condition,
-                    for_statements(body) + [increment],
+                    Relation(RelationOp("<="), name, endval),
+                    for_statements(body) + [Assign(name, Add(name, Integer(1)))],
                 )
             ]
         case _:
@@ -80,9 +91,7 @@ if __name__ == "__main__":
     prog = Program(
         [
             For(
-                Assign(Name("i"), Integer(1)),
-                Relation(RelationOp("<"), Name("i"), Integer(2)),
-                Assign(Name("i"), Add(Name("i"),Integer(1))),
+                Name("i"), Integer(1), Integer(10),
                 [Print(Name("i"))]
             ),
         ]
@@ -96,7 +105,7 @@ if __name__ == "__main__":
     assert out == Program(
         [
             DeclareValue(Name("i"), Integer(1)),
-            While(Relation(RelationOp("<"), Name("i"), Integer(2)),
+            While(Relation(RelationOp("<="), Name("i"), Integer(10)),
                   [Print(Name("i")),
                    Assign(Name("i"), Add(Name("i"), Integer(1)))])
         ]

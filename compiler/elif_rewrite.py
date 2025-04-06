@@ -51,8 +51,8 @@ def elif_statement(s: Statement) -> list[Statement]:
             return [IfElse(relation, elif_statements(iflist), elif_statements(elselist))]
         case While(relation, body):
             return [While(relation, elif_statements(body))]
-        case For(init, condition, increment, body):
-            return [For(init, condition, increment, elif_statements(body))]
+        case For(name, startval, endval, body):
+            return [For(name, startval, endval, elif_statements(body))]
         case Function(name, params, body):
             return [Function(name, params, elif_statements(body))]
         case IfElifElse(relation, iflist, elifs, elselist):

@@ -248,56 +248,21 @@ class Parser:
         self.expect("RBRACE")
         return While(test, body)
 
+    # for i=1,10 { }
     def parse_for(self) -> For:
         self.expect("FOR")
-        init = self.parse_assign()
-        # self.expect("SEMI")  # implicitly expected in parse_assign()
-        condition = self.parse_relation()
-        self.expect("SEMI")
-        increment = self.parse_assign()
-        # self.expect("SEMI")  # implicitly expected in parse_assign()
+        var_init = self.expect("NAME")
+        self.expect("ASSIGN")
+        value_init = self.parse_expression()
+        self.expect("COMMA")
+        value_end = self.parse_expression()
         self.expect("LBRACE")
         body = self.parse_statements()
         self.expect("RBRACE")
-        return For(init,condition,increment,body)
-
-    # # new WIP for syntax ideas, not used or tested
-    #
-    # # for i=1,i<5,i=i+1 { }
-    # def parse_for(self) -> For:
-    #     self.expect("FOR")
-    #     var_init = self.expect("NAME")
-    #     self.expect("ASSIGN")
-    #     value_init = self.parse_expression()
-    #     self.expect("COMMA")
-    #     condition = self.parse_relation()
-    #     self.expect("COMMA")
-    #     var_inc = self.expect("NAME")
-    #     self.expect("ASSIGN")
-    #     value_inc = self.parse_expression()
-    #     self.expect("LBRACE")
-    #     body = self.parse_statements()
-    #     self.expect("RBRACE")
-    #     return For(Assign(Name(var_init.tokvalue), value_init),
-    #                condition,
-    #                Assign(Name(var_inc.tokvalue), value_inc),
-    #                body)
-    #
-    # # for i=1,10 { }
-    # def parse_for_v2(self) -> For:
-    #     self.expect("FOR")
-    #     var_init = self.expect("NAME")
-    #     self.expect("ASSIGN")
-    #     value_init = self.parse_expression()
-    #     self.expect("COMMA")
-    #     value_end = self.parse_expression()
-    #     self.expect("LBRACE")
-    #     body = self.parse_statements()
-    #     self.expect("RBRACE")
-    #     return For(Name(var_init.tokvalue), 
-    #                value_init,
-    #                value_end,
-    #                body)
+        return For(Name(var_init.tokvalue), 
+                   value_init,
+                   value_end,
+                   body)
 
 
 
@@ -494,12 +459,7 @@ if __name__ == "__main__":
             Relation(RelationOp("<"), Integer(1), Integer(1)),
             [DeclareValue(Name("x"), Integer(1)), Print(Integer(1))],
         ),
-        "for i = 1; i < 2; i = 3; { print i; }": For(
-            Assign(Name("i"), Integer(1)),
-            Relation(RelationOp("<"), Name("i"), Integer(2)),
-            Assign(Name("i"), Integer(3)),
-            [Print(Name("i"))],
-        ),
+        "for i = 1, 2 { print i; }": For(Name("i"), Integer(1), Integer(2), [Print(Name("i"))]),
         "func f(x, y) { print 1; }": Function(Name("f"), [Name("x"), Name("y")], [Print(Integer(1))]),
     }
     for text, tokens in tests.items():

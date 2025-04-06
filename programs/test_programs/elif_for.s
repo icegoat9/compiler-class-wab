@@ -22,8 +22,8 @@ LBB0_2:                                 ; %L8
                                         ;     Child Loop BB0_7 Depth 2
 	adrp	x8, _i@PAGE
 	ldr	w8, [x8, _i@PAGEOFF]
-	subs	w8, w8, #10
-	cset	w8, ge
+	subs	w8, w8, #9
+	cset	w8, gt
 	tbnz	w8, #0, LBB0_11
 	b	LBB0_3
 LBB0_3:                                 ; %L9
@@ -67,8 +67,8 @@ LBB0_7:                                 ; %L11
                                         ; =>  This Inner Loop Header: Depth=2
 	ldur	x8, [x29, #-8]                  ; 8-byte Folded Reload
 	ldr	w8, [x8]
-	subs	w8, w8, #4
-	cset	w8, ge
+	subs	w8, w8, #3
+	cset	w8, gt
 	tbnz	w8, #0, LBB0_10
 	b	LBB0_8
 LBB0_8:                                 ; %L4

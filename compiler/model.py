@@ -186,11 +186,18 @@ class While(Statement):
     condition: Relation
     statements: list[Statement]
 
+# @dataclass
+# class For(Statement):
+#     init: Assign
+#     condition: Relation
+#     increment: Assign
+#     statements: list[Statement]
+
 @dataclass
 class For(Statement):
-    init: Assign
-    condition: Relation
-    increment: Assign
+    name: Name
+    startval: Expression
+    endval: Expression
     statements: list[Statement]
 
 @dataclass

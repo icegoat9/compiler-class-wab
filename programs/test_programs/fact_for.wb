@@ -3,12 +3,12 @@
 
 func fact(n) {
     var result = 1;
-    for x = 1; x <= n; x = x + 1; {
+    for x = 1,n {
         result = result * x;
     }
     return result;
 }
 
-for x = 1; x < 10; x = x + 1; {
+for x = 1,9 {
     print fact(x);
 }

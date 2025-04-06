@@ -34,18 +34,21 @@ LBB0_3:                                 ; %L2
 	add	x8, x8, #15
 	and	x9, x8, #0xfffffffffffffff0
 	mov	x8, sp
-	subs	x8, x8, x9
-	mov	sp, x8
-	stur	x8, [x29, #-8]                  ; 8-byte Folded Spill
-	str	wzr, [x8]
+	subs	x9, x8, x9
+	mov	sp, x9
+	stur	x9, [x29, #-8]                  ; 8-byte Folded Spill
+	adrp	x8, _i@PAGE
+	ldr	w8, [x8, _i@PAGEOFF]
+	subs	w8, w8, #1
+	str	w8, [x9]
 	b	LBB0_4
 LBB0_4:                                 ; %L7
                                         ;   Parent Loop BB0_2 Depth=1
                                         ; =>  This Inner Loop Header: Depth=2
 	ldur	x8, [x29, #-8]                  ; 8-byte Folded Reload
 	ldr	w8, [x8]
-	subs	w8, w8, #5
-	cset	w8, ge
+	subs	w8, w8, #3
+	cset	w8, gt
 	tbnz	w8, #0, LBB0_6
 	b	LBB0_5
 LBB0_5:                                 ; %L3

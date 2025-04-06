@@ -210,15 +210,15 @@ Like `if`, a relation must appear after the `while` keyword.
 
 ### 8.1 For Loops (In Development)
 
-Use `for` to create a loop with an incrementing index, following the example syntax below (note the three mandatory semicolons in the for statement):
+Use `for` to create a simple loop with an incrementing index. The below loop runs 10 times:
 
 ```
-for i = 1; i <= 10; i = i + 1; {
+for i = 1,10 {
   print i * i;
 }
 ```
 
-**Note: The implementation is in-development and has some known bugs:** In particular, the compiler will currently raise an error if index variable i has previously been declared in the current scope. I may also revise the syntax to omit the third semicolon, shift to commas, rewrite as simpler `for i=1,10 { }`, or so on.
+**Note: The implementation is in-development and has some known bugs:** In particular, the compiler will currently raise an error if index variable i has previously been declared in the current scope. 
 
 ## 9. Functions
 
