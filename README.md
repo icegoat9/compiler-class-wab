@@ -4,20 +4,22 @@ I spent one intense week taking Dave Beazley's [Compiler Class](https://www.dabe
 
 [^1]: Depending what we mean by "no outside libraries". The compiler we each wrote generates machine-agnostic LLVM assembly code, but if we want to run the result on our computer we still use Clang to compile this 'intermediate representation' assembly code down to the machine code for the specific chip architecture we're using.
 
-I deeply enjoyed the experience, learned a lot, found it a bit brain-burning, and by the end had written a fully working compiler for a simple language. I do expect it has not-yet-found bugs, edge cases, and certainly contains some hacky or non-ideal code, given the fast timeline, but the experience of building it was the real goal...
+I enjoyed the experience, learned a lot, and found it a bit brain-burning as well. By the end I'd written a working compiler from a simple language to assembly code. I'm sure it has various not-yet-found bugs, edge cases, and it certainly contains some hacky or non-ideal code-- but the experience of building it was the real goal...
 
 ``` llvm
 while x <= 10 {
-        ...
+ |
+ V
 %.r2 = icmp sle i32 %.r1, 10
 br i1 %.r2, label %L2, label %L3
-        ...
+ |
+ V
 subs	w8, w8, #10
 cset	w8, gt
 tbnz	w8, #0, LBB0_4
 ```
 
-After the class I did some light cleanup and moved my work to this repo for potential future playing around if inspiration strikes.
+After the class I did some light cleanup and moved my work to this repo, to play around with in the future if inspiration strikes. (I also picked up a copy of [Crafting Interpreters](https://craftinginterpreters.com/) for some light reading.)
 
 # Language
 
@@ -42,7 +44,7 @@ while n < 30 {             // Looping (while)
 }
 ```
 
-I implemented the core of this language, and at the end experimented with adding some other features that seemed interestin. The [Wabbish Language Specification](docs/Wabbish-Specification.md) is a living document where I keep a full specification for the language this compiler supports.
+I implemented the core of this language, and experimented with adding some other features that seemed interesting. The [Wabbish Language Specification](docs/Wabbish-Specification.md) is a living document where I keep a full specification for the language this compiler supports.
 
 # Usage
 
@@ -56,8 +58,7 @@ programs/pow.exe                // computes and prints 3 ^ (2 + 2) = 81
 ``` sh
 ./run.sh programs/pow.wb        // combines both of the above steps
 ```
-
-And a work-in-progress prototype that partially compiles a program, then transpiles it to a minimal subset of Python, as a quick way of sanity-checking program logic for more complex programs.
+A work-in-progress prototype that partially compiles a program, then transpiles it to a minimal subset of Python, as a quick way of sanity-checking program logic for more complex programs.
 ``` sh
 ./gen_python.sh programs/pow.wb
 ```
@@ -74,22 +75,23 @@ This design approach makes it easier to design, debug, reason about, and test ea
 
 ## Compilation Steps
 
-These are most of the passes the compiler performs, with simplified explanations to remind myself later-- there are many additional details and steps documented in the relevant code.
+The most up-to-date list of compiler passes is in the source code of compile_ast.py, but here's a quick summary, with simplified explanations to remind myself where to look later:
 
-* "tokenize input text" (e.g. `"x=1"` -> `["x", "=", "1"]`)
-* "parse tokens into AST" into data structure (e.g. `["x", "=", "1"]` -> `[[Variable "x", Operator "=", Integer 1]]`)
-* "elif rewrite": Rewrite `if..elif..else` blocks as nested `if..else` blocks (so that later compiler steps only need to understand if..else, not elif)
-* "for rewrite": Rewrite `for...` blocks as equivalent `while...` blocks (to allow use of for without later compiler steps needing to understand it)
-* "fold constants": Pre-compute math on constants (e.g. `4 * 5` -> `20`), repeat recursively as needed
-* "deinit": separate variable declaration from assignment (e.g. `var x = 1;` -> `var x; x = 1;`)
-* "unscript": move certain top-level statements to a `main()` function
-* "resolve_scope": infer and resolve variable scopes and make explicit in program representation (`global` and `local`)
-* "default_returns": add an explicit `return 0` to the end of all functions, which simplifies later steps
-* "expr_instructions": convert expressions to the conceptually different stack machine representations, which are how low-level processor instructions operate (for example rather than saying `ADD(X,2)`, you push 2 and the current value of x to the stack, then run the 'add' operator, which pulls the top two elements of the stack)
-* "block statements": merge groups of statements into blocks with labels that can be used for assembly language's GOTO-style flow control
-* "control flow": convert if / while / function flow control to assembly code style GOTO / BRANCH structures 
-* "LLVM codegen" (multiple steps): translate various data structures (which by this point are "organized like assembly language") into the equivalent LLVM assembly code representation
-* "LLVM function entry": add LLVM variable initialization code to assembly code function blocks
+| compiler pass | summary |
+| ------------- | ------- |
+| tokenize input | e.g. `"x=1"` -> `["x", "=", "1"]` |
+| parse tokens | Convert into AST data structure, e.g. `["x", "=", "1"]` -> `[[Variable "x", Operator "=", Integer 1]]` |
+| elif rewrite |  Rewrite `if..elif..else` blocks as nested `if..else` blocks (so that later compiler steps only need to understand if..else, not elif) |
+| for rewrite |  Rewrite `for...` blocks as equivalent `while...` blocks (to allow use of for without later compiler steps needing to be modified to understand it) |
+| fold constants |  Pre-compute math on constants (e.g. `4 * 5` -> `20`), repeat recursively as needed |
+| deinit |  separate variable declaration from assignment, e.g. `var x = 1;` -> `var x; x = 1;` |
+| unscript |  move many top-level statements into a `main()` function |
+| resolve_scope |  infer and resolve variable scopes and make explicit in program representation (`global` and `local`) |
+| default_returns |  add an explicit `return 0` to the end of all functions, which simplifies later steps |
+| expr_instructions |  convert expressions to the conceptually different stack machine representations, which are how low-level processor instructions operate (for example, rather than saying `ADD(X,2)`, you push 2 and the value of the register that represents x to the stack, then run the 'add' operator, which pulls the top two elements of the stack ) |
+| block statements |  merge groups of statements into blocks with labels that can be used for assembly language's GOTO-style flow control |
+| control flow |  convert if / while / function flow control to assembly code style GOTO / BRANCH structures  |
+| LLVM codegen | Various steps to translate the program data structure (which by this point is "organized like assembly language") into the equivalent LLVM assembly code representation |
 
 # Next Steps
 
