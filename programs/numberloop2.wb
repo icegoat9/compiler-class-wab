@@ -1,0 +1,150 @@
+// numberloop2.wb
+//   max d, 2025-04-05, for 'wabbish' language
+//   (requires integer data type and +,-,*,/ and basic relations)
+//
+// revised version of numberloop that takes two arguments:
+//   numberloop2 arg1 arg2
+//     arg1 (if present) is starting value for loop (if not present, runs some tests)
+//     arg2 (if present and nonzero) means 'print intermediate values'
+//
+//
+// iteratively sum and concatenate adjacent digits in a number, for example:
+//   mergedigits(1467) -> (1+4),(4+6),(6+7) = 51013
+//
+// subroutine mergeloop() does this repeatedly, e.g.:
+//   1467 -> 51013 -> 6114 -> 725 -> 97 -> 16 -> 7 (single digit sums to self, is stable)
+//
+// mergeloop() stops looping and returns a status code of one of three reasons for ending:
+//   1: sequence has dwindled to a single digit (stable)
+//   2: sequence appears to be growing to infinity (# of digits larger than some threshold)
+//   3: sequence appears to be in a loop (e.g. 1813 -> 994 -> 1813 -> 994 ...)
+
+// x % n
+func mod(x, n) {
+    var d = x / n;
+    return x - (d * n);
+}
+
+// x ** n
+// n must be integer 0 or greater
+func pow(x, n) {
+    var out = 1;
+    var i = 0;
+    while i < n {
+        out = out * x;
+        i = i + 1;
+    }
+    return out;
+}
+
+// get 'length' of num in # digits
+func lennum(num) {
+    var i = 1;
+    var scale = 10;
+    while scale < (num + 1) {
+        scale = scale * 10;
+        i = i + 1;
+    }
+    return i;
+}
+
+// 'concatenate' two numbers a,b (e.g. concat(67,34) = 6734)
+func concat(a,b) {
+    var scale = pow(10,lennum(b));
+    return (scale * a) + b;
+}
+
+// get nth digit of number from right
+//   e.g. digitn(9876, 3) -> 8
+func digitn(num, n) {
+    var x = pow(10, n);
+    // math notes-to-self, to get the tens digit of "45":
+    //   n % 100 = 45
+    //   n % 10 = 5
+    //   ((n % 100) - (n % 10)) / 10 = 4
+    return (mod(num, x) - mod(num, x / 10)) / (x / 10);
+}
+
+// merge all digits into concatenation of pairwise sums
+// e.g. 4396 -> concatenate (4+3),(3+9),(9+6) -> 71215
+func mergedigits(n) {
+    var len = lennum(n);
+    var i = 1;
+    var out = 0;
+    if len == 1 {
+        return n;
+    }
+    while i < len {
+        var right = digitn(n,i);
+        var left = digitn(n,i+1);
+        var sum = left + right;
+        if i == 1 {
+            out = sum;
+        } else {
+            out = concat(sum, out);
+        }
+        i = i + 1;
+    }
+    return out;
+}
+
+// merge digits (sum pairwise and concatenate) repeatedly
+//  e.g. 1467 -> 51013 -> 6114 -> 725 -> 97 -> 16 -> 7 (stable)
+//  halt and return the following status code under three different conditions:
+//    1: sequence has dwindled to a single digit (stable)
+//    2: sequence appears to be growing to infinity (# of digits larger than some threshold)
+//    3: sequence appears to be in a loop (e.g. 1813 -> 994 -> 1813 -> 994 ...)
+// if verbose is nonzero, print intermediate results
+func mergeloop(n, verbose) {
+    if n < 0 {
+        return -1;    // arbitrary 'error code' return. 
+    } 
+    var prev = 0;
+    var endloop = 0;     // flags to end loop: 1 = single digit, 2 = too many digits, 3 = loop
+    var loops = 0;
+    while endloop == 0 {
+        if verbose != 0 {
+          print n;
+        }
+        prev = n;
+        n = mergedigits(n);
+        loops = loops + 1;
+        if prev == n {
+            endloop = 1;
+        }
+        else {
+            // Compiler TODO: add ability for an expression like this to live in the comparison below
+            //  (for now, need this intermediate calculation)
+            var len = lennum(n);
+            if len >= 8 {
+                // number is getting long, probably going -> infinity
+                endloop = 2;
+            }
+            else {
+                if loops > 20 {   // probably in an infinite loop / stable cycle
+                    endloop = 3;
+                }
+                else {
+                    endloop = 0;
+                }
+            }
+        }
+    }
+    return endloop; // return reason for ending loop
+}
+
+
+if arg1 != 0 {
+  print mergeloop(arg1, arg2);
+}
+else {
+    // run a few loop examples for different starting seeds
+    print mergeloop(1467,1);
+    print -1; // just a 'spacer line' indicating end-of-run
+    print mergeloop(1792,1);
+    print -1;
+    print mergeloop(1537,1);
+    print -1;
+}
+
+
