@@ -41,6 +41,37 @@ func printval(x) {
 printval(10);
 ```
 
+## X. [not implemented] For Loops
+
+Basic for loop implementation, such as (TBD , or ; separators, look at parsing):
+
+```
+for i=1;i<5;i=i+1 {
+  print i*i;
+}
+```
+
+This could be implemented as a simple rewrite by an early compiler pass to an equivalent while loop (similar to rewriting if..elif.. as nested if statements) to let us reuse all the lower-level compiler passes that handle While structures:
+
+```
+var i=1;
+while i<5 {
+  print i*i;
+  i=i+1;
+}
+```
+
+Perhaps under the hood with a data model structure like:
+```
+class For(Statement):
+    init: DeclareValue
+    condition: Relation
+    increment: Statement
+    statements: list[Statement]
+```
+
+Todo: what we want to do if i is already defined in this context.
+
 ## X. [implemented but not fully tested] Command-Line Argument
 
 Compiled programs (with the help of a bit of wrapper code built into the compiler) accept one command-line argument, and pass it to the Wabbish program in the special reserved variable `arg`. If no command-line argument is present, `arg` has a value of 0. For example, this program would display the square of the passed argument:
