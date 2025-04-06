@@ -88,10 +88,14 @@ The most up-to-date list of compiler passes is in the source code of compile_ast
 | unscript |  move many top-level statements into a `main()` function |
 | resolve_scope |  infer and resolve variable scopes and make explicit in program representation (`global` and `local`) |
 | default_returns |  add an explicit `return 0` to the end of all functions, which simplifies later steps |
-| expr_instructions |  convert expressions to the conceptually different stack machine representations, which are how low-level processor instructions operate (for example, rather than saying `ADD(X,2)`, you push 2 and the value of the register that represents x to the stack, then run the 'add' operator, which pulls the top two elements of the stack ) |
+| expr_instructions + statement_instructions |  convert expressions to the conceptually different stack machine representations, which are how low-level processor instructions operate (for example, rather than saying `ADD(X,2)`, you push 2 and the value of the register that represents x to the stack, then run the 'add' operator, which pulls the top two elements of the stack ) |
 | block statements |  merge groups of statements into blocks with labels that can be used for assembly language's GOTO-style flow control |
 | control flow |  convert if / while / function flow control to assembly code style GOTO / BRANCH structures  |
-| LLVM codegen | Various steps to translate the program data structure (which by this point is "organized like assembly language") into the equivalent LLVM assembly code representation |
+| LLVM codegen + other LLVM | Various passes to translate the program data structure (which by this point is "organized like assembly language") into the equivalent LLVM assembly code representation |
+
+### Compile Passes by Example
+
+[docs/compile_passes_example.md](docs/compile_passes_example.md) shows a simple real program taken through each compile pass, and what the intermediate outputs look like.
 
 # Next Steps
 

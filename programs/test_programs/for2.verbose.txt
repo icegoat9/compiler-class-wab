@@ -1,0 +1,278 @@
+-- SOURCE (programs/test_programs/for2.wb):
+[36m// trivial for test
+
+for i=1,10 {
+    print i*i;
+}[0m
+-- TOKENS:
+[Token(toktype='FOR', tokvalue='for', sourceline=3, sourcecol=3),
+ Token(toktype='NAME', tokvalue='i', sourceline=3, sourcecol=5),
+ Token(toktype='ASSIGN', tokvalue='=', sourceline=3, sourcecol=6),
+ Token(toktype='INTEGER', tokvalue='1', sourceline=3, sourcecol=7),
+ Token(toktype='COMMA', tokvalue=',', sourceline=3, sourcecol=8),
+ Token(toktype='INTEGER', tokvalue='10', sourceline=3, sourcecol=10),
+ Token(toktype='LBRACE', tokvalue='{', sourceline=3, sourcecol=12),
+ Token(toktype='PRINT', tokvalue='print', sourceline=4, sourcecol=9),
+ Token(toktype='NAME', tokvalue='i', sourceline=4, sourcecol=11),
+ Token(toktype='TIMES', tokvalue='*', sourceline=4, sourcecol=12),
+ Token(toktype='NAME', tokvalue='i', sourceline=4, sourcecol=13),
+ Token(toktype='SEMI', tokvalue=';', sourceline=4, sourcecol=14),
+ Token(toktype='RBRACE', tokvalue='}', sourceline=5, sourcecol=1)]
+-- PARSED PROGRAM:
+[36mProgram(statements=[For(name=Name(str='i'), startval=Integer(n=1), endval=Integer(n=10), statements=[Print(value=Multiply(left=Name(str='i'), right=Name(str='i')))])])[0m
+-- FORMATTED PROGRAM:
+[36mfor i = 1,10 {
+   print i * i;
+}
+[0m
+[94m--input AST representation from parser--[0m
+Program(statements=[For(name=Name(str='i'), startval=Integer(n=1), endval=Integer(n=10), statements=[Print(value=Multiply(left=Name(str='i'), right=Name(str='i')))])])
+[94m--compiler pass 0: input from parser [0m(run through human-readable formatter)[0m
+for i = 1,10 {
+   print i * i;
+}
+
+[94m--compiler pass 1: elif_rewrite [0m(rewrite if..elif.else clauses as nested if..else)[0m
+for i = 1,10 {
+   print i * i;
+}
+
+[94m--compiler pass 2: for_rewrite [0m(rewrite for loops as whiles)[0m
+var i = 1;
+while i <= 10 {
+   print i * i;
+   i = i + 1;
+}
+
+[94m--compiler pass 3: fold constants [0m(pre-compute math on constants)[0m
+var i = 1;
+while i <= 10 {
+   print i * i;
+   i = i + 1;
+}
+
+[94m--compiler pass 4: deinit [0m(separate variable declartion from assignment)[0m
+var i;
+i = 1;
+while i <= 10 {
+   print i * i;
+   i = i + 1;
+}
+
+[94m--compiler pass 5: unscript [0m(move top-level statements to main() except globalvar)[0m
+var i;
+func main() {
+   i = 1;
+   while i <= 10 {
+      print i * i;
+      i = i + 1;
+   }
+}
+
+
+[94m--compiler pass 6: resolve [0m(resolve variable scope and make explicit in data structure)[0m
+global i;
+func main() {
+   global[i] = 1;
+   while global[i] <= 10 {
+      print global[i] * global[i];
+      global[i] = global[i] + 1;
+   }
+}
+
+
+[94m--compiler pass 7: defaultreturns [0m(add return 0 to functions, to simplify assembly codegen)[0m
+global i;
+func main() {
+   global[i] = 1;
+   while global[i] <= 10 {
+      print global[i] * global[i];
+      global[i] = global[i] + 1;
+   }
+   return 0;
+}
+
+
+[94m--compiler pass 8: expr_instructions [0m(expressions -> stack machine representation)[0m
+global i;
+func main() {
+   global[i] = EXPR([PUSH(1)]);
+   while EXPR([LOAD_GLOBAL('i'), PUSH(10), LTE()]) {
+      print EXPR([LOAD_GLOBAL('i'), LOAD_GLOBAL('i'), MUL()]);
+      global[i] = EXPR([LOAD_GLOBAL('i'), PUSH(1), ADD()]);
+   }
+   return EXPR([PUSH(0)]);
+}
+
+
+[94m--compiler pass 9: statement_instructions [0m(statements -> stack machine representation)[0m
+global i;
+func main() {
+   STATEMENT([
+      PUSH(1)
+      STORE_GLOBAL('i')
+   ])
+   while EXPR([LOAD_GLOBAL('i'), PUSH(10), LTE()]) {
+      STATEMENT([
+         LOAD_GLOBAL('i')
+         LOAD_GLOBAL('i')
+         MUL()
+         PRINT()
+      ])
+      STATEMENT([
+         LOAD_GLOBAL('i')
+         PUSH(1)
+         ADD()
+         STORE_GLOBAL('i')
+      ])
+   }
+   STATEMENT([
+      PUSH(0)
+      RETURN()
+   ])
+}
+
+
+[94m--compiler pass 10: blocks statements [0m(merge statements into BLOCK data structures with labels)[0m
+global i;
+func main() {
+   BLOCK(label='L1', [
+      PUSH(1)
+      STORE_GLOBAL('i')
+   ])
+   while EXPR([LOAD_GLOBAL('i'), PUSH(10), LTE()]) {
+      BLOCK(label='L2', [
+         LOAD_GLOBAL('i')
+         LOAD_GLOBAL('i')
+         MUL()
+         PRINT()
+         LOAD_GLOBAL('i')
+         PUSH(1)
+         ADD()
+         STORE_GLOBAL('i')
+      ])
+   }
+   BLOCK(label='L3', [
+      PUSH(0)
+      RETURN()
+   ])
+}
+
+
+[94m--compiler pass 11: block flow [0m(convert If/While/Func flow control to GOTO / BRANCH structure)[0m
+global i;
+func main() {
+   BLOCK(label='L1', [
+      PUSH(1)
+      STORE_GLOBAL('i')
+      GOTO(label='L4')
+   ])
+   BLOCK(label='L4', [
+      LOAD_GLOBAL('i')
+      PUSH(10)
+      LTE()
+      CBRANCH(iftrue='L2', iffalse='L3')
+   ])
+   BLOCK(label='L2', [
+      LOAD_GLOBAL('i')
+      LOAD_GLOBAL('i')
+      MUL()
+      PRINT()
+      LOAD_GLOBAL('i')
+      PUSH(1)
+      ADD()
+      STORE_GLOBAL('i')
+      GOTO(label='L4')
+   ])
+   BLOCK(label='L3', [
+      PUSH(0)
+      RETURN()
+   ])
+}
+
+
+[94m--compiler pass 12: LLVM initial codegen [0m(convert pseudo state machine to LLVM instructions)[0m
+global i;
+func main() {
+   BLOCK(label='L1', [
+      LLVM 'store i32 1, i32* @i'
+      LLVM 'br label %L4'
+   ])
+   BLOCK(label='L4', [
+      LLVM '%.r1 = load i32, i32* @i'
+      LLVM '%.r2 = icmp sle i32 %.r1, 10'
+      LLVM 'br i1 %.r2, label %L2, label %L3'
+   ])
+   BLOCK(label='L2', [
+      LLVM '%.r3 = load i32, i32* @i'
+      LLVM '%.r4 = load i32, i32* @i'
+      LLVM '%.r5 = mul i32 %.r3, %.r4'
+      LLVM 'call i32 (i32) @_print_int(i32 %.r5)'
+      LLVM '%.r6 = load i32, i32* @i'
+      LLVM '%.r7 = add i32 %.r6, 1'
+      LLVM 'store i32 %.r7, i32* @i'
+      LLVM 'br label %L4'
+   ])
+   BLOCK(label='L3', [
+      LLVM 'ret i32 0'
+   ])
+}
+
+
+[94m--compiler pass 13: LLVM function entry [0m(add LLVM variable initialization code to functions)[0m
+global i;
+func main() {
+   BLOCK(label='entry', [
+      LLVM 'br label %L1'
+   ])
+   BLOCK(label='L1', [
+      LLVM 'store i32 1, i32* @i'
+      LLVM 'br label %L4'
+   ])
+   BLOCK(label='L4', [
+      LLVM '%.r1 = load i32, i32* @i'
+      LLVM '%.r2 = icmp sle i32 %.r1, 10'
+      LLVM 'br i1 %.r2, label %L2, label %L3'
+   ])
+   BLOCK(label='L2', [
+      LLVM '%.r3 = load i32, i32* @i'
+      LLVM '%.r4 = load i32, i32* @i'
+      LLVM '%.r5 = mul i32 %.r3, %.r4'
+      LLVM 'call i32 (i32) @_print_int(i32 %.r5)'
+      LLVM '%.r6 = load i32, i32* @i'
+      LLVM '%.r7 = add i32 %.r6, 1'
+      LLVM 'store i32 %.r7, i32* @i'
+      LLVM 'br label %L4'
+   ])
+   BLOCK(label='L3', [
+      LLVM 'ret i32 0'
+   ])
+}
+
+
+[94m--LLVM-compatible output--[0m (convert our final internal data structure to string)[0m
+declare i32 @_print_int(i32)
+@i = global i32 0
+
+define i32 @main() {
+entry:
+    br label %L1
+L1:
+    store i32 1, i32* @i
+    br label %L4
+L4:
+    %.r1 = load i32, i32* @i
+    %.r2 = icmp sle i32 %.r1, 10
+    br i1 %.r2, label %L2, label %L3
+L2:
+    %.r3 = load i32, i32* @i
+    %.r4 = load i32, i32* @i
+    %.r5 = mul i32 %.r3, %.r4
+    call i32 (i32) @_print_int(i32 %.r5)
+    %.r6 = load i32, i32* @i
+    %.r7 = add i32 %.r6, 1
+    store i32 %.r7, i32* @i
+    br label %L4
+L3:
+    ret i32 0
+}
