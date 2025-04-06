@@ -50,7 +50,9 @@ I kept quick and dirty during-class To-Dos and also in quick TODO items at the t
     * [ ] add tests, support in formatter, etc
 * [x] for loops (via a similar approach to ifelse.py where they would be rewritten as while() loops early in the compiler passes so later compile steps don't need to understand them)
   * [ ] improve syntax to remove third ; and/or shift to commas?
+  * [ ] drastically simplify syntax to e.g. `for i=1,10 { }`, perhaps?
   * [ ] fix compile error if loop variable is previously declared in scope (or make local in scope?)
+    * [ ] perhaps a more general-purpose compiler pass to strip duplicate declarations?
 * [ ] more robust error messages (especially at the parser level)
 * [ ] Explore type support (float, char, maybe string)
   * Maybe a simpler fixed-length string, via implementing fixed-length-only array support

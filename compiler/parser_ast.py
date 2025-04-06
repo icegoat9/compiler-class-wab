@@ -251,14 +251,55 @@ class Parser:
     def parse_for(self) -> For:
         self.expect("FOR")
         init = self.parse_assign()
-        # self.expect("SEMI")
+        # self.expect("SEMI")  # implicitly expected in parse_assign()
         condition = self.parse_relation()
         self.expect("SEMI")
         increment = self.parse_assign()
+        # self.expect("SEMI")  # implicitly expected in parse_assign()
         self.expect("LBRACE")
         body = self.parse_statements()
         self.expect("RBRACE")
         return For(init,condition,increment,body)
+
+    # # new WIP for syntax ideas, not used or tested
+    #
+    # # for i=1,i<5,i=i+1 { }
+    # def parse_for(self) -> For:
+    #     self.expect("FOR")
+    #     var_init = self.expect("NAME")
+    #     self.expect("ASSIGN")
+    #     value_init = self.parse_expression()
+    #     self.expect("COMMA")
+    #     condition = self.parse_relation()
+    #     self.expect("COMMA")
+    #     var_inc = self.expect("NAME")
+    #     self.expect("ASSIGN")
+    #     value_inc = self.parse_expression()
+    #     self.expect("LBRACE")
+    #     body = self.parse_statements()
+    #     self.expect("RBRACE")
+    #     return For(Assign(Name(var_init.tokvalue), value_init),
+    #                condition,
+    #                Assign(Name(var_inc.tokvalue), value_inc),
+    #                body)
+    #
+    # # for i=1,10 { }
+    # def parse_for_v2(self) -> For:
+    #     self.expect("FOR")
+    #     var_init = self.expect("NAME")
+    #     self.expect("ASSIGN")
+    #     value_init = self.parse_expression()
+    #     self.expect("COMMA")
+    #     value_end = self.parse_expression()
+    #     self.expect("LBRACE")
+    #     body = self.parse_statements()
+    #     self.expect("RBRACE")
+    #     return For(Name(var_init.tokvalue), 
+    #                value_init,
+    #                value_end,
+    #                body)
+
+
 
     def parse_if_simple(self) -> IfElse:  # obsolete, replaced by more general below
         self.expect("IF")

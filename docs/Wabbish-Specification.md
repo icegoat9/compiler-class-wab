@@ -218,7 +218,7 @@ for i = 1; i <= 10; i = i + 1; {
 }
 ```
 
-*Note: The implementation is in-development and has some known bugs. In particular, the compiler will currently raise an error if index variable i has previously been declared in the current scope. I may also revise the syntax to omit the third semicolon, shift to commas, or so on.*
+**Note: The implementation is in-development and has some known bugs:** In particular, the compiler will currently raise an error if index variable i has previously been declared in the current scope. I may also revise the syntax to omit the third semicolon, shift to commas, rewrite as simpler `for i=1,10 { }`, or so on.
 
 ## 9. Functions
 
