@@ -33,7 +33,7 @@ I kept quick and dirty during-class To-Dos and also in quick TODO items at the t
   * [x] Optional value assignment on variable declaration
   * [ ] Expression statements (e.g. call function without assigning return)
   * [ ] Expression inside conditional
-  * [ ] Zero-parameter functions
+  * [x] Zero-parameter functions
 * [ ] Look into other runtime.c integration with OS
   * [x] command-line arguments for compiled binaries
   * [ ] simple terminal/keypress input reading (number entry or arrow keys?)

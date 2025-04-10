@@ -1,0 +1,8 @@
+func print5() {
+    print 5;
+    return 555;
+}
+
+var x;
+x = print5();
+print x;
