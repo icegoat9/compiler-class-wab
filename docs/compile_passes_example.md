@@ -1,6 +1,6 @@
 # Compiler Passes via Example
 
-The exact details of this will evolve over time as I modify the compiler, but to complement the bullet-point list of compiler steps in the [README](/README.md) and the details in the code, here's one simple program taken through each compiler pass:
+The exact details of this will evolve over time as I modify the compiler, but to complement the bullet-point list of compiler steps in the [README](/README.md) and the details in the code, here's one simple program taken through each compiler pass as of April 2025:
 
 ## Source code (programs/test_programs/fact_for.wb):
 ```
@@ -617,4 +617,4 @@ L6:
 
 ### ...and we're done
 
-This helps me remember by example what each step is supposed to do, though not necessarily how or why (I recall that the variable scoping, recursive control flow descent, and translation to assembly-style stack and branch/goto structures were all a bit mind-bending at the time, and would need some re-review if I were picking that part of the code up again).
+This helps me remember by example what each step is supposed to do, though not necessarily how or why (variable scoping, recursive control flow descent, and translation to assembly-style stack and branch/goto structures were all a bit mind-bending at the time, and would need some re-review if I were picking that part of the code up again).

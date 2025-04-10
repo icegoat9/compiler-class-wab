@@ -4,16 +4,18 @@ I spent one intense week taking Dave Beazley's [Compiler Class](https://www.dabe
 
 [^1]: Depending what we mean by "no outside libraries". The compiler we each wrote generates machine-agnostic LLVM assembly code, but if we want to run the result on our computer we still use Clang to compile this 'intermediate representation' assembly code down to the machine code for the specific chip architecture we're using.
 
-I enjoyed the experience, learned a lot, and found it a bit brain-burning as well. By the end I'd written a working compiler from a simple language to assembly code. I'm sure it has various not-yet-found bugs, edge cases, and it certainly contains some hacky or non-ideal code-- but the experience of building it was the real goal...
+I enjoyed the experience, learned a lot, and found it a bit brain-burning as well. By the end I'd written a working compiler from a simple language to assembly code. I'm sure it has various bugs and edge cases, and it certainly contains some hacky or non-ideal code-- but the experience was the real goal...
+
+A quick taste of a few transformations in the compilation process of a single line of user code through machine instructions:
 
 ``` llvm
 while x <= 10 {
- |
- V
+ ...
+while [LOAD_GLOBAL('x'), PUSH(10), LTE()] {
+ ...
 %.r2 = icmp sle i32 %.r1, 10
 br i1 %.r2, label %L2, label %L3
- |
- V
+ ...
 subs	w8, w8, #10
 cset	w8, gt
 tbnz	w8, #0, LBB0_4
@@ -27,18 +29,15 @@ We wrote compilers for subsets of a small imperative programming language 'Wabbi
 
 ``` c
 // fib.wb -  Compute fibonacci numbers
-
-// Custom Functions
-func fib(n) {
-    if n > 1 {                          // Conditionals
-        return fib(n-1) + fib(n-2);
-    } else {
-        return 1;
+func fib(n) {              // Custom function
+    if n > 1 {             // Conditional
+        return fib(n-1) + fib(n-2);  // Recursion
     }
+    return 1;
 }
 
 var n = 0;                 // Variable declaration
-while n < 30 {             // Looping (while)
+while n < 30 {             // Looping
     print fib(n);          // Printing
     n = n + 1;             // Assignment
 }
@@ -48,7 +47,7 @@ I implemented the core of this language, and experimented with adding some other
 
 # Usage
 
-To compile a simple program that raises a number to a power (this also generates the intermediate .ll LLVM assembly and .s machine code from the compilation, for inspection):
+To compile a simple program that raises a number to a power (this also generates the intermediate LLVM assembly .ll  and machine code .s from the compilation, for inspection):
 
 ``` sh
 ./compile.sh programs/pow.wb 
@@ -95,7 +94,7 @@ The most up-to-date list of compiler passes is in the source code of compile_ast
 
 ### Compile Passes by Example
 
-[docs/compile_passes_example.md](docs/compile_passes_example.md) shows a simple real program taken through each compile pass, and what the intermediate outputs look like.
+[docs/compile_passes_example.md](docs/compile_passes_example.md) shows a simple program taken through each compile pass, and what the intermediate outputs look like.
 
 # Next Steps
 
