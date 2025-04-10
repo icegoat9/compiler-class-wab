@@ -114,8 +114,7 @@ class Parser:
         if self.checkahead("PRINT"):
             return self.parse_print()
         elif self.checkahead("VAR"):
-            # TODO: differentiate from a declare without value e.g. var x;
-            return self.parse_declare_value()
+            return self.parse_declare()
         elif self.checkahead("NAME") and self.checkahead("ASSIGN", 1):
             # If this token is a name and the next token is an '='
             return self.parse_assign()
@@ -225,13 +224,17 @@ class Parser:
         self.expect("SEMI")
         return Return(body)
 
-    def parse_declare_value(self) -> DeclareValue:
+    def parse_declare(self) -> Declare:
         self.expect("VAR")
         var = self.expect("NAME")
-        self.expect("ASSIGN")
-        value = self.parse_expression()
-        self.expect("SEMI")
-        return DeclareValue(Name(var.tokvalue), value)
+        if self.checkahead("SEMI"):
+            self.expect("SEMI")
+            return Declare(Name(var.tokvalue))
+        else:
+            self.expect("ASSIGN")
+            value = self.parse_expression()
+            self.expect("SEMI")
+            return DeclareValue(Name(var.tokvalue), value)
 
     def parse_assign(self) -> Assign:
         var = self.expect("NAME")
@@ -420,7 +423,8 @@ if __name__ == "__main__":
 
     assert Parser(tokenize("print 1;")).parse_print() == Print(Integer(1))
     assert_equal_verbose(Parser(tokenize("print 1;")).parse_print(), Print(Integer(1)))
-    assert Parser(tokenize("var x = 1;")).parse_declare_value() == DeclareValue(Name("x"), Integer(1))
+    assert Parser(tokenize("var x = 1;")).parse_declare() == DeclareValue(Name("x"), Integer(1))
+    assert Parser(tokenize("var x;")).parse_declare() == Declare(Name("x"))
     assert Parser(tokenize("while 1 < 1 { }")).parse_while() == While(
         Relation(RelationOp("<"), Integer(1), Integer(1)), []
     )
@@ -450,6 +454,7 @@ if __name__ == "__main__":
     tests = {
         "print 1;": Print(Integer(1)),
         "var x = 1;": DeclareValue(Name("x"), Integer(1)),
+        "var x;": Declare(Name("x")),
         "while 1 < 1 { }": While(Relation(RelationOp("<"), Integer(1), Integer(1)), []),
         "x = 1;": Assign(Name("x"), Integer(1)),
         "if 1 == 1 { } else { }": IfElifElse(Relation(RelationOp("=="), Integer(1), Integer(1)), [], [], []),

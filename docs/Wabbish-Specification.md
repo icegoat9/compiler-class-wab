@@ -67,11 +67,11 @@ work with integers only.
 
 ## 4. Variables
 
-Variables are declared using the `var` keyword and must always be
-given an initial value.  For example:
+Variables are declared using the `var` keyword and may be given an initial value.  For example:
 
 ```
 var x = 0;
+var y;
 ```
 
 Variable names must start with a letter, but may include letters and
@@ -79,13 +79,15 @@ numbers afterwards.  The following words are reserved and may not be
 used as a variable name:
 
 ```
-elif else func if print return var while 
+elif else func if print return var while for
 ```
 
 Variables are managed in two different scopes.  Any variable declared
 at the top-level is a global variable.  Global variables may be accessed
 from anywhere in a program.  A variable that's declared inside a code block
-(function, if-statement, while-loop) is a local variable.  
+(function, if-statement, while-loop) is a local variable.
+
+**CAUTION:** Variables that are declared without being initialized have undefined behavior if they are used before assignment: there are currently no compiler features to catch this behavior.
 
 ## 5. Printing
 

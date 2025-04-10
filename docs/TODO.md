@@ -30,7 +30,7 @@ I kept quick and dirty during-class To-Dos and also in quick TODO items at the t
 (some ideas fleshed out in more detail in [Future-Specification.md](Future-Specification.md))
 
 * [ ] Some unimplemented features from the class Wabbi language spec that seem useful 
-  * [ ] Optional value assignment on variable declaration
+  * [x] Optional value assignment on variable declaration
   * [ ] Expression statements (e.g. call function without assigning return)
   * [ ] Expression inside conditional
   * [ ] Zero-parameter functions
@@ -82,6 +82,7 @@ I kept quick and dirty during-class To-Dos and also in quick TODO items at the t
 
 ## Bug fixing and related
 * [ ] For loop variable redeclare issue noted above
+* [ ] Decide on (currently undefined) behavior of variables initialized without assignment and then used before assignment -- should compiler catch this?
 * [ ] Look into the list.reverse() quickly added in llvmcode.py to get functions with multiple arguments to work
     ...was the error in function arguments there? Or is this a workaround for a mistake with argument orderIn an earlier step? Verify what order the function argument should be on the stack in
 

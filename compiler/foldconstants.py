@@ -51,6 +51,9 @@ def fold_statement(s: Statement) -> Statement:
             return Return(fold_expression(e))
         case Function(n, p, s):
             return Function(n, p, fold_statements(s))
+        case Declare():
+            # Pass-through specific case(s) where we do nothing
+            return s
         case _:
             raise RuntimeError(f"Unhandled fold_statement() case {s}")
 
