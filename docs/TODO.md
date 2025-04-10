@@ -2,9 +2,11 @@ Running notes-to-self document during and after class.
 
 ## Current Status
 
-The compiler runs all the test programs in [/programs/test_programs](/programs/test_programs) as intended.
+The compiler runs and produces the desired result on all the test programs in [/programs/test_programs](/programs/test_programs), with these exceptions:
+* for_redeclare.wb
 
-See [/programs/](/programs/) for some sample programs in the language.
+
+See [/programs/](/programs/) for some sample more general programs using the language.
 
 ### Language Compatibility
 See [Wabbish-Specification.md](Wabbish-Specification.md) for details, but generally:
@@ -13,8 +15,9 @@ See [Wabbish-Specification.md](Wabbish-Specification.md) for details, but genera
 * Comparison operators <,>,<=,>=,==,!=
 * Unary math operator (- only)
 * LLVM code generation
-* if and while structures (including optional else and if..elif..else)
+* while, for, and if structures (including if..elif..else)
 * functions with one or more arguments
+* hooks to a few I/O functions (print, command-line arguments)
 
 ### Helpful Compiler Features
 * Line and column numbers returned in parser error messages (though not in downstream compiler messages)
@@ -26,7 +29,7 @@ I kept quick and dirty during-class To-Dos and also in quick TODO items at the t
 **General Cleanup**
 * [x] Document what I've done so far at the module level and high-level, so I'll remember it if I come back
 * [~] Add some basic Python doc strings so my IDE can give me helpful tips as I come back
-* [ ] Add at least a few assert-style unit tests to existing modules (some have these, some were just debugged with 'print debugging' and visual inspection of formatted output along the way)
+* [~] Add at least a few assert-style unit tests to all existing modules (some have these, some were just debugged with 'print debugging' and visual inspection of formatted output along the way)
 * [ ] Go through existing code reading TODO/HACK comments and pulling them up into a top-level TODO
 
 **Bigger Picture: Future Compiler / Language Feature Ideas**
@@ -54,7 +57,9 @@ I kept quick and dirty during-class To-Dos and also in quick TODO items at the t
   * [ ] fix compile error if loop variable is previously declared in scope (or make local in scope?)
     * [ ] perhaps a more general-purpose compiler pass to strip duplicate declarations?
 * [ ] more robust error messages (especially at the parser level)
-* [ ] Explore type support (float, char, maybe string)
+* [ ] fixed-length array support
+  * [ ] with length functions or for x in array iterator?
+* [ ] Explore type support beyond int (float, char, maybe string)
   * Maybe a simpler fixed-length string, via implementing fixed-length-only array support
 * [ ] Dig into generating assembly without LLVM (e.g. ARM64, Webassembly) at least for a simple program
 * [ ] Read the Crafting Interpreters book, see what ideas it inspires
@@ -101,10 +106,12 @@ I kept quick and dirty during-class To-Dos and also in quick TODO items at the t
   * [ ] Expression statements (e.g. call function without assigning return)
   * [ ] Expression inside conditional
   * [ ] Declare var without assignment
-* [ ] Copy code from Wab to Wabbi / Wabbit folders, extract previous Wab commit checkpoint
-* Add more flow control structures, parsed and converted to simpler ones early in process
-  * [X] if..elseif..elseif..else -> nested if
-  * [ ] for.. -> while
+
+- [x] Copy code from Wab to Wabbi / Wabbit folders, extract previous Wab commit checkpoint
+- [ ] Add more flow control structures, parsed and converted to simpler ones early in process
+  - [X] if..elseif..elseif..else -> nested if
+  - [x] ] for.. -> while
+
 * Wabbit features:
   * [ ] Types (especially string, perhaps?)
 * [ ] Add more assertion tests all through the compiler, including unary operators
