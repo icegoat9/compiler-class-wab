@@ -79,6 +79,8 @@ def expr_instructions(expr: Expression) -> EXPR:
             return EXPR(expr_instructions(left).instructions + expr_instructions(right).instructions + [SUB()])
         case Divide(left, right):
             return EXPR(expr_instructions(left).instructions + expr_instructions(right).instructions + [DIV()])
+        case Modulo(left, right):
+            return EXPR(expr_instructions(left).instructions + expr_instructions(right).instructions + [MOD()])
         # COMMENTED OUT -- already done earlier at parser level to rewrite to Subtract(0,x) so won't reach here
         #        case Negate(left):
         #            # rewrite -x as 0-x expression, representing '(0-x)'

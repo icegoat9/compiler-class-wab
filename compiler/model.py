@@ -120,6 +120,7 @@ class Add(MathOp): pass
 class Multiply(MathOp): pass
 class Subtract(MathOp): pass
 class Divide(MathOp): pass
+class Modulo(MathOp): pass
 
 @dataclass
 class UnaryOp(Expression):
@@ -127,6 +128,7 @@ class UnaryOp(Expression):
 
 # class Negate(UnaryOp): pass
 
+# TODO: is this obsolete given the MathOp class above?
 @dataclass
 class Multiply(Expression):
     left : Expression
@@ -227,6 +229,7 @@ class ADD(INSTRUCTION): pass
 class MUL(INSTRUCTION): pass
 class SUB(INSTRUCTION): pass
 class DIV(INSTRUCTION): pass
+class MOD(INSTRUCTION): pass
 class LT(INSTRUCTION): pass
 class EQ(INSTRUCTION): pass
 class LTE(INSTRUCTION): pass

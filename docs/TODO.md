@@ -34,6 +34,8 @@ I kept quick and dirty during-class To-Dos and also in quick TODO items at the t
 * [x] Optional value assignment on variable declaration
 * [x] Expression statements (e.g. call function without assigning return)
   * [ ] Test in more depth, and remove caution in specification doc once more tested
+* [x] Implement modulo operator %
+  * [ ] Revise implementation to implement Floored vs. Truncated modulo for negative numbers
 * [ ] Expression inside conditional
 * [ ] Check for mismatched braces and parens in AST, throw a usefully specific compile error
 * [x] Zero-parameter functions

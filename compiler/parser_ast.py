@@ -193,6 +193,10 @@ class Parser:
             self.expect("DIV")
             term2 = self.parse_term()
             return Divide(term, term2)
+        elif self.checkahead("MOD"):
+            self.expect("MOD")
+            term2 = self.parse_term()
+            return Modulo(term, term2)
         else:
             return term
 
@@ -503,6 +507,7 @@ if __name__ == "__main__":
         "-(1 + 2)": Subtract(Integer(0), Add(Integer(1), Integer(2))),
         "3 + -4": Add(Integer(3), Subtract(Integer(0), Integer(4))),
         "-5 + 6": Add(Subtract(Integer(0), Integer(5)), Integer(6)),
+        "5 % 3": Modulo(Integer(5), Integer(3)),
     }
     for text, tokens in tests.items():
         assert_equal_verbose(Parser(tokenize(text)).parse_expression(), tokens)
@@ -607,7 +612,7 @@ if __name__ == "__main__":
     printcolor("PASSED", ansicode.green)
 
     # demonstrate parser error messages
-    testparseerrors = True
+    testparseerrors = False
     if testparseerrors:
         print("Testing the parsing errors returned for some known-bad programs:")
         # test error messages (with line numbers?) returned when parsing various incorrect code

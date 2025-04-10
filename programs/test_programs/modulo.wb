@@ -1,0 +1,16 @@
+// modulo.wb
+
+var x = 5;
+var y = 3;
+print x;
+print y;
+print x / y; // 1
+print x % y; // 2
+
+// test negative number handling as well
+// (differs between modulo implementations)
+print -x / y;  // -1
+print -x % y;  // 1
+print x / -y;  // -1
+print -x % -y; // 1
+print -x % -y; // -2

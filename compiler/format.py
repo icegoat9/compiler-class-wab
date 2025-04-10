@@ -174,6 +174,11 @@ def fmt_expr(e: Expression, nested: bool = False) -> str:
             if nested:
                 strtxt = "(%s)" % strtxt
             return strtxt
+        case Modulo(left, right):
+            strtxt = "%s % %s" % (fmt_expr(left, nested=True), fmt_expr(right, nested=True))
+            if nested:
+                strtxt = "(%s)" % strtxt
+            return strtxt
         #    elif isinstance(e, Variable):
         #        return fmt_expr(e.name)
         case Relation(op, left, right):

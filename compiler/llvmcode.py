@@ -116,6 +116,14 @@ def create_llvm(block: BLOCK) -> BLOCK:
                 result = next_register()
                 ops.append(LLVM(f"{result} = sdiv i32 {left}, {right}"))
                 stack.append(result)
+            case MOD():
+                right = stack.pop()
+                left = stack.pop()
+                result = next_register()
+                # TODO: fix this to compute modulo 
+                #       (this instruction is remainder: only the same as modulo if arguments have the same sign)
+                ops.append(LLVM(f"{result} = srem i32 {left}, {right}"))
+                stack.append(result)
             ## Comparison ops
             case EQ():
                 right = stack.pop()

@@ -17,12 +17,14 @@
 from model import *
 from printcolor import *
 from pprint import pprint
+import os
 
 _symbols = {
     "+": "PLUS",
     "*": "TIMES",
     "-": "SUB",
     "/": "DIV",
+    "%": "MOD",
     "<": "LT",
     "==": "EQ",
     ">": "GT",
@@ -140,10 +142,15 @@ def tokenize(text: str) -> list[Token]:
 # Tests (if run directly vs. imported as module)
 
 if __name__ == "__main__":
-    input = "print 123 + xy;"
-    print_colorheader("Sample input string: ", input)
-    output = tokenize(input)
-    print_colorheader("Tokenized output:", output)
+    # input = "print 123 + xy;"
+    # print_colorheader("Sample input string: ", input)
+    # output = tokenize(input)
+    # print_colorheader("Tokenized output:", output)
+
+    header = f"***  Running tests in {os.path.basename(__file__)}  ***"
+    print("*" * len(header))
+    print(header)
+    print("*" * len(header))
 
     printcolor("Running tokenizer unit tests...")
 
@@ -159,12 +166,13 @@ if __name__ == "__main__":
     )
 
     assert token_list_eq(
-        tokenize("+ - * / = < > <= >= != { } ( ) , ; =="),
+        tokenize("+ - * / % = < > <= >= != { } ( ) , ; =="),
         [
             Token("PLUS", "+"),
             Token("SUB", "-"),
             Token("TIMES", "*"),
             Token("DIV", "/"),
+            Token("MOD", "%"),
             Token("ASSIGN", "="),
             Token("LT", "<"),
             Token("GT", ">"),
@@ -182,7 +190,7 @@ if __name__ == "__main__":
     )
 
     assert token_list_eq(
-        tokenize("else elif if print var while return func"),
+        tokenize("else elif if print var while for return func"),
         [
             Token("ELSE", "else"),
             Token("ELIF", "elif"),

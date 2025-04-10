@@ -4,7 +4,7 @@ Wabbish is my name for a slight variant on the Wab / Wabbi / Wabbit languages cr
 
 During that class and in a bit of work afterward, I completed a compiler for a language somewhere between the  Wab and Wabbi language specs, but then started playing around and adding other features, so I'm making this forked version of the Wab/Wabbi language spec page to keep track of what my particular compiler implements and avoid looking at similar but slightly different documentation for the original languages.
 
-*Most of the language spec below is copied from a mix of the Wab and Wabbi language specs.*
+*Much of the language spec below is copied from a mix of the Wab and Wabbi language specs.*
 
 ## 1. Wabbish Overview
 
@@ -101,7 +101,7 @@ print 3 + x;
 
 ## 6. Math operations
 
-The `+`, `-`, `*`, and `/` operators are supported.  In addition, 
+The `+`, `-`, `*`, `/`, and `%` operators are supported.  In addition, 
 unary negation is provided.  Thus, these are all valid:
 
 ```
@@ -112,10 +112,13 @@ print x + y;    // 13
 print x - y;    // 7
 print x * y;    // 30
 print x / y;    // 3
+print x % y;    // 1
 print -x;       // -10
 ```
 
 The division operator truncates the result so `10/3` is `3`.
+
+The modulo operator is currently based on truncated division, so when one of the operands is negative, the output matches the sign of the first operand: `-5 % 3` returns `-2` (rather than `1` as it would in languages that use [floored division](https://en.wikipedia.org/wiki/Modulo#Variants_of_the_definition)). **CAUTION:** I may reverse this behavior in the future, which will change the behavior when exactly one of the operands is negative.
 
 Operators only operate on pairs of values.  If you want to write a more complex expression, you need to use parentheses.  For example:
 
@@ -363,7 +366,8 @@ expr_statement : expression SEMI
 expression : term PLUS term
            / term MINUS term
            / term TIMES term
-           / term DIVIDE TERM
+           / term DIVIDE term
+           / term MODULO term
            / term
 
 relation : expression LT expression
@@ -391,6 +395,7 @@ PLUS    = "+"
 MINUS   = "-"
 TIMES   = "*"
 DIVIDE  = "/"
+MODULO  = "%"
 LT      = "<"
 LE      = "<="
 GT      = ">"

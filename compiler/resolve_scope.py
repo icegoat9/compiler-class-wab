@@ -105,6 +105,11 @@ def resolve_scope_expr(e: Expression, scope: Scope) -> Expression:
                 resolve_scope_expr(x, scope),
                 resolve_scope_expr(y, scope),
             )
+        case Modulo(x, y):
+            return Modulo(
+                resolve_scope_expr(x, scope),
+                resolve_scope_expr(y, scope),
+            )
         case CallFn(name, params):
             # resolve scope of any variable passed as parameter
             return CallFn(name, [resolve_scope_expr(p, scope) for p in params])

@@ -105,6 +105,13 @@ def fold_expression(e: Expression) -> Expression:
                 return Integer(fx.n // fy.n)
             else:
                 return Divide(fx, fy)
+        case Modulo(x, y):
+            fx = fold_expression(x)
+            fy = fold_expression(y)
+            if isinstance(fx, Integer) and isinstance(fy, Integer):
+                return Integer(fx.n % fy.n)
+            else:
+                return Modulo(fx, fy)
         case Relation(op, left, right):
             return Relation(op, fold_expression(left), fold_expression(right))
         case CallFn(name, params):
