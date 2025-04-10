@@ -4,7 +4,7 @@ Wabbish is my name for a slight variant on the Wab / Wabbi / Wabbit languages cr
 
 During that class and in a bit of work afterward, I completed a compiler for a language somewhere between the  Wab and Wabbi language specs, but then started playing around and adding other features, so I'm making this forked version of the Wab/Wabbi language spec page to keep track of what my particular compiler implements and avoid looking at similar but slightly different documentation for the original languages.
 
-*Most of the language spec below is copied verbatim from a mix of the Wab and Wabbi language specs.*
+*Most of the language spec below is copied from a mix of the Wab and Wabbi language specs.*
 
 ## 1. Wabbish Overview
 
@@ -62,7 +62,7 @@ if a < b {
 
 ## 3. Datatypes
 
-Wab only supports a single integer datatype.  All math operations and variables
+Wabbish only supports a single integer datatype.  All math operations and variables
 work with integers only.
 
 ## 4. Variables
@@ -210,7 +210,7 @@ while a < b {
 
 Like `if`, a relation must appear after the `while` keyword.
 
-### 8.1 For Loops (In Development)
+### 8.1 For Loops
 
 Use `for` to create a simple loop with an incrementing index. The below loop runs 10 times:
 
@@ -220,7 +220,7 @@ for i = 1,10 {
 }
 ```
 
-**Note: The implementation is in-development and has some known bugs:** In particular, the compiler will currently raise an error if index variable i has previously been declared in the current scope. 
+**Note: The implementation is in-development and has some known bugs:** In particular, under the hood the implementation declares index variable i, so the compiler will raise an error if i has previously been declared in the current scope. This for example limits the ability to reuse the same index variable in multiple for loops in a program.
 
 ## 9. Functions
 
@@ -235,16 +235,9 @@ func f(x, y) {
 }
 ```
 
-Functions only take integer arguments and return an integer.  Functions with
-no arguments are not allowed. For example:
+Functions only take integer arguments and return an integer.
 
-```
-func f() {       // Invalid: must have at least 1 argument.
-    ...
-}
-```
-
-The `return` statement must be used to return a value.  If control
+The `return` statement is used to return a value.  If control
 reaches the end of a function without encountering a `return`
 statement, 0 is returned.
 
@@ -252,12 +245,12 @@ Any variable defined inside a function is local to that function (i.e.,
 the name is not visible to code outside). This includes the names of
 the function parameters.
 
-Wabbish does NOT allow functions to be defined inside any code block
+Wabbish does not allow functions to be defined inside any code block
 enclosed by braces.  This means that functions can only be defined at the
-"top level" and NOT inside the body of an if-statement, while-loop, or
+"top level" and not inside the body of an if-statement, while-loop, or
 other function definition.
 
-To call a function, use parentheses and supply a input argument values. For
+To call a function, use parentheses and supply input argument value(s). For
 example:
 
 ```
@@ -278,7 +271,32 @@ as is the statement:
 print f(2 + 3, 4 + 5);    // OK
 ```
 
-## 10. Command-line Arguments
+### 9.1 Functions Without Arguments
+
+Functions that take zero arguments (mostly relevant if their purpose is to run I/O operations such as PRINT) should be supported, but this has not yet been thoroughly tested.
+
+## 10. Isolated Expressions
+
+Isolated expressions appearing as a statement are allowed.  The expression evaluates, but the value is disregarded.  The primary use is writing functions whose purpose is to execute I/O operations. For example:
+
+```
+func printval(x) {
+     print x;
+}
+
+printval(10);
+```
+
+Examples of other expression statements which are valid syntax, but useless:
+
+```
+1 + 1;
+x;
+```
+
+**CAUTION:** Isolated expressions have only been tested lightly.
+
+## 11. Command-line Arguments
 
 An experimental compile mode (with flag -arg) gives the user program access to up to two command-line arguments when it is run.
 
@@ -291,7 +309,7 @@ In particular, top-level user code has access to special system variables `argc`
 **Note:** These system arg variables are provided with top-level local scope, not global scope. That is, they are accessible in top-level user code, but not within any user-defined functions.
 
 
-## 11. Formal Syntax
+## 12. Formal Syntax
 
 The following grammar is a description of Wabbish syntax written as a PEG
 (Parsing Expression Grammar). Tokens are specified in ALLCAPS and are
@@ -316,9 +334,11 @@ statement : print_statement
           / variable_definition
           / if_statement
           / while_statement
+          / for_statement
           / func_definition
           / return_statement
           / assignment_statement
+          / expr_statement
 
 print_statement : PRINT expression SEMI
 
@@ -334,7 +354,7 @@ for_statement : FOR init SEMI relation SEMI increment SEMI LBRACE statements RBR
 
 func_definition : FUNC NAME LPAREN parameters RPAREN LBRACE statements RBRACE
 
-parameters : NAME { COMMA NAME }
+parameters : [ NAME { COMMA NAME } ]
 
 return_statement : RETURN expression SEMI
 
@@ -359,7 +379,7 @@ term : INTEGER
      / LPAREN expression RPAREN
      / MINUS term
 
-arguments : expression { COMMA expression }
+arguments : [ expression { COMMA expression } ]
 ```
 
 The following tokens are defined:

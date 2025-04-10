@@ -2,9 +2,20 @@
 
 func printval(x) {
      print x;
-     return 0;
+     return x;
 }
 
-printval(2 + 3);
-printval(4 + 5);
+var y=0;
+y = printval(1 + 1);  // should print 2 and assign it to y
+
+// below lines are each expression statements
+
+printval(2 + 3);  // should print 5
+
+// below lines don't do anything useful but should still compile
+1 + 1;
+y;
+
+printval(10 + y);  // should print 12
+
 

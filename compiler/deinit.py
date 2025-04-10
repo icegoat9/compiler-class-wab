@@ -49,7 +49,7 @@ def deinit_statement(s: Statement) -> list[Statement]:
             return [While(relation, deinit_statements(s))]
         case Function(n, p, s):
             return [Function(n, p, deinit_statements(s))]
-        case Print() | Assign() | Return() | Declare():
+        case Print() | Assign() | Return() | Declare() | ExprStatement():
             # Listed all these remaining cases out so we can save the fallthrough case _ for errors
             return [s]
         case _:

@@ -46,6 +46,7 @@ This is one of the main places in the compiler where new language features are d
 #      https://github.com/dabeaz-course/compilers_2024_03/blob/main/docs/Wab-Specification.md#10-formal-syntax
 # [X] Revise hacky NONE token used in readahead() -- maybe just integrate readahead() into checkahead() since that's its only caller
 
+import os
 from model import *
 from format import *
 from printcolor import *
@@ -129,10 +130,17 @@ class Parser:
         elif self.checkahead("RETURN"):
             return self.parse_return()
         else:
-            raise SyntaxError(
-                "(line %d, col %d) Unhandled Statement '%s'"
-                % (self.tokens[self.n].sourceline, self.tokens[self.n].sourcecol, self.tokens[self.n].tokvalue)
-            )
+            # If none of the above, check if we have a single expression as statement, e.g. 1=1; or fn(5);
+            # Note that this could incorrectly trigger on assignment statements such as x=1; except those were dispatched to parse_assign() earlier
+            expr = self.parse_expression()
+            #printcolor(expr)  # DEBUG
+            self.expect("SEMI")
+            return ExprStatement(expr)
+            ## The below error handling is no longer relevant
+            # raise SyntaxError(
+            #     "(line %d, col %d) Unhandled Statement '%s'"
+            #     % (self.tokens[self.n].sourceline, self.tokens[self.n].sourcecol, self.tokens[self.n].tokvalue)
+            # )
 
     ## WORK IN PROGRESS
     # "A term can be a number like 1, a name like xyz, a parenthesized expression like (1),
@@ -407,12 +415,11 @@ def parse_file(filename, debug: bool = False) -> Program:
 # Tests (if run directly vs. imported as module)
 
 if __name__ == "__main__":
-    # input = "1"
-    input = "print 123 + xy;"
-    tokens = tokenize(input)
-    # print(tokens)
-
-    print("Testing hard-coded parsing e.g. parse_print(), parse_while()")
+    header = f"***  Running tests in {os.path.basename(__file__)}  ***"
+    print("*" * len(header))
+    print(header)
+    print("*" * len(header))
+    print("Testing individual parse functions, e.g. parse_print(), parse_while()")
 
     # assert Parser(tokenize("1 + 2")).parse_add() == Add(Integer(1), Integer(2))
     # assert Parser(tokenize("1 * 2")).parse_multiply() == Multiply(Integer(1), Integer(2))
@@ -450,7 +457,7 @@ if __name__ == "__main__":
 
     printcolor("PASSED", ansicode.green)
 
-    print("Testing generic parse_statement()...")
+    print("Testing generic parse_statement() for various inputs...")
     tests = {
         "print 1;": Print(Integer(1)),
         "var x = 1;": DeclareValue(Name("x"), Integer(1)),
@@ -466,9 +473,13 @@ if __name__ == "__main__":
         ),
         "for i = 1, 2 { print i; }": For(Name("i"), Integer(1), Integer(2), [Print(Name("i"))]),
         "func f(x, y) { print 1; }": Function(Name("f"), [Name("x"), Name("y")], [Print(Integer(1))]),
+        "x;": ExprStatement(Name("x")),
+        "1 + 2;": ExprStatement(Add(Integer(1), Integer(2))),
+        "(1 + 2);": ExprStatement(Add(Integer(1), Integer(2))),
+        "f(5,x);": ExprStatement(CallFn(Name("f"), [Integer(5), Name("x")])),
     }
     for text, tokens in tests.items():
-        print(Parser(tokenize(text)).parse_statement())
+        #print(Parser(tokenize(text)).parse_statement())
         assert_equal_verbose(Parser(tokenize(text)).parse_statement(), tokens)
 
     printcolor("PASSED", ansicode.green)
@@ -588,14 +599,15 @@ if __name__ == "__main__":
             ]
         ),
     }
+    rootpath = os.path.dirname(__file__)
     for inputfile, target in tests.items():
-        prog = parse_file(inputfile, debug=False)
+        prog = parse_file(os.path.join(rootpath,inputfile), debug=False)
         assert_equal_verbose(prog, target)
 
     printcolor("PASSED", ansicode.green)
 
     # demonstrate parser error messages
-    testparseerrors = False
+    testparseerrors = True
     if testparseerrors:
         print("Testing the parsing errors returned for some known-bad programs:")
         # test error messages (with line numbers?) returned when parsing various incorrect code
@@ -603,16 +615,20 @@ if __name__ == "__main__":
             "while 2 < 3 {\n  print 1 ;",  # missing closing brace
             "for i=1;i<5;i=i+1 {\n  print 1 ;",  # missing third semicolon
             "var x=5;\nx = 2 < 3;\nprint x;",  # comparison used as value / term
-            "print 2 + 3;\nfoo;",  # standalone string foo
+            "print 2 + 3;\nfoo;",  # standalone string foo (update: now valid as ExprStatement)
             "print if 2 < 3 {} else {};",
-            "if 2 < 3 {\n  print 1;\n}\nprint 5;",  # missing else
+            "if 2 < 3 {\n  print 1;\n}\nprint 5;",  # missing else (update: now valid)
+            "x +;",  # missing value after '+'
+            "x+5=7;",  # invalid format
+            "x+3",  # no semicolon
         ]
         for test in tests:
             print("\n" + test)
             try:
                 parse_program(tokenize(test))
+                printcolor(">>Did not find parsing error in this program (but expected one)", ansicode.red)
             except Exception as e:
-                printcolor("Parsing error: %s" % e, ansicode.red)
+                printcolor(">>Parsing error (as expected): %s" % e, ansicode.blue)
                 # raise e
         # test parsing of wrong order of operations, which is incorrect syntax
         # print(parse_program(tokenize("print 2 + 3 * 4;\nprint 2 * 3 + 4;")))

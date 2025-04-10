@@ -186,13 +186,6 @@ class While(Statement):
     condition: Relation
     statements: list[Statement]
 
-# @dataclass
-# class For(Statement):
-#     init: Assign
-#     condition: Relation
-#     increment: Assign
-#     statements: list[Statement]
-
 @dataclass
 class For(Statement):
     name: Name
@@ -205,6 +198,11 @@ class Function(Statement):
     name: Name
     params: list[Name]
     statements: list[Statement]
+
+@dataclass
+class ExprStatement(Statement):
+    value : Expression
+
 
 ## Top-level object representing an entire program
 @dataclass

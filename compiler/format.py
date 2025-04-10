@@ -104,6 +104,8 @@ def fmt_statement(s: Statement, indent: int = 0) -> str:
             # apply fmt_expr() to each parameter in list, then join with ,
             paramstr = ", ".join(map(fmt_expr, params))
             return "func %s(%s) {\n%s}\n\n" % (fmt_expr(name), paramstr, fmt_statements(statements, 1))
+        case ExprStatement(x):
+            return fmt_expr(x) + ";\n"
         # case PRINT():
         #    return "PRINT()"
         case STATEMENT(lst):

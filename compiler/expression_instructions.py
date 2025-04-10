@@ -59,6 +59,8 @@ def statement_exprcode(s: Statement) -> Statement:
             return Return(expr_instructions(e))
         case Function(n, p, s):
             return Function(n, p, statements_exprcode(s))
+        case ExprStatement(e):
+            return ExprStatement(expr_instructions(e))
         case _:
             raise RuntimeError(f"Unhandled statement {s}")
 

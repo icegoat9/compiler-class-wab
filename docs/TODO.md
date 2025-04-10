@@ -4,6 +4,8 @@ Running notes-to-self document during and after class.
 
 The compiler runs and produces the desired result on all the test programs in [/programs/test_programs](/programs/test_programs), with these exceptions:
 * for_redeclare.wb
+* badbrace.wb
+* badparen.wb
 
 See [/programs/](/programs/) for longer sample programs using the language.
 
@@ -29,11 +31,13 @@ I kept quick and dirty during-class To-Dos and also in quick TODO items at the t
 
 (some ideas fleshed out in more detail in [Future-Specification.md](Future-Specification.md))
 
-* [ ] Some unimplemented features from the class Wabbi language spec that seem useful 
-  * [x] Optional value assignment on variable declaration
-  * [ ] Expression statements (e.g. call function without assigning return)
-  * [ ] Expression inside conditional
-  * [x] Zero-parameter functions
+* [x] Optional value assignment on variable declaration
+* [x] Expression statements (e.g. call function without assigning return)
+  * [ ] Test in more depth, and remove caution in specification doc once more tested
+* [ ] Expression inside conditional
+* [ ] Check for mismatched braces and parens in AST, throw a usefully specific compile error
+* [x] Zero-parameter functions
+  * [ ] Test in more depth
 * [ ] Look into other runtime.c integration with OS
   * [x] command-line arguments for compiled binaries
   * [ ] simple terminal/keypress input reading (number entry or arrow keys?)
@@ -42,7 +46,6 @@ I kept quick and dirty during-class To-Dos and also in quick TODO items at the t
     * [~] generate stack and register calls for Input() in llvmcode
     * [ ] add definition of INPUT() expression in model.py
     * [ ] handle INPUT() in all earlier compiler passes
-    * [ ] needs zero-parameter functions above (or temp workaround using an ignored argument)
     * [ ] add compile_ast command-line arg, or move input (and args?) into helper.c
     * [ ] add tests, support in formatter, etc
   * [ ] Add some sort of #include or #link directive or companion build file, that lets compile.sh know which helper.c, args.c, ... files to link in
@@ -130,5 +133,5 @@ I kept quick and dirty during-class To-Dos and also in quick TODO items at the t
 * [X] Unary - (at least first pass)
 * [X] Optional Else clause
 * [X] if..elseif..elseif..else -> nested if
-* [x] ] for.. -> while
+* [x] for.. -> while
 

@@ -64,6 +64,9 @@ def statement_instructions(s: Statement) -> Statement:
             return IfElse(relation, statements_instructions(iflist), statements_instructions(elselist))
         case While(relation, code):
             return While(relation, statements_instructions(code))
+        case ExprStatement(x):
+            return STATEMENT(x.instructions)
+            ## TODO: should this also pop the stack? (since the expression pushes a result to the stack which is never used)
         case _:
             raise RuntimeError(f"Unhandled statement {s}")
 
