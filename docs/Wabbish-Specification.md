@@ -99,20 +99,18 @@ print x;
 print 3 + x;
 ```
 
-### 5.1 Printing String Literals
+### 5.1 Printing and String Literals
 
-*CAUTION: Work in Progress, only lightly tested*
-
-To print a string literal, use the `printstr` statement. For example:
+You can print a string literal using the `printstr` statement with any characters between a pair of double quotes `"..."`. For example:
 
 ```
-printstr "hello, world."
+printstr "hello, world.";
 print 7;
 ```
 
-Note that int is the only data type generally supported in Wabbish, not strings: you cannot assign these string literals to variables, edit strings, index them, pass them to or return them from functions, or so on.
+Note that int is the only data type generally supported in Wabbish: you cannot assign these string literals to variables, pass them to or return them from functions, or operate on them in any other way: they can only be used as the argument in a printstr statement.
 
-The printstr function is unique in using them.
+*Caveat: Work in Progress, may be a temporary placeholder I remove in future if I add support a more general 'array of chars' string datatype.*
 
 ## 6. Math operations
 
@@ -135,7 +133,7 @@ The division operator truncates the result so `10/3` is `3`.
 
 The modulo operator is currently based on truncated division, so when one of the operands is negative, the output matches the sign of the first operand: `-5 % 3` returns `-2` (rather than `1` as it would in languages that use [floored division](https://en.wikipedia.org/wiki/Modulo#Variants_of_the_definition)). 
 
-*CAUTION: I may reverse this behavior in the future, which will change the behavior when exactly one of the operands is negative.*
+*Caveat: I may switch modulo to be based on floored division in the future, which will change the behavior when exactly one of the operands is negative.*
 
 Operators only operate on pairs of values.  If you want to write a more complex expression, you need to use parentheses.  For example:
 
@@ -240,7 +238,7 @@ for i = 1,10 {
 }
 ```
 
-**Note: The implementation is in-development and has some known bugs:** In particular, under the hood the implementation declares index variable i, so the compiler will raise an error if i has previously been declared in the current scope. This for example limits the ability to reuse the same index variable in multiple for loops in a program.
+*WARNING: This implementation is in-development and has a known bug:* Under the hood it the implementation declares index variable i, so the compiler will raise an error if i has previously been declared in the current scope. This prevent you from reusing the same index variable in multiple for loops in a program.
 
 ## 9. Functions
 
@@ -313,8 +311,6 @@ Examples of other expression statements which are valid syntax, but useless:
 1 + 1;
 x;
 ```
-
-*CAUTION: Isolated expressions have only been tested lightly.*
 
 ## 11. Command-line Arguments
 
@@ -408,37 +404,37 @@ arguments : [ expression { COMMA expression } ]
 The following tokens are defined:
 
 ```
-NAME    = [a-zA-Z][a-zA-Z0-9]*
-INTEGER = [0-9]+
-PLUS    = "+"
-MINUS   = "-"
-TIMES   = "*"
-DIVIDE  = "/"
-MODULO  = "%"
-LT      = "<"
-LE      = "<="
-GT      = ">"
-GE      = ">="
-EQ      = "=="
-NE      = "!="
-ASSIGN  = "="
-LPAREN  = "("
-RPAREN  = ")"
-LBRACE  = "{"
-RBRACE  = "}"
-SEMI    = ";"
-COMMA   = ","
-ELSE    = "else"
-ELIF    = "elif"
-IF      = "if"
-FUNC    = "func"
-PRINT   = "print"
-PRINTSTR = "printstr"
-RETURN  = "return"
-VAR     = "var"
-WHILE   = "while"
-FOR     = "for"
-STRCONST = '"[^"]*"'
+NAME       [a-zA-Z][a-zA-Z0-9]*
+INTEGER    [0-9]+
+PLUS       +
+MINUS      -
+TIMES      *
+DIVIDE     /
+MODULO     %
+LT         <
+LE         <=
+GT         >
+GE         >=
+EQ         ==
+NE         !=
+ASSIGN     =
+LPAREN     (
+RPAREN     )
+LBRACE     {
+RBRACE     }
+SEMI       ;
+COMMA      ,
+ELSE       else
+ELIF       elif
+IF         if
+FUNC       func
+PRINT      print
+PRINTSTR   printstr
+RETURN     return
+VAR        var
+WHILE      while
+FOR        for
+STRCONST   "[^"]*"
 ```
 
 

@@ -1,0 +1,10 @@
+// scratchpad for newlines and special characters
+
+printstr "hello, world.";
+printstr "hello\n world.";
+printstr "hello
+ world.";
+// below will cause errors if const string length is extracted from raw
+//  string literal length but then \13 is interpreted as a single char
+printstr "hello\13 world.";
+printstr "hello\013 world.";
