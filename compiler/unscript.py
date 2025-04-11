@@ -27,7 +27,7 @@ def unscript_toplevel(prog: Program, argmode: bool=False) -> Program:
 
     for s in prog.statements:
         match s:
-            case Declare() | DeclareValue() | Function():
+            case Declare() | DeclareValue() | Function() | StrConstNum():
                 newprog.append(s)
             case _:
                 main.append(s)

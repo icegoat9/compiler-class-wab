@@ -63,7 +63,8 @@ def statements_to_llvm(statements: list[Statement]) -> list[Statement]:
     for s in statements:
         # printcolor("debug: s = %s" % s, ansicode.yellow)
         match s:
-            case GlobalVar():
+            case GlobalVar() | StrConstNum():
+                # handled in a later LLVM pass
                 output.append(s)
             case Function(name, params, body):
                 output.append(Function(name, params, statements_to_llvm(body)))
@@ -208,6 +209,8 @@ def create_llvm(block: BLOCK) -> BLOCK:
             case PRINT():
                 val = stack.pop()
                 ops.append(LLVM(f"call i32 (i32) @_print_int(i32 {val})"))
+            case PRINT_STR_CONST(n):
+                ops.append(LLVM(f"call i32 (ptr, ...) @printf(ptr noundef @.str.{n})"))
             # case INPUT():
             #     result = next_register()
             #     ops.append(LLVM(f"{result} = call i32 (i32) @_scan_int()"))

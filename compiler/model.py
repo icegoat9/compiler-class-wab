@@ -167,6 +167,19 @@ class Print(Statement):
     value : Expression
 
 @dataclass
+class PrintStr(Statement):
+    txt : str
+
+@dataclass
+class StrConstNum:
+    n : int
+    txt : str
+
+@dataclass
+class PrintStrConstNum(Statement):
+    n : int
+
+@dataclass
 class Return(Statement):
     value: Expression
 
@@ -282,6 +295,15 @@ class STORE_GLOBAL(INSTRUCTION):
 @dataclass
 class PRINT(INSTRUCTION):
     pass    
+
+@dataclass
+class PRINT_STR_CONST(INSTRUCTION):
+    n : int  # index of global string const
+
+@dataclass
+class STRCONST(INSTRUCTION):
+    n : int
+    str : str
 
 @dataclass
 class RETURN(INSTRUCTION):

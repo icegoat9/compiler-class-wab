@@ -61,6 +61,8 @@ def statement_exprcode(s: Statement) -> Statement:
             return Function(n, p, statements_exprcode(s))
         case ExprStatement(e):
             return ExprStatement(expr_instructions(e))
+        case PrintStrConstNum() | StrConstNum():
+            return s
         case _:
             raise RuntimeError(f"Unhandled statement {s}")
 

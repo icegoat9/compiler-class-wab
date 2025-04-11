@@ -13,6 +13,7 @@ into LLVM code ready to compile with Clang."""
 from model import *
 from format import *
 import deinit
+import strconst_enum
 import elif_rewrite
 import for_rewrite
 import foldconstants
@@ -52,7 +53,8 @@ def compile(program: Program, llvm_str_output: bool = True, debug: bool = False,
                    ("for_rewrite", "rewrite for loops as whiles", for_rewrite.for_program),
                    ("fold constants", "pre-compute math on constants", foldconstants.fold_constants),
                    ("deinit", "separate variable declartion from assignment", deinit.deinit_variables),
-                   ("unscript", "move top-level statements to main() except globalvar", unscript.unscript_toplevel, argmode),
+                   ("strconst", "extract and uniquely number string constants", strconst_enum.strconst_program),
+                   ("unscript", "move top-level statements to main() except globalvar and strconst", unscript.unscript_toplevel, argmode),
                    ("resolve", "resolve variable scope and make explicit in data structure", resolve_scope.resolve_scopes),
                    ("defaultreturns", "add return 0 to functions, to simplify assembly codegen", defaultreturns.add_returns),
                    ("expr_instructions", "expressions -> stack machine representation", expression_instructions.expr_program),

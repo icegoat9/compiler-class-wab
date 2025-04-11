@@ -114,6 +114,8 @@ class Parser:
     def parse_statement(self) -> Statement:
         if self.checkahead("PRINT"):
             return self.parse_print()
+        elif self.checkahead("PRINTSTR"):
+            return self.parse_printstr()
         elif self.checkahead("VAR"):
             return self.parse_declare()
         elif self.checkahead("NAME") and self.checkahead("ASSIGN", 1):
@@ -172,6 +174,7 @@ class Parser:
             )
         return term
 
+
     def parse_expression(self) -> Expression:
         # TODO: handle expressions more complex than a single term, and also () terms
         # Special cases: before returning term, see if it's part of a binary operation
@@ -229,6 +232,12 @@ class Parser:
         body = self.parse_expression()
         self.expect("SEMI")
         return Print(body)
+
+    def parse_printstr(self) -> PrintStr:
+        self.expect("PRINTSTR")
+        tok = self.expect("STRCONST")
+        self.expect("SEMI")
+        return PrintStr(tok.tokvalue)
 
     def parse_return(self) -> Return:
         self.expect("RETURN")
@@ -481,6 +490,7 @@ if __name__ == "__main__":
         "1 + 2;": ExprStatement(Add(Integer(1), Integer(2))),
         "(1 + 2);": ExprStatement(Add(Integer(1), Integer(2))),
         "f(5,x);": ExprStatement(CallFn(Name("f"), [Integer(5), Name("x")])),
+        'printstr "hello x=5";': PrintStr("hello x=5"),
     }
     for text, tokens in tests.items():
         #print(Parser(tokenize(text)).parse_statement())

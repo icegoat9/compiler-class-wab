@@ -42,6 +42,10 @@ def statement_instructions(s: Statement) -> Statement:
     match s:
         case Print(x):
             return STATEMENT(x.instructions + [PRINT()])
+        case PrintStrConstNum(n):
+            return STATEMENT([PRINT_STR_CONST(n)])
+        case StrConstNum(n, txt):
+            return s # for now, treat like global variable declaration and ignore
         case Assign(GlobalName(x), y):
             return STATEMENT(y.instructions + [STORE_GLOBAL(x)])
         case Assign(LocalName(x), y):

@@ -79,7 +79,7 @@ numbers afterwards.  The following words are reserved and may not be
 used as a variable name:
 
 ```
-elif else func if print return var while for
+elif else func if print printstr return var while for
 ```
 
 Variables are managed in two different scopes.  Any variable declared
@@ -87,7 +87,7 @@ at the top-level is a global variable.  Global variables may be accessed
 from anywhere in a program.  A variable that's declared inside a code block
 (function, if-statement, while-loop) is a local variable.
 
-**CAUTION:** Variables that are declared without being initialized have undefined behavior if they are used before assignment: there are currently no compiler features to catch this behavior.
+*CAUTION: Variables that are declared without being initialized have undefined behavior if they are used before assignment: there are currently no compiler features to catch this behavior.*
 
 ## 5. Printing
 
@@ -98,6 +98,21 @@ print 3;
 print x;
 print 3 + x;
 ```
+
+### 5.1 Printing String Literals
+
+*CAUTION: Work in Progress, only lightly tested*
+
+To print a string literal, use the `printstr` statement. For example:
+
+```
+printstr "hello, world."
+print 7;
+```
+
+Note that int is the only data type generally supported in Wabbish, not strings: you cannot assign these string literals to variables, edit strings, index them, pass them to or return them from functions, or so on.
+
+The printstr function is unique in using them.
 
 ## 6. Math operations
 
@@ -118,7 +133,9 @@ print -x;       // -10
 
 The division operator truncates the result so `10/3` is `3`.
 
-The modulo operator is currently based on truncated division, so when one of the operands is negative, the output matches the sign of the first operand: `-5 % 3` returns `-2` (rather than `1` as it would in languages that use [floored division](https://en.wikipedia.org/wiki/Modulo#Variants_of_the_definition)). **CAUTION:** I may reverse this behavior in the future, which will change the behavior when exactly one of the operands is negative.
+The modulo operator is currently based on truncated division, so when one of the operands is negative, the output matches the sign of the first operand: `-5 % 3` returns `-2` (rather than `1` as it would in languages that use [floored division](https://en.wikipedia.org/wiki/Modulo#Variants_of_the_definition)). 
+
+*CAUTION: I may reverse this behavior in the future, which will change the behavior when exactly one of the operands is negative.*
 
 Operators only operate on pairs of values.  If you want to write a more complex expression, you need to use parentheses.  For example:
 
@@ -297,7 +314,7 @@ Examples of other expression statements which are valid syntax, but useless:
 x;
 ```
 
-**CAUTION:** Isolated expressions have only been tested lightly.
+*CAUTION: Isolated expressions have only been tested lightly.*
 
 ## 11. Command-line Arguments
 
@@ -310,7 +327,6 @@ In particular, top-level user code has access to special system variables `argc`
 `arg1` and `arg2` will hold the first two arguments passed (set to 0 for any omitted arguments: argc can be used to determine if arg1 and/or arg2 are valid to distinguish between "argument omitted" and "0 passed as argument"). These parameters are converted to integers (positive or negative).
 
 **Note:** These system arg variables are provided with top-level local scope, not global scope. That is, they are accessible in top-level user code, but not within any user-defined functions.
-
 
 ## 12. Formal Syntax
 
@@ -334,6 +350,7 @@ program : statements EOF
 statements : { statement }         ; Note: { ... } means repetition
 
 statement : print_statement
+          / print_string
           / variable_definition
           / if_statement
           / while_statement
@@ -344,6 +361,8 @@ statement : print_statement
           / expr_statement
 
 print_statement : PRINT expression SEMI
+
+print_string : PRINTSTR STRCONST SEMI
 
 variable_definition : VAR NAME ASSIGN expression SEMI
 
@@ -414,10 +433,12 @@ ELIF    = "elif"
 IF      = "if"
 FUNC    = "func"
 PRINT   = "print"
+PRINTSTR = "printstr"
 RETURN  = "return"
 VAR     = "var"
 WHILE   = "while"
 FOR     = "for"
+STRCONST = '"[^"]*"'
 ```
 
 

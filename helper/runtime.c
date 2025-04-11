@@ -10,6 +10,6 @@
 #include <stdio.h>
 
 int _print_int(int x) {
-  printf("Output: %i\n", x);
+  printf("%i\n", x);
   return 0;
 }

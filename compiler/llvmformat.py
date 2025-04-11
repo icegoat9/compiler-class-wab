@@ -16,12 +16,14 @@ from model import *
 from printcolor import *
 
 def format_llvm(program : Program) -> str:
-    output = [ 'declare i32 @_print_int(i32)' ]
+    output = [ 'declare i32 @_print_int(i32)', 'declare i32 @printf(ptr noundef, ...)']
     # output = [ 'declare i32 @_print_int(i32)', 'declare i32 @_scan_int()' ]
     for s in program.statements:
         match s:
             case GlobalVar(name):
                 output.append(f'@{name.str} = global i32 0')
+            case StrConstNum(n, txt):
+                output.append(f'@.str.{n} = private unnamed_addr constant [{len(txt) + 2} x i8] c"{txt}\n\\00"')
             case Function(name, params, body):
                 pstr = ', '.join([f'i32 %{p.str}' for p in params])
                 output.append(f'\ndefine i32 @{name.str}({pstr}) {{')

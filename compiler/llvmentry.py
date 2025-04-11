@@ -21,7 +21,7 @@ def llvm_entry_program(program: Program) -> Program:
     output = []
     for s in program.statements:
         match s:
-            case GlobalVar():
+            case GlobalVar() | StrConstNum():
                 output.append(s)
             case Function(name, params, body):
                 llvm_params = []

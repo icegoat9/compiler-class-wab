@@ -1,0 +1,5 @@
+var x=7;
+printstr "hello, world.";
+print 3;
+printstr "now x=";
+print x;

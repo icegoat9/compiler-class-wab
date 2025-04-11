@@ -53,7 +53,7 @@ def fold_statement(s: Statement) -> Statement:
             return Function(n, p, fold_statements(s))
         case ExprStatement(e):
             return ExprStatement(fold_expression(e))
-        case Declare():
+        case Declare() | PrintStr():
             # Pass-through specific case(s) where we do nothing
             return s
         case _:

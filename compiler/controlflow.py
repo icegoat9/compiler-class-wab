@@ -57,7 +57,7 @@ def link_toplevel_statements(statements: list[Statement]) -> list[Statement]:
                 bodystatements[-1].instructions.pop()
                 func = Function(name, params, bodystatements)
                 output.append(func)
-            case GlobalVar():
+            case GlobalVar() | StrConstNum():
                 output.append(s)
             case _:
                 raise SyntaxError(f"Unhandled statement type {s}")

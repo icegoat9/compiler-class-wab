@@ -1,0 +1,17 @@
+// test printstr in deeper contexts, not only top-level
+var x=7;
+
+func printn(n) {
+  printstr "function printn():";
+  print n;
+  if n > 100 {
+    printstr "quite large!";
+  }
+  else {
+    print -1;
+  }
+}
+
+printstr "hello, world.";
+printn(x);
+printn(200);

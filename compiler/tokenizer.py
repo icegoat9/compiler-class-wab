@@ -41,10 +41,10 @@ _symbols = {
 }
 
 # chars to parse for symbols (manually keep up to date with chars used in symbols above)
-_symbolchars = "+-*/<>!=;(){},"
+_symbolchars = '+-*/%<>!=;(){},"'
 
 # creates dict of reserved keywords { "var": "VAR", ... }
-_keywords = {x: x.upper() for x in ("var", "print", "if", "else", "while", "func", "return", "elif", "for")}
+_keywords = {x: x.upper() for x in ("var", "print", "printstr", "if", "else", "while", "func", "return", "elif", "for")}
 
 # create a quick reversed Token -> text dict ("LT": "<", etc) for symbols and keywords from the above,
 #  for use in debugging and printing
@@ -122,6 +122,15 @@ def tokenize(text: str) -> list[Token]:
             else:
                 tokens.append(Token("NAME", substr, sourceline, i - sourcecoldelta))
             substr = ""
+        elif substr == '"':
+            # quote means string constant, slurp up everything until next quote
+            substr = ""  # omit first quote
+            while text[i + 1] != '"':
+                i += 1
+                substr += text[i]
+            i += 1   # skip past closing quote
+            tokens.append(Token("STRCONST", substr, sourceline, i - sourcecoldelta))
+            substr = ""        
         elif substr in _symbols:
             # Handle special case of two-character symbols, by looking ahead to see if
             #  current symbol + next char ahead make a valid two-char symbol
@@ -166,7 +175,7 @@ if __name__ == "__main__":
     )
 
     assert token_list_eq(
-        tokenize("+ - * / % = < > <= >= != { } ( ) , ; =="),
+        tokenize('+ - * / % = < > <= >= != { } ( ) , ; =='),
         [
             Token("PLUS", "+"),
             Token("SUB", "-"),
@@ -190,12 +199,13 @@ if __name__ == "__main__":
     )
 
     assert token_list_eq(
-        tokenize("else elif if print var while for return func"),
+        tokenize("else elif if print printstr var while for return func"),
         [
             Token("ELSE", "else"),
             Token("ELIF", "elif"),
             Token("IF", "if"),
             Token("PRINT", "print"),
+            Token("PRINTSTR", "printstr"),
             Token("VAR", "var"),
             Token("WHILE", "while"),
             Token("FOR", "for"),
@@ -241,6 +251,16 @@ if __name__ == "__main__":
             Token("NAME", "x"),
             Token("ASSIGN", "="),
             Token("INTEGER", "3"),
+            Token("SEMI", ";"),
+        ],
+    )
+
+    # test that this invalid syntax is tokenized ('5x' is not a valid NAME so is parsed as Int,Name)
+    assert token_list_eq(
+        tokenize('printstr "hello x=5.";'),
+        [
+            Token("PRINTSTR", "printstr"),
+            Token("STRCONST", "hello x=5."),
             Token("SEMI", ";"),
         ],
     )

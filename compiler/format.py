@@ -55,6 +55,12 @@ def fmt_statement(s: Statement, indent: int = 0) -> str:
     match s:
         case Print(x):
             return "print %s;\n" % fmt_expr(x)
+        case PrintStr(x):
+            return "printstr \"%s\";\n" % x
+        case PrintStrConstNum(n):
+            return "PRINTSTRCONST(%d);\n" % n
+        case StrConstNum(n, txt):
+            return "strconst[%d] = \"%s\";\n" % (n, txt)
         case Assign(left, right):
             return "%s = %s;\n" % (fmt_expr(left), fmt_expr(right))
         case DeclareValue(left, right):

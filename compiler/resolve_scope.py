@@ -70,6 +70,8 @@ def resolve_scope_statement(s: Statement, scope: Scope) -> Statement:
             return Function(n, params, resolve_scope_statements(s, fscope))
         case ExprStatement(x):
             return ExprStatement(resolve_scope_expr(x, scope))
+        case PrintStrConstNum() | StrConstNum():
+            return s
         case _:
             raise RuntimeError(f"Unhandled case {s}")
 
