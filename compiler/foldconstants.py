@@ -1,8 +1,6 @@
 # foldconstants.py
 """Evaluate and simplify math on constants (included nested math operations) across program.
-
-Previous compiler stage: elif_rewrite.py
-Next compiler stage: deinit.py"""
+"""
 #
 # Cleanup TODO
 # [X] docstrings

@@ -1,10 +1,7 @@
 # basicblocks.py
 """Convert all groups of statements in program to BLOCK() structures with globally unique labels 
 (in preparation for a later compiler step which will transform If / While / Function
-type flow control with GOTO and BRANCH flow control).
-
-Previous compiler stage: statement_instructions.py
-Next compiler stage: controlflow.py"""
+type flow control with GOTO and BRANCH flow control)."""
 #
 # Cleanup TODO
 # [X] docstrings

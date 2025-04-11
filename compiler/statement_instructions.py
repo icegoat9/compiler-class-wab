@@ -6,9 +6,7 @@ generic machine code, as another step towards machine code generation. Store the
 new STATEMENT class which will be used to identify what later compilation to do on this.
 
 For example, transform Print(EXPR([exprlist]])) into STATEMENT([exprlist, PRINT()]).
-
-Previous compiler stage: expr_instructions.py
-Next compiler stage: basicblocks.py"""
+"""
 #
 # Cleanup TODO
 # [X] docstrings

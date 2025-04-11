@@ -5,9 +5,6 @@ Run this early after parsing, as later compiler passes don't understand For stru
 
 This iteratively / recursively descends into structures such as If / While, as there could
 be For structures nested within those.
-
-Previous compiler stage: elif_rewrite.py
-Next compiler stage: fold_constants.py
 """
 
 # TODO

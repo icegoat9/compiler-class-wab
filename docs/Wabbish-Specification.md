@@ -109,7 +109,7 @@ print "hello, world.";
 
 Note that this does not imply a general string data type: as noted above, int is the only data type supported in Wabbish. You cannot assign these string literals to variables, pass them to or return them from functions, compare them, or operate on them in any other way: they can only be used as the argument to a print statement.
 
-*Caveat: These may be a temporary placeholder I remove in the future, if some day I add support for a char datatype and then an array-of-chars string datatype.*
+*Caveats: escape characters such as \n, \013, and so on are not currently correctly handled by this. In addition, this string literal printing is a placeholder I may remove in the future, especially if some day I add support for a char datatype and then an array-of-chars string datatype.*
 
 ## 6. Math operations
 

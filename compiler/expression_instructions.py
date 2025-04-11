@@ -12,9 +12,7 @@ into:
 
 In this pass, focus on transforming expressions (including nested expressions that will need the transformation
 applied recursively to all arguments), not statements (e.g. Print(), etc) or flow control.
-
-Previous compiler stage: defaultreturns.py
-Next compiler stage: statement_instructions.py"""
+"""
 #
 # Cleanup TODO
 # [X] docstrings

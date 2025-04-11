@@ -74,7 +74,7 @@ This design approach makes it easier to design, debug, reason about, and test ea
 
 ## Compilation Steps
 
-The most up-to-date list of compiler passes is in the source code of compile_ast.py, but here's a quick summary, with simplified explanations to remind myself where to look later:
+The most up-to-date list and ordering of compiler passes is in the source code of compile_ast.py, but here's a quick summary, with simplified explanations to remind myself where to look later:
 
 | compiler pass | summary |
 | ------------- | ------- |
@@ -84,7 +84,8 @@ The most up-to-date list of compiler passes is in the source code of compile_ast
 | for rewrite |  Rewrite `for...` blocks as equivalent `while...` blocks (to allow use of for without later compiler steps needing to be modified to understand it) |
 | fold constants |  Pre-compute math on constants (e.g. `4 * 5` -> `20`), repeat recursively as needed |
 | deinit |  separate variable declaration from assignment, e.g. `var x = 1;` -> `var x; x = 1;` |
-| unscript |  move many top-level statements into a `main()` function |
+| strconst |  extract string literals user in print statements to top-level global string constants |
+| unscript |  move most top-level statements into a `main()` function |
 | resolve_scope |  infer and resolve variable scopes and make explicit in program representation (`global` and `local`) |
 | default_returns |  add an explicit `return 0` to the end of all functions, which simplifies later steps |
 | expr_instructions + statement_instructions |  convert expressions to the conceptually different stack machine representations, which are how low-level processor instructions operate (for example, rather than saying `ADD(X,2)`, you push 2 and the value of the register that represents x to the stack, then run the 'add' operator, which pulls the top two elements of the stack ) |

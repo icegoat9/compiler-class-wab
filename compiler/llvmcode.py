@@ -7,9 +7,7 @@ This is still wrapping these LLVM(statements in an LLVM() Instruction instance r
 them as raw strings, to save the "program object -> string" conversion for the last compiler step,
 as that includes some non-functional formatting choices (indentation, etc) which also make it harder
 to debug and test intermediate steps.
-
-Previous compiler stage: controlflow.py
-Next compiler stage: llvm_entry.py"""
+"""
 #
 # Cleanup TODO
 # [X] docstrings

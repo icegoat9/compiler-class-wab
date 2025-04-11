@@ -6,6 +6,7 @@ The compiler runs and produces the desired result on all the test programs in [/
 * for_redeclare.wb
 * badbrace.wb
 * badparen.wb
+* strconst3.wb
 
 See [/programs/](/programs/) for longer sample programs using the language.
 
@@ -33,7 +34,6 @@ I kept quick and dirty during-class To-Dos and also in quick TODO items at the t
 
 * [x] Optional value assignment on variable declaration
 * [x] Expression statements (e.g. call function without assigning return)
-  * [ ] Test in more depth, and remove caution in specification doc once more tested
 * [x] Implement modulo operator %
   * [ ] Revise implementation to implement Floored vs. Truncated modulo for negative numbers
 * [ ] Expression inside conditional
@@ -43,7 +43,7 @@ I kept quick and dirty during-class To-Dos and also in quick TODO items at the t
 * [ ] RND(int)
 * [ ] Look into other runtime.c integration with OS
   * [x] command-line arguments for compiled binaries
-  * [ ] simple terminal/keypress input reading (number entry or arrow keys?)
+  * [ ] simple terminal/keypress input reading (number entry or arrow keys?), perhaps INPUT() expression which returns the int ORD() value of char?
     * [~] scanf wrapper to compile in
     * [~] add _int_scanf() LLVM definition to LLVM program header in llvmformat
     * [~] generate stack and register calls for Input() in llvmcode

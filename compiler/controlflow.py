@@ -8,10 +8,7 @@ terms of how to link the blocks and labels.
 
 One of the most challenging aspects was determining which 'next label' to jump to after a structure
 (for example, after exiting a While loop). The current implementation determines this by working up
-from the bottom of the program.
-
-Previous compiler stage: basicblocks.py
-Next compiler stage: llvmcode.py"""
+from the bottom of the program."""
 #
 # Cleanup TODO
 # [X] docstrings

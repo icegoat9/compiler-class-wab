@@ -3,9 +3,7 @@
 
 This small compiler pass makes variable definition explicit and standalone, to slightly simplify
 a later compiler pass that resolves variable scope and variable definitions and local or global.
-
-Previous compiler stage: foldconstants.py
-Next compiler stage: resolve.py"""
+"""
 #
 # Cleanup TODO
 # [X] docstrings

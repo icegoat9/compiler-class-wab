@@ -1,10 +1,7 @@
 # defaultreturns.py
 """Add default 'return 0' statement to the end of all function definitions.
 
-This makes end of function flow control explicit for later transformation into assembly code.
-
-Previous compiler stage: unscript.py
-Next compiler stage: expr_instructions.py"""
+This makes end of function flow control explicit for later transformation into assembly code."""
 #
 # Cleanup TODO
 # [X] docstrings

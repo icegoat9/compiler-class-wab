@@ -3,9 +3,7 @@
 
 Specifically, create a small 'entry block' with the LLVM code to store passed parameters in registers
 that will serve as local variables within the function call.
-
-Previous compiler stage: llvmcode.py
-Next compiler stage: llvmformat.py"""
+"""
 #
 # Cleanup TODO
 # [X] docstrings

@@ -1,11 +1,13 @@
 # strconst_enum.py
-"""Split PrintStr elements in AST into str constant definition and usage, to better match
-structure of future machine code.
+"""Split PrintStr statements in the AST into two parts, to better match the structure of future assembly code
+where string literals are defined in a header:
+* A string constant definition with a unique global ID
+* A print-string-constant-by-ID statement
 
-e.g. 'printstr("hello")' -> ['strconst(1,"hello")','printstrnum(1)']
+e.g. 'printstr("hello")' -> ['strconst(1,"hello")', 'printstrconstnum(1)']
 
-Also move strconst definitions to the top level of the program (needed for later
-translation into LLVM constants).
+Then in a second pass, walk the AST and extract all of the strconst definitions,
+moving them to the top level of the program, which will simplify later translation to assembly code.
 """
 
 from model import *
@@ -16,11 +18,13 @@ _strconst_n = 0
 """Index for globally unique strconst ID. Incremented before value is returned, so
 initializing to 0 means the first strconst will be 1, and so on."""
 
+
 def set_strconst_n(n) -> None:
     """Directly set the global strconst index to a specific value. This is likely only useful for
     debugging and deterministic testing, where we want to test some subset of this module."""
     global _strconst_n
     _strconst_n = n
+
 
 def next_strconst_n() -> int:
     """Return a globally unique strconst number, which is incremented each time this is called."""
@@ -44,6 +48,7 @@ def strconst_program(program: Program) -> Program:
     # move all strconst definitions to the beginning of the program
     return Program(deflist + slist)
 
+
 def separate_strconst_statements(statements: list[Statement]) -> list[list[Statement]]:
     """Separate list of statements into two lists: one list containing the original statements
     but with any strconst definitions (at any level of depth) removed, the second as a flat list
@@ -51,12 +56,12 @@ def separate_strconst_statements(statements: list[Statement]) -> list[list[State
     and eventually have a flat top-level list of constant definitions."""
     slist = []
     deflist = []
-    # TODO: some better way to replace for loop with a list comprehension?
     for s in statements:
         out_s, out_def = separate_strconst_statement(s)
         slist.extend(out_s)
         deflist.extend(out_def)
-    return slist,deflist
+    return slist, deflist
+
 
 def separate_strconst_statement(s: Statement) -> list[list[Statement]]:
     """Separate a single statement into strconst definitions vs. other, as noted above.
@@ -64,21 +69,22 @@ def separate_strconst_statement(s: Statement) -> list[list[Statement]]:
     match s:
         case StrConstNum():
             # The primary purpose of this compiler pass: split out strconstnum definitions
-            #  into the second list returned
-            return [],[s]
+            #  into a second list
+            return [], [s]
         case IfElse(relation, iflist, elselist):
+            # Process the bodies of If/Else statements (recursively if needed), extracting any StrConstNum definitions in them
             if_s, if_def = separate_strconst_statements(iflist)
             else_s, else_def = separate_strconst_statements(elselist)
-            return [IfElse(relation, if_s, else_s)],if_def + else_def
+            return [IfElse(relation, if_s, else_s)], if_def + else_def
         case While(relation, s):
             body_s, body_def = separate_strconst_statements(s)
-            return [While(relation, body_s)],body_def
+            return [While(relation, body_s)], body_def
         case Function(n, p, s):
             body_s, body_def = separate_strconst_statements(s)
-            return [Function(n, p, body_s)],body_def
+            return [Function(n, p, body_s)], body_def
         case Print() | Assign() | Return() | Declare() | ExprStatement() | PrintStrConstNum():
-            # Listed all these remaining cases out so we can save the fallthrough case _ for errors
-            return [s],[]
+            # Listed all these remaining cases out so we can save the fallthrough "case _" for errors
+            return [s], []
         case _:
             raise RuntimeError(f"Unhandled separate_strconst_statement() case {s}")
 
@@ -94,6 +100,7 @@ def strconst_statements(statements: list[Statement]) -> list[Statement]:
         slist.extend(strconst_statement(s))
     return slist
 
+
 def strconst_statement(s: Statement) -> list[Statement]:
     """Pass throguh most statements, but split PrintStr() statement into unique string constant
     definition and usage."""
@@ -103,7 +110,7 @@ def strconst_statement(s: Statement) -> list[Statement]:
         case PrintStr(txt):
             # The primary purpose of this compiler pass
             n = next_strconst_n()
-            return [StrConstNum(n,txt), PrintStrConstNum(n)]
+            return [StrConstNum(n, txt), PrintStrConstNum(n)]
         case IfElse(relation, iflist, elselist):
             return [IfElse(relation, strconst_statements(iflist), strconst_statements(elselist))]
         case While(relation, s):
@@ -122,12 +129,45 @@ def strconst_statement(s: Statement) -> list[Statement]:
 
 if __name__ == "__main__":
     # Simple top-level test
+    assert strconst_program(Program([Print(Integer(5)), PrintStr("hello world")])) == Program(
+        [StrConstNum(1, "hello world"), Print(Integer(5)), PrintStrConstNum(1)]
+    )
+    # Tested with strconst within another structure (need to manually reset global strconst_n
+    #  first for deterministic output, as it was incremented by any tests above)
+    set_strconst_n(0)
     assert strconst_program(
-            Program(
-                [Print(Integer(5)),PrintStr("hello world")]
-            )) == Program(
-                [StrConstNum(1, "hello world"), Print(Integer(5)), PrintStrConstNum(1)]
-            )
-    # TODO: add test similar to strconst2.wb, that looks at PrintStr within nested structures
-    #       so tests the strconst_separate_statements() function
+        Program(
+            [
+                Function(
+                    Name("foo"),
+                    [],
+                    [
+                        IfElse(
+                            Relation(RelationOp("=="), Integer(1), Integer(1)),
+                            [PrintStr("1==1")],
+                            [],
+                        )
+                    ],
+                ),
+                ExprStatement(CallFn(Name("foo"), [])),
+            ]
+        )
+    ) == Program(
+        [
+            StrConstNum(1, "1==1"),
+            Function(
+                Name("foo"),
+                [],
+                [
+                    IfElse(
+                        Relation(RelationOp("=="), Integer(1), Integer(1)),
+                        [PrintStrConstNum(1)],
+                        [],
+                    )
+                ],
+            ),
+            ExprStatement(CallFn(Name("foo"), [])),
+        ]
+    )
+
     printcolor("tests PASSED", ansicode.green)

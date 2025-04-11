@@ -4,8 +4,7 @@
 Nearly all the compilation logic has already happened in previous compiler passes.
 This adds header statements to the file and some type definition for functions and globals,
 as well as adding human-readable formatting such as block indents.
-
-Previous compiler pass: llvmentry.py"""
+"""
 #
 # Cleanup TODO
 # [X] docstrings
@@ -23,6 +22,7 @@ def format_llvm(program : Program) -> str:
             case GlobalVar(name):
                 output.append(f'@{name.str} = global i32 0')
             case StrConstNum(n, txt):
+                ## TODO: revise len(txt) to handle escape characters such as \13, \n, etc
                 output.append(f'@.str.{n} = private unnamed_addr constant [{len(txt) + 2} x i8] c"{txt}\n\\00"')
             case Function(name, params, body):
                 pstr = ', '.join([f'i32 %{p.str}' for p in params])

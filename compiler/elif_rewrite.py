@@ -6,9 +6,6 @@ as most later compiler passes only understand how to traverse If..Else structure
 
 This iteratively / recursively descends into If / Elif / Else / While / For structures as these
 structures may be nested within each other.
-
-Previous compiler stage: none (parsing)
-Next compiler stage: for_rewrite.py
 """
 
 # Cleanup TODO
