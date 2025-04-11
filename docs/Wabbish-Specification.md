@@ -8,25 +8,22 @@ During that class and in a bit of work afterward, I completed a compiler for a l
 
 ## 1. Wabbish Overview
 
-Wabbish has a standard set of features you're used to in programming including
+Wabbish has a basic set of features you're used to in programming including
 numbers, variables, conditionals, loops, and functions.  Here is a
 sample Wabbish program that prints the first 10 factorials:
 
 ```
 func fact(n) {
     var result = 1;
-    var x = 1;
-    while x < n {
-       result = result * x;
-       x = x + 1;
+    for x = 1,n {
+        result = result * x;
     }
-    return result * n;
+    return result;
 }
 
-var n = 0;
-while n < 10 {
-   print fact(n);
-   n = n + 1;
+print "Factorials from 0! to 9!";
+for x = 0,9 {
+    print fact(x);
 }
 ```
 
@@ -62,7 +59,7 @@ if a < b {
 
 ## 3. Datatypes
 
-Wabbish only supports a single integer datatype.  All math operations and variables
+Wabbish only supports a single datatype, integers. All math operations and variables
 work with integers only.
 
 ## 4. Variables
@@ -101,7 +98,7 @@ print 3 + x;
 
 ### 5.1 Printing Strings
 
-You can also print string literals by following print with any characters between a pair of double quotes `"..."`:
+You can also print string literals by following print with characters between a pair of double quotes `"..."`:
 
 ```
 print "hello, world.";
@@ -109,7 +106,7 @@ print "hello, world.";
 
 Note that this does not imply a general string data type: as noted above, int is the only data type supported in Wabbish. You cannot assign these string literals to variables, pass them to or return them from functions, compare them, or operate on them in any other way: they can only be used as the argument to a print statement.
 
-*Caveats: escape characters such as \n, \013, and so on are not currently correctly handled by this. In addition, this string literal printing is a placeholder I may remove in the future, especially if some day I add support for a char datatype and then an array-of-chars string datatype.*
+*Caveats: escape characters such as \n, \013, and so on are not currently correctly handled by the compiler. In addition, this string literal printing is a placeholder I may remove in the future, especially if some day I add support for a char datatype and then an array-of-chars string datatype.*
 
 ## 6. Math operations
 
@@ -173,7 +170,7 @@ if a < b {
 }
 ```
 
-A valid **relation** (see above) must immediately follow the `if` keyword. A reminder that in Wabbish the only data type is integers (not booleans), so you may not use an expression instead of a relation. For example statements such as `if x {` or `if 2 * 2 {` or `if True {` are invalid.
+A valid **relation** (see above) must immediately follow the `if` keyword. A reminder that in Wabbish the only data type is integers (not booleans), so you may not use an expression instead of a relation. For example, statements such as `if x {` or `if 2 * 2 {` or `if True {` are invalid.
 
 If you have a conditional you always want to run (perhaps for testing), a statement such as `if 1 == 1 {` is valid, however, as `1 == 1` is a relation.
 
@@ -288,11 +285,11 @@ print f(2 + 3, 4 + 5);    // OK
 
 ### 9.1 Functions Without Arguments
 
-Functions that take zero arguments (mostly relevant if their purpose is to run I/O operations such as PRINT) should be supported, but this has not yet been thoroughly tested.
+Functions that take zero arguments (mostly relevant if their purpose is to run I/O operations such as PRINT) are nominally supported, but this has not yet been thoroughly tested.
 
 ## 10. Isolated Expressions
 
-Isolated expressions appearing as a statement are allowed.  The expression evaluates, but the value is disregarded.  The primary use is writing functions whose purpose is to execute I/O operations. For example:
+Isolated expressions appearing as a statement are allowed.  The expression evaluates, but the value is disregarded.  The primary use is calling functions whose purpose is to execute I/O operations. For example:
 
 ```
 func printval(x) {
@@ -309,15 +306,15 @@ Examples of other expression statements which are valid syntax, but useless:
 x;
 ```
 
-## 11. Command-line Arguments
+## 11. Command-line Argument Access
 
-An experimental compile mode (with flag -arg) gives the user program access to up to two command-line arguments when it is run.
+An experimental compile mode (with flag -arg) gives the user program access to up to two command-line integer arguments when it is run.
 
 In particular, top-level user code has access to special system variables `argc`, `arg1`, and `arg2` without need to declare them.
 
-`argc` holds the number of command-line arguments passed to the executable (typically 0, 1, or 2, though if three or more arguments are passed argc will hold that number though it's unlikely to be relevant).
+`argc` holds the number of command-line arguments passed to the executable (typically 0, 1, or 2, though if three or more arguments are passed argc will hold that number even though there's no way to access arguments beyond the second).
 
-`arg1` and `arg2` will hold the first two arguments passed (set to 0 for any omitted arguments: argc can be used to determine if arg1 and/or arg2 are valid to distinguish between "argument omitted" and "0 passed as argument"). These parameters are converted to integers (positive or negative).
+`arg1` and `arg2` will hold the first two arguments passed, interpreted as integers. arg1 and arg2 will be set to 0 for any omitted arguments: argc can be used to determine if arg1 and/or arg2 are valid to distinguish between "argument omitted" and "0 passed as argument".
 
 **Note:** These system arg variables are provided with top-level local scope, not global scope. That is, they are accessible in top-level user code, but not within any user-defined functions.
 
