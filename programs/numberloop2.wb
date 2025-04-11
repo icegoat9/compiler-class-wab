@@ -1,5 +1,5 @@
 // numberloop2.wb
-//   max d, 2025-04-05, for 'wabbish' language
+//   max, 2025-04-05, for 'wabbish' language
 //   (requires integer data type and +,-,*,/ and basic relations)
 //
 // revised version of numberloop that takes two arguments:

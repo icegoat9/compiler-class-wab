@@ -1,0 +1,241 @@
+// blackjack.wb
+//   speculative program assuming a few future language features are added
+//    (int arrays, single-char keyboard input, string literals, random int)
+//   to think through a non-trivial program built from basic functionality
+
+var deck[52];
+
+func initdeck() {
+    // initialize with four copies each of #s 1 to 13
+    for i=0,3 {
+        for j=1,13 {
+            deck[i*13+j] = j;
+        }
+    }
+}
+
+var deckused[52];
+
+func initused() {
+    for i=1,52 {
+        deckused[i]=0;
+    }
+}
+
+// draw card n from ordered deck, mark it as 'used' so it can't be drawn again
+func getcard(n) {
+    deckused[n] = 1;
+    return deck[n];
+}
+
+// draw a random card from the deck, return its rank (1-13)
+func rndcard() {
+    // assumes rndint(N) returns random int from 1 to N
+    var n = rndint(52);
+    // loop to find an unused card
+    while deckused[n] == 1 {
+        n = rndint(52);
+    }
+    return getcard(n);
+}
+
+var hsize = 12; // fixed-length for max possible hand size of AAAA22223333
+var dealerhand[hsize]; 
+var playerhand[hsize];
+var dcards;  // # of cards in hand
+var pcards;
+
+func inithands() {
+    dealerhand[1]=rndcard();
+    dealerhand[2]=rndcard();
+    dcards = 2;
+    for i=3,hsize) {
+        dealerhand[i] = 0;
+    }
+    playerhand[1]=rndcard();
+    playerhand[2]=rndcard();
+    pcards = 2;
+    for j=3,hsize) {
+        playerhand[j] = 0;
+    }
+}
+
+// is the hand sum a bust but there's an ace scored as 11 that could be reduced to 1?
+function canreduceace(sum, aces) {
+    if sum > 21 {
+        if aces > 1 {
+            return 1;
+        }
+    }
+    return 0;
+}
+
+// hard-coded card-printing function if we don't have char arrays or indexable strings:
+func printrank(n) {
+    if n==1 {
+        print "A";
+    } elif n==10 {
+        print "T";
+    } elif n==11 {
+        print "J";
+    } elif n==12 {
+        print "Q";
+    } elif n==13 {
+        print "K";
+    } else {
+        print n;
+    }
+}
+
+// wrapper to look up from dealer (p==1) or player (p==2) hand arrays,
+//  since we don't have multidimensional arrays
+function handcard(p,n) {
+ if p == 1 { return dealerhand[n]; }
+ return playerhand[n];
+}
+
+function numcards(p) {
+ if p == 1 {return dcards; }
+ return pcards;
+}
+
+// sum cards in hand including aces
+function sumhand(p) {
+    // p=1: dealer, p=2: player
+    var aces=0;
+    var sum=0;
+    var c;
+    for i=1,numcards(p) {
+        c=handcard(p,i);
+        if c==1 { 
+            aces = aces + 1; 
+            sum = sum + 11; 
+        } elif c >= 10 {
+            sum = sum + 10;
+        } else {
+            sum = sum + c;
+        }
+    }
+    // if sum is over 21 but there were one or more aces evaluated as 11,
+    //  we may not be busted: try evaluating them as 1 instead.
+    var reduceace = canreduceace(sum, aces);
+    while reduceace == 1 {
+        sum = sum - 10;
+        aces = aces - 1;
+        reduceace = canreduceace(sum, aces);
+    }
+    return sum;
+}
+
+// append the card # to this player's hand
+function addcard(p,n) {
+    if p == 1 {
+        dcards = dcards + 1;
+        dealerhand[dcards] = n;
+    } else {
+        pcards = pcards + 1;
+        playerhand[pcards] = n;
+    }
+}
+
+function printhands(dhide) {
+    // if dhide == 1, hide dealer first card and sum
+    for p=1,2 {
+        if p==1 { printstr "dealer:"; }
+        else { printstr "player:"; }
+        for i=1,hsize {
+            if cardhand(p,i) > 0 {
+                hole = 0;
+                if dhide == 1 {
+                    if p==1 {
+                        if i==1 {
+                            hole=1;
+                        }
+                    }
+                }
+                if hole {
+                    printstr "?"; // hole card
+                } else {
+                    printrank(cardhand(p,i));
+                }
+            } 
+        }
+        print "total =";
+        if p == 2 {
+            print sumhand(p);
+        } elif dhide == 0 {
+            print sumhand(p);
+        } else {
+            printstr "??";
+        }
+    }
+}
+
+// main gameloop
+
+var gameover;
+var winner;
+var tempcard;
+
+while 1==1 {
+
+    gameover = 0;
+    winner = 0; 
+    // reset deck and hands   
+    initdeck();
+    initused();
+    inithands();
+
+    var inpvalid;
+
+    while gameover == 0 {
+        printhands(1);
+        printstr "[h]it or [s]tay";
+        inpvalid = 0;
+        while inpvalid == 0 { // loop until one of those two keys pressed
+            inp = input();  // input() = getchar function to be implemented
+            if inp == ord("h") { // or hard-code ascii value of 'h'
+                inpvalid = 1;
+                addcard(2,rndcard());
+                if sumhand(2) > 21 {
+                    gameover = 1;
+                    winner = 1;
+                }
+            } elif inp == ord("s") { // or hard-code ascii value
+                inpvalid = 1;
+                // dealer turn
+                while sumhand(1) < 17 {
+                    tempcard = rndcard():
+                    printstr "dealer draws a ";
+                    printrank(tempcard);
+                    addcard(1,rndcard())
+                }
+                // done drawing
+                printhands(0);  // show dealer hands
+                gameover = 1;
+                if sumhand(1) > 21 {
+                    winner = 2;
+                } elif sumhand(1) < sumhand(2) {
+                    winner = 2;
+                } elif sumhand(1) > sumhand(2) {
+                    winner = 1;
+                }
+            }
+        }
+    }
+
+    // game over
+    if winner > 0 {
+        printstr "game won by player: ";
+        printstr winner;
+    } else {
+        printstr "tie game!";
+    }
+    printstr "press [space] to play again";
+
+    // wait for space bar
+    var k = 0;
+    while k != ord(" ") { // or hard-code ascii value
+        k = input();
+    }
+}

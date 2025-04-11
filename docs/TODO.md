@@ -40,6 +40,7 @@ I kept quick and dirty during-class To-Dos and also in quick TODO items at the t
 * [ ] Check for mismatched braces and parens in AST, throw a usefully specific compile error
 * [x] Zero-parameter functions
   * [ ] Test in more depth
+* [ ] RND(int)
 * [ ] Look into other runtime.c integration with OS
   * [x] command-line arguments for compiled binaries
   * [ ] simple terminal/keypress input reading (number entry or arrow keys?)
@@ -60,6 +61,8 @@ I kept quick and dirty during-class To-Dos and also in quick TODO items at the t
 * [ ] fixed-length array support
   * [ ] length function
   * [ ] `for x in array` type iterator? (can start with `for i=1,len(array) {}`)
+* [ ] Basic string literal (perhaps not even valid as variable data, just as argument to special function printstr() which is parsed expecting a string literal)
+  * [ ] optionally, printstr() doesn't automatically append a newline?
 * [ ] Explore type support beyond int (float, char, maybe string)
   * [ ] Simpler fixed-length string using array functionality 
   * [ ] Build left(), right(), substr(), and so on in user space functions

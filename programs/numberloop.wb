@@ -1,5 +1,5 @@
 // numberloop.wb
-//   max d, 2024-03-22, for partial implementation of 'wabbi' language 
+//   max, 2024-03-22, for partial implementation of 'wabbi' language 
 //   (requires integer data type and +,-,*,/ and basic relations)
 //
 // iteratively sum and concatenate adjacent digits in a number, for example:
