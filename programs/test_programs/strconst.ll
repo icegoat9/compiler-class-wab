@@ -2,7 +2,7 @@ declare i32 @_print_int(i32)
 declare i32 @printf(ptr noundef, ...)
 @.str.1 = private unnamed_addr constant [15 x i8] c"hello, world.
 \00"
-@.str.2 = private unnamed_addr constant [8 x i8] c"now x=
+@.str.2 = private unnamed_addr constant [4 x i8] c"x=
 \00"
 @x = global i32 0
 

@@ -44,7 +44,7 @@ _symbols = {
 _symbolchars = '+-*/%<>!=;(){},"'
 
 # creates dict of reserved keywords { "var": "VAR", ... }
-_keywords = {x: x.upper() for x in ("var", "print", "printstr", "if", "else", "while", "func", "return", "elif", "for")}
+_keywords = {x: x.upper() for x in ("var", "print", "if", "else", "while", "func", "return", "elif", "for")}
 
 # create a quick reversed Token -> text dict ("LT": "<", etc) for symbols and keywords from the above,
 #  for use in debugging and printing
@@ -199,13 +199,12 @@ if __name__ == "__main__":
     )
 
     assert token_list_eq(
-        tokenize("else elif if print printstr var while for return func"),
+        tokenize("else elif if print var while for return func"),
         [
             Token("ELSE", "else"),
             Token("ELIF", "elif"),
             Token("IF", "if"),
             Token("PRINT", "print"),
-            Token("PRINTSTR", "printstr"),
             Token("VAR", "var"),
             Token("WHILE", "while"),
             Token("FOR", "for"),
@@ -255,11 +254,10 @@ if __name__ == "__main__":
         ],
     )
 
-    # test that this invalid syntax is tokenized ('5x' is not a valid NAME so is parsed as Int,Name)
     assert token_list_eq(
-        tokenize('printstr "hello x=5.";'),
+        tokenize('print "hello x=5.";'),
         [
-            Token("PRINTSTR", "printstr"),
+            Token("PRINT", "print"),
             Token("STRCONST", "hello x=5."),
             Token("SEMI", ";"),
         ],

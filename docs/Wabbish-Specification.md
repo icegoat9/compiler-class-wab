@@ -1,6 +1,6 @@
 # Wabbish
 
-Wabbish is my name for a slight variant on the Wab / Wabbi / Wabbit languages created by [Dave Beazley](http://dabeaz.com/) for his [Writing-a-Compiler Class](https://www.dabeaz.com/compiler.html)
+Wabbish is my name for a variant on the Wab / Wabbi / Wabbit languages created by [Dave Beazley](http://dabeaz.com/) for his [Writing-a-Compiler Class](https://www.dabeaz.com/compiler.html)
 
 During that class and in a bit of work afterward, I completed a compiler for a language somewhere between the  Wab and Wabbi language specs, but then started playing around and adding other features, so I'm making this forked version of the Wab/Wabbi language spec page to keep track of what my particular compiler implements and avoid looking at similar but slightly different documentation for the original languages.
 
@@ -79,7 +79,7 @@ numbers afterwards.  The following words are reserved and may not be
 used as a variable name:
 
 ```
-elif else func if print printstr return var while for
+elif else func if print return var while for
 ```
 
 Variables are managed in two different scopes.  Any variable declared
@@ -99,18 +99,17 @@ print x;
 print 3 + x;
 ```
 
-### 5.1 Printing and String Literals
+### 5.1 Printing Strings
 
-You can print a string literal using the `printstr` statement with any characters between a pair of double quotes `"..."`. For example:
+You can also print string literals by following print with any characters between a pair of double quotes `"..."`:
 
 ```
-printstr "hello, world.";
-print 7;
+print "hello, world.";
 ```
 
-Note that int is the only data type generally supported in Wabbish: you cannot assign these string literals to variables, pass them to or return them from functions, or operate on them in any other way: they can only be used as the argument in a printstr statement.
+Note that this does not imply a general string data type: as noted above, int is the only data type supported in Wabbish. You cannot assign these string literals to variables, pass them to or return them from functions, compare them, or operate on them in any other way: they can only be used as the argument to a print statement.
 
-*Caveat: Work in Progress, may be a temporary placeholder I remove in future if I add support a more general 'array of chars' string datatype.*
+*Caveat: These may be a temporary placeholder I remove in the future, if some day I add support for a char datatype and then an array-of-chars string datatype.*
 
 ## 6. Math operations
 
@@ -131,9 +130,7 @@ print -x;       // -10
 
 The division operator truncates the result so `10/3` is `3`.
 
-The modulo operator is currently based on truncated division, so when one of the operands is negative, the output matches the sign of the first operand: `-5 % 3` returns `-2` (rather than `1` as it would in languages that use [floored division](https://en.wikipedia.org/wiki/Modulo#Variants_of_the_definition)). 
-
-*Caveat: I may switch modulo to be based on floored division in the future, which will change the behavior when exactly one of the operands is negative.*
+The modulo operator is currently based on truncated division, so when one of the operands is negative, the output matches the sign of the first operand: `-5 % 3` returns `-2` (rather than `1` as it would in languages that use [floored division](https://en.wikipedia.org/wiki/Modulo#Variants_of_the_definition)). *Caveat: I intend to switch modulo's meaning to be based on floored division in the future, which will change its behavior when exactly one of the operands is negative.*
 
 Operators only operate on pairs of values.  If you want to write a more complex expression, you need to use parentheses.  For example:
 
@@ -238,7 +235,7 @@ for i = 1,10 {
 }
 ```
 
-*WARNING: This implementation is in-development and has a known bug:* Under the hood it the implementation declares index variable i, so the compiler will raise an error if i has previously been declared in the current scope. This prevent you from reusing the same index variable in multiple for loops in a program.
+*WARNING: This implementation is in-development and has a known bug:* Under the hood the compiler declares index variable i, and will raise an error if i has previously been declared in the current scope. This for example prevents you from reusing the same index variable in multiple for loops
 
 ## 9. Functions
 
@@ -346,7 +343,7 @@ program : statements EOF
 statements : { statement }         ; Note: { ... } means repetition
 
 statement : print_statement
-          / print_string
+          / print_string_statement
           / variable_definition
           / if_statement
           / while_statement
@@ -358,7 +355,7 @@ statement : print_statement
 
 print_statement : PRINT expression SEMI
 
-print_string : PRINTSTR STRCONST SEMI
+print_string_statement : PRINT STRCONST SEMI
 
 variable_definition : VAR NAME ASSIGN expression SEMI
 
@@ -429,7 +426,6 @@ ELIF       elif
 IF         if
 FUNC       func
 PRINT      print
-PRINTSTR   printstr
 RETURN     return
 VAR        var
 WHILE      while

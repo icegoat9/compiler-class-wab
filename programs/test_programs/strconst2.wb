@@ -1,17 +1,17 @@
-// test printstr in deeper contexts, not only top-level
+// test printstr version of print in other contexts, not only top-level
 var x=7;
 
 func printn(n) {
-  printstr "function printn():";
+  print "function printn():";
   print n;
   if n > 100 {
-    printstr "quite large!";
+    print "quite large!";
   }
   else {
     print -1;
   }
 }
 
-printstr "hello, world.";
+print "hello, world.";
 printn(x);
 printn(200);

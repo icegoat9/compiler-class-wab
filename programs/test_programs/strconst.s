@@ -38,7 +38,7 @@ l_.str.1:                               ; @.str.1
 	.asciz	"hello, world.\n"
 
 l_.str.2:                               ; @.str.2
-	.asciz	"now x=\n"
+	.asciz	"x=\n"
 
 	.globl	_x                              ; @x
 .zerofill __DATA,__common,_x,4,2

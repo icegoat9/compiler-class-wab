@@ -63,7 +63,7 @@ I kept quick and dirty during-class To-Dos and also in quick TODO items at the t
   * [ ] `for x in array` type iterator? (can start with `for i=1,len(array) {}`)
 * [x] Basic string literal (perhaps not even valid as variable data, just as argument to special function printstr() which is parsed expecting a string literal, and generating LLVM const string header.
   * [ ] optionally, printstr() doesn't automatically append a newline? Add way to add that? e.g. a separate printnewline function to call? A special character? A backslash char?
-  * [ ] optionally, "print" overloaded to mean printstr or printint depending on parsing (is it followed by strconst or not)
+  * [x] optionally, "print" overloaded to mean printstr or printint depending on parsing (is it followed by strconst or not)
 * [ ] Explore type support beyond int (float, char, maybe string)
   * [ ] Simpler fixed-length string using array functionality 
   * [ ] Build left(), right(), substr(), and so on in user space functions
