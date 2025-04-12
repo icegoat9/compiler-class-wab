@@ -45,8 +45,10 @@ def compile(program: Program, llvm_str_output: bool = True, debug: bool = False,
        arguments (to be passed from a C helper function linked in later)
     """
     if debug:
-        printcolor("--input AST representation from parser--")
+        printcolor("--AST input to compiler--")
         print(program)
+        print()
+        printcolor("-----------------------------------")
     
     compile_fns = (("input from parser", "run through human-readable formatter", (lambda x:x)),
                    ("elif_rewrite", "rewrite if..elif.else clauses as nested if..else", elif_rewrite.elif_program),

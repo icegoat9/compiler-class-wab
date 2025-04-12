@@ -1,0 +1,6 @@
+// correct result of parsing includes on include1.wb
+func square(n) {
+  return n * n;
+}
+
+print square(5);

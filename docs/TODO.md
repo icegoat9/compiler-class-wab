@@ -51,8 +51,10 @@ I kept quick and dirty during-class To-Dos and also in quick TODO items at the t
     * [ ] handle INPUT() in all earlier compiler passes
     * [ ] add compile_ast command-line arg, or move input (and args?) into helper.c
     * [ ] add tests, support in formatter, etc
-  * [ ] Add some sort of #include or #link directive or companion build file, that lets compile.sh know which helper.c, args.c, ... files to link in
-    * [ ] Or generate this after tokenizing based on presence of specific tokens (e.g. if INPUT or argc or PRINT is present, generate some linking file that compile.sh will use)
+  * [x] Add some sort of #include or #link directive or companion build file, that lets compile.sh know which helper.c, args.c, ... files to link in
+    * [ ] Test in some more depth, including the working directory detection
+    * [ ] Fix sourceline and sourcecolumn data in tokenizing which is thrown off by this
+    * [ ] Allow nested includes (combined with detection and handling of circular includes)
 * [x] for loops (via a similar approach to ifelse.py where they would be rewritten as while() loops early in the compiler passes so later compile steps don't need to understand them)
   * [x] improve syntax to remove third ; and/or shift to commas?
   * [x] drastically simplify syntax to e.g. `for i=1,10 { }`, perhaps?

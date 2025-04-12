@@ -51,6 +51,7 @@ from model import *
 from format import *
 from printcolor import *
 from tokenizer import *
+from includes import *
 from pprint import pprint
 from debughelper import *
 
@@ -404,24 +405,21 @@ class Parser:
 ################################
 # Parse from file
 
-
 def parse_file(filename, debug: bool = False) -> Program:
     """Load filename, tokenize and parse it, return AST"""
-    with open(filename) as file:
-        source = file.read()
-    tokens = tokenize(source)
+    tokens = tokenize_file(filename, debug)
+    # expand any includes if present
+    tokens = expand_includes(tokens, os.path.dirname(filename))
     if debug:
-        print("-- SOURCE (%s):" % filename)
-        printcolor(source.strip(), ansicode.cyan)
-        print("-- TOKENS:")
+        printcolor("-- PREPROCESSED, after processing and tokenizing any #includes:")
         pprint(tokens)
-        # printcolor(tokens, ansicode.cyan)
+    # TODO: run preprocessor such as includes.py here, which will itself call tokenize_file()
     program = parse_program(tokens)
     if debug:
-        print("-- PARSED PROGRAM:")
-        printcolor(program, ansicode.cyan)
-        print("-- FORMATTED PROGRAM:")
-        printcolor(format_program(program), ansicode.cyan)
+        printcolor("-- PARSED PROGRAM:")
+        print(program)
+        printcolor("-- FORMATTED PROGRAM:")
+        print(format_program(program))
     return program
 
 

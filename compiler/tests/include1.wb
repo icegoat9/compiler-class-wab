@@ -1,0 +1,4 @@
+// test including a file
+#include "include2.wb"
+
+print square(5);

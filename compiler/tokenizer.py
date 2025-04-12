@@ -38,13 +38,14 @@ _symbols = {
     "{": "LBRACE",
     "}": "RBRACE",
     ",": "COMMA",
+    "#": "HASH",
 }
 
 # chars to parse for symbols (manually keep up to date with chars used in symbols above)
-_symbolchars = '+-*/%<>!=;(){},"'
+_symbolchars = '+-*/%<>!=;(){},"#'
 
 # creates dict of reserved keywords { "var": "VAR", ... }
-_keywords = {x: x.upper() for x in ("var", "print", "if", "else", "while", "func", "return", "elif", "for")}
+_keywords = {x: x.upper() for x in ("var", "print", "if", "else", "while", "func", "return", "elif", "for", "include")}
 
 # create a quick reversed Token -> text dict ("LT": "<", etc) for symbols and keywords from the above,
 #  for use in debugging and printing
@@ -146,6 +147,18 @@ def tokenize(text: str) -> list[Token]:
         i += 1
     return tokens
 
+def tokenize_file(filename, debug: bool = False) -> list[Token]:
+    """Load filename, tokenize it, return list of tokens"""
+    with open(filename) as file:
+        source = file.read()
+    tokens = tokenize(source)
+    if debug:
+        printcolor("-- SOURCE FILE (%s):" % filename)
+        print(source.strip())
+        printcolor("-- TOKENS:")
+        pprint(tokens)
+    return tokens
+
 
 ######################################################
 # Tests (if run directly vs. imported as module)
@@ -175,7 +188,7 @@ if __name__ == "__main__":
     )
 
     assert token_list_eq(
-        tokenize('+ - * / % = < > <= >= != { } ( ) , ; =='),
+        tokenize('+ - * / % = < > <= >= != { } ( ) , ; == #'),
         [
             Token("PLUS", "+"),
             Token("SUB", "-"),
@@ -195,6 +208,7 @@ if __name__ == "__main__":
             Token("COMMA", ","),
             Token("SEMI", ";"),
             Token("EQ", "=="),
+            Token("HASH", "#"),
         ],
     )
 
@@ -259,6 +273,16 @@ if __name__ == "__main__":
         [
             Token("PRINT", "print"),
             Token("STRCONST", "hello x=5."),
+            Token("SEMI", ";"),
+        ],
+    )
+
+    assert token_list_eq(
+        tokenize('#include "stdlib.wb";'),
+        [
+            Token("HASH", "#"),
+            Token("INCLUDE", "include"),
+            Token("STRCONST", "stdlib.wb"),
             Token("SEMI", ";"),
         ],
     )

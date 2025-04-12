@@ -104,7 +104,7 @@ You can also print string literals by following print with characters between a 
 print "hello, world.";
 ```
 
-Note that this does not imply a general string data type: as noted above, int is the only data type supported in Wabbish. You cannot assign these string literals to variables, pass them to or return them from functions, compare them, or operate on them in any other way: they can only be used as the argument to a print statement.
+Note that this does not imply a general string data type: as noted above, int is the only data type supported in Wabbish. You cannot assign these string literals to variables, pass them to or return them from functions, compare them, or operate on them in any other way: they can only be used as the argument to a print statement or an [#include directive](#11-including-other-files).
 
 *Caveats: escape characters such as \n, \013, and so on are not currently correctly handled by the compiler. In addition, this string literal printing is a placeholder I may remove in the future, especially if some day I add support for a char datatype and then an array-of-chars string datatype.*
 
@@ -306,7 +306,15 @@ Examples of other expression statements which are valid syntax, but useless:
 x;
 ```
 
-## 11. Command-line Argument Access
+## 11. Including other files
+
+To be documented, #includes (single-depth only, nested includes will cause compiler error):
+
+```
+#include "stdlib.wb"
+```
+
+## 12. Command-line Argument Access
 
 An experimental compile mode (with flag -arg) gives the user program access to up to two command-line integer arguments when it is run.
 
@@ -318,7 +326,9 @@ In particular, top-level user code has access to special system variables `argc`
 
 **Note:** These system arg variables are provided with top-level local scope, not global scope. That is, they are accessible in top-level user code, but not within any user-defined functions.
 
-## 12. Formal Syntax
+## 13. Formal Syntax
+
+*TODO: add #include-related details*
 
 The following grammar is a description of Wabbish syntax written as a PEG
 (Parsing Expression Grammar). Tokens are specified in ALLCAPS and are
