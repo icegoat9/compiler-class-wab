@@ -1,0 +1,6 @@
+#include "include2subsub.wb"
+func square(n) {
+  return times(n,n);
+}
+
+print "include2sub.wb";

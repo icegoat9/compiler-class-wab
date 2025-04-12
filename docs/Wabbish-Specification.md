@@ -76,7 +76,7 @@ numbers afterwards.  The following words are reserved and may not be
 used as a variable name:
 
 ```
-elif else func if print return var while for
+elif else func if print return var while for include
 ```
 
 Variables are managed in two different scopes.  Any variable declared
@@ -308,11 +308,13 @@ x;
 
 ## 11. Including other files
 
-To be documented, #includes (single-depth only, nested includes will cause compiler error):
+The `#include` directive can be used to include other source files, for example to include a standard library of user-written functions or organize code into multiple files. Use it followed by a single quoted string literal:
 
 ```
 #include "stdlib.wb"
 ```
+
+Use is currently limited to only the primary file (i.e. files that are #included may not have their own #include statements).
 
 ## 12. Command-line Argument Access
 
@@ -328,8 +330,6 @@ In particular, top-level user code has access to special system variables `argc`
 
 ## 13. Formal Syntax
 
-*TODO: add #include-related details*
-
 The following grammar is a description of Wabbish syntax written as a PEG
 (Parsing Expression Grammar). Tokens are specified in ALLCAPS and are
 assumed to be returned by the tokenizer.  In this specification, the
@@ -343,6 +343,8 @@ e1 / e2 --> First match of e1 or e2.
 
 A program consists of zero or more statements followed by the
 end-of-file (EOF).  Here is the grammar:
+
+*TODO: Clarify the definition of #include directives which are not quite the same as statements.*
 
 ```
 program : statements EOF
@@ -359,6 +361,7 @@ statement : print_statement
           / return_statement
           / assignment_statement
           / expr_statement
+          / include_statement
 
 print_statement : PRINT expression SEMI
 
@@ -381,6 +384,8 @@ parameters : [ NAME { COMMA NAME } ]
 return_statement : RETURN expression SEMI
 
 expr_statement : expression SEMI
+
+include_statement : HASH INCLUDE STRCONST
 
 expression : term PLUS term
            / term MINUS term
@@ -438,6 +443,8 @@ VAR        var
 WHILE      while
 FOR        for
 STRCONST   "[^"]*"
+HASH       #
+INCLUDE    include
 ```
 
 

@@ -1,0 +1,6 @@
+// example included code
+func times(a,b) {
+  return a * b;
+}
+
+print "include2subsub.wb";

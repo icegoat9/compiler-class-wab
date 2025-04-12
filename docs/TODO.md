@@ -2,11 +2,12 @@ Running notes-to-self document during and after class.
 
 # Current Status
 
-The compiler runs and produces the desired result on all the test programs in [/programs/test_programs](/programs/test_programs), with these exceptions:
+The compiler runs and produces the desired result on the test programs in [/programs/test_programs](/programs/test_programs), with these exceptions:
 * for_redeclare.wb
 * badbrace.wb
 * badparen.wb
 * strconst3.wb
+* include2.wb
 
 See [/programs/](/programs/) for longer sample programs using the language.
 

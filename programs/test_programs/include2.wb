@@ -1,0 +1,5 @@
+// test including file which has its own includes
+#include "include2sub.wb"
+
+print "include2.wb";
+print square(5);
