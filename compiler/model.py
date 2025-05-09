@@ -42,8 +42,11 @@ class Statement:
 class Type:
     name : str
 
-# placeholder for expressions without typing implemented yet
-DUMMYTYPE = Type("dummy")
+# placeholder for expressions without typing implemented yet, or in tests
+# (should not exist outside of tests or WIP code)
+TEST_TYPE = Type("test")
+DUMMY_TYPE = Type("dummy")
+# types unknown at parse tyime
 UNKNOWN_TYPE = Type("?")
 
 @dataclass

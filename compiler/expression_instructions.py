@@ -88,17 +88,17 @@ def expr_instructions(expr: Expression) -> EXPR:
         #            return EXPR([PUSH(0)] + expr_instructions(left).instructions + [ SUB() ])
         case RelationOp(x):
             if x == "<":
-                return EXPR(DUMMYTYPE,[LT()])
+                return EXPR(UNKNOWN_TYPE,[LT()])
             elif x == "==":
-                return EXPR(DUMMYTYPE,[EQ()])
+                return EXPR(UNKNOWN_TYPE,[EQ()])
             elif x == ">":
-                return EXPR(DUMMYTYPE,[GT()])
+                return EXPR(UNKNOWN_TYPE,[GT()])
             elif x == ">=":
-                return EXPR(DUMMYTYPE,[GTE()])
+                return EXPR(UNKNOWN_TYPE,[GTE()])
             elif x == "<=":
-                return EXPR(DUMMYTYPE,[LTE()])
+                return EXPR(UNKNOWN_TYPE,[LTE()])
             elif x == "!=":
-                return EXPR(DUMMYTYPE,[NEQ()])
+                return EXPR(UNKNOWN_TYPE,[NEQ()])
             # Todo: error case?
         case Relation(t, op, left, right):
             return EXPR(t, 
@@ -123,33 +123,33 @@ def expr_instructions(expr: Expression) -> EXPR:
 # Tests (if run directly vs. imported as module)
 
 if __name__ == "__main__":
-    expr = Add(DUMMYTYPE,Integer(DUMMYTYPE,2), GlobalName(DUMMYTYPE,"x"))
+    expr = Add(TEST_TYPE,Integer(TEST_TYPE,2), GlobalName(TEST_TYPE,"x"))
     #    print(expr_instructions(expr))
     #    print(EXPR([PUSH(2), LOAD_GLOBAL("x"), ADD()]))
     expr2 = expr_instructions(expr)
     # print(expr2)
     # print("formatted: %s" % fmt_expr(expr2))
-    assert expr2 == EXPR(DUMMYTYPE,[PUSH(2), LOAD_GLOBAL("x"), ADD()])
+    assert expr2 == EXPR(TEST_TYPE,[PUSH(2), LOAD_GLOBAL("x"), ADD()])
 
-    assert expr_instructions(Relation(DUMMYTYPE,RelationOp("<"), Integer(DUMMYTYPE,5), GlobalName(DUMMYTYPE,"x"))) == EXPR(
-        DUMMYTYPE,
+    assert expr_instructions(Relation(TEST_TYPE,RelationOp("<"), Integer(TEST_TYPE,5), GlobalName(TEST_TYPE,"x"))) == EXPR(
+        TEST_TYPE,
         [PUSH(5), LOAD_GLOBAL("x"), LT()]
     )
 
     # call function f(3,4)
     # print(expr_instructions(CallFn(Name("f"), [Integer(3), Integer(4)])))
-    # print(expr_instructions(CallFn(DUMMYTYPE,Name(DUMMYTYPE,"f"), [Integer(DUMMYTYPE,3), Integer(DUMMYTYPE,4)])))
-    # print(EXPR(DUMMYTYPE,[PUSH(3), PUSH(4), CALL("f", 2)]))
-    assert expr_instructions(CallFn(DUMMYTYPE,Name(DUMMYTYPE,"f"), [Integer(DUMMYTYPE,3), Integer(DUMMYTYPE,4)])) == EXPR(DUMMYTYPE,[PUSH(3), PUSH(4), CALL("f", 2)])
+    # print(expr_instructions(CallFn(TEST_TYPE,Name(TEST_TYPE,"f"), [Integer(TEST_TYPE,3), Integer(TEST_TYPE,4)])))
+    # print(EXPR(TEST_TYPE,[PUSH(3), PUSH(4), CALL("f", 2)]))
+    assert expr_instructions(CallFn(TEST_TYPE,Name(TEST_TYPE,"f"), [Integer(TEST_TYPE,3), Integer(TEST_TYPE,4)])) == EXPR(TEST_TYPE,[PUSH(3), PUSH(4), CALL("f", 2)])
 
     # 42 + x
-    a = expr_instructions(Add(DUMMYTYPE,Integer(DUMMYTYPE,42), LocalName(DUMMYTYPE,"x")))
-    assert a == EXPR(DUMMYTYPE,[PUSH(42), LOAD_LOCAL("x"), ADD()])
+    a = expr_instructions(Add(TEST_TYPE,Integer(TEST_TYPE,42), LocalName(TEST_TYPE,"x")))
+    assert a == EXPR(TEST_TYPE,[PUSH(42), LOAD_LOCAL("x"), ADD()])
 
     # (42 + x) * 65
-    b = expr_instructions(Multiply(DUMMYTYPE,Add(DUMMYTYPE,Integer(DUMMYTYPE,42), LocalName(DUMMYTYPE,"x")), Integer(DUMMYTYPE,65)))
+    b = expr_instructions(Multiply(TEST_TYPE,Add(TEST_TYPE,Integer(TEST_TYPE,42), LocalName(TEST_TYPE,"x")), Integer(TEST_TYPE,65)))
     #    print(b)
     #    print(fmt_expr(b))
-    assert b == EXPR(DUMMYTYPE,[PUSH(42), LOAD_LOCAL("x"), ADD(), PUSH(65), MUL()])
+    assert b == EXPR(TEST_TYPE,[PUSH(42), LOAD_LOCAL("x"), ADD(), PUSH(65), MUL()])
 
     printcolor("tests PASSED", ansicode.green)

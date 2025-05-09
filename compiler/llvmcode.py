@@ -269,9 +269,9 @@ if __name__ == "__main__":
 
     prog1 = Program(
         [
-            GlobalVar(Name(DUMMYTYPE, "x")),
+            GlobalVar(Name(TEST_TYPE, "x")),
             Function(
-                Name(DUMMYTYPE, "main"),
+                Name(TEST_TYPE, "main"),
                 [],
                 [
                     BLOCK(
@@ -302,9 +302,9 @@ if __name__ == "__main__":
 
     assert llvm == Program(
         [
-            GlobalVar(Name(DUMMYTYPE, "x")),
+            GlobalVar(Name(TEST_TYPE, "x")),
             Function(
-                Name(DUMMYTYPE, "main"),
+                Name(TEST_TYPE, "main"),
                 [],
                 [
                     BLOCK(

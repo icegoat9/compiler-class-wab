@@ -79,41 +79,41 @@ def fold_expression(e: Expression) -> Expression:
             fy = fold_expression(y)
             if isinstance(fx, Integer) and isinstance(fy, Integer):
                 # two integers, so we can combine them!
-                return Integer(DUMMYTYPE, fx.n + fy.n)
+                return Integer(UNKNOWN_TYPE, fx.n + fy.n)
             else:
-                return Add(DUMMYTYPE, fx, fy)
+                return Add(UNKNOWN_TYPE, fx, fy)
         case Multiply(t, x, y):
             fx = fold_expression(x)
             fy = fold_expression(y)
             if isinstance(fx, Integer) and isinstance(fy, Integer):
-                return Integer(DUMMYTYPE, fx.n * fy.n)
+                return Integer(UNKNOWN_TYPE, fx.n * fy.n)
             else:
-                return Multiply(DUMMYTYPE, fx, fy)
+                return Multiply(UNKNOWN_TYPE, fx, fy)
         case Subtract(t, x, y):
             fx = fold_expression(x)
             fy = fold_expression(y)
             if isinstance(fx, Integer) and isinstance(fy, Integer):
-                return Integer(DUMMYTYPE, fx.n - fy.n)
+                return Integer(UNKNOWN_TYPE, fx.n - fy.n)
             else:
-                return Subtract(DUMMYTYPE, fx, fy)
+                return Subtract(UNKNOWN_TYPE, fx, fy)
         case Divide(t, x, y):
             fx = fold_expression(x)
             fy = fold_expression(y)
             if isinstance(fx, Integer) and isinstance(fy, Integer):
-                return Integer(DUMMYTYPE, fx.n // fy.n)
+                return Integer(UNKNOWN_TYPE, fx.n // fy.n)
             else:
-                return Divide(DUMMYTYPE, fx, fy)
+                return Divide(UNKNOWN_TYPE, fx, fy)
         case Modulo(t, x, y):
             fx = fold_expression(x)
             fy = fold_expression(y)
             if isinstance(fx, Integer) and isinstance(fy, Integer):
-                return Integer(DUMMYTYPE, fx.n % fy.n)
+                return Integer(UNKNOWN_TYPE, fx.n % fy.n)
             else:
-                return Modulo(DUMMYTYPE, fx, fy)
+                return Modulo(UNKNOWN_TYPE, fx, fy)
         case Relation(t, op, left, right):
-            return Relation(DUMMYTYPE, op, fold_expression(left), fold_expression(right))
+            return Relation(UNKNOWN_TYPE, op, fold_expression(left), fold_expression(right))
         case CallFn(t, name, params):
-            return CallFn(DUMMYTYPE, name, [fold_expression(p) for p in params])
+            return CallFn(UNKNOWN_TYPE, name, [fold_expression(p) for p in params])
         case _:
             raise RuntimeError(f"Unhandled fold_expression() case {e}")
 
@@ -124,89 +124,89 @@ def fold_expression(e: Expression) -> Expression:
 if __name__ == "__main__":
     print("A few foldconstants.py test cases:")
     test_program_statements = (
-        ([Print(Add(DUMMYTYPE,Integer(DUMMYTYPE,2), Integer(DUMMYTYPE,3)))], [Print(Integer(DUMMYTYPE,5))]),
+        ([Print(Add(UNKNOWN_TYPE,Integer(UNKNOWN_TYPE,2), Integer(UNKNOWN_TYPE,3)))], [Print(Integer(UNKNOWN_TYPE,5))]),
         # [Print(Add(Negate(Integer(2)), Integer(3)))],
         # [Print(Negate(Add(Integer(2), Integer(3))))],
         (
             [
-                DeclareValue(Name(DUMMYTYPE,"x"), Integer(DUMMYTYPE,10)),
-                Assign(Name(DUMMYTYPE,"x"), Add(DUMMYTYPE,Name(DUMMYTYPE,"x"), Integer(DUMMYTYPE,1))),
-                Print(Add(DUMMYTYPE,Multiply(DUMMYTYPE,Integer(DUMMYTYPE,23), Integer(DUMMYTYPE,45)), Name(DUMMYTYPE,"x"))),
-                Print(Multiply(DUMMYTYPE,Add(DUMMYTYPE,Integer(DUMMYTYPE,2), Integer(DUMMYTYPE,3)), Integer(DUMMYTYPE,4))),
+                DeclareValue(Name(UNKNOWN_TYPE,"x"), Integer(UNKNOWN_TYPE,10)),
+                Assign(Name(UNKNOWN_TYPE,"x"), Add(UNKNOWN_TYPE,Name(UNKNOWN_TYPE,"x"), Integer(UNKNOWN_TYPE,1))),
+                Print(Add(UNKNOWN_TYPE,Multiply(UNKNOWN_TYPE,Integer(UNKNOWN_TYPE,23), Integer(UNKNOWN_TYPE,45)), Name(UNKNOWN_TYPE,"x"))),
+                Print(Multiply(UNKNOWN_TYPE,Add(UNKNOWN_TYPE,Integer(UNKNOWN_TYPE,2), Integer(UNKNOWN_TYPE,3)), Integer(UNKNOWN_TYPE,4))),
             ],
             [
-                DeclareValue(Name(DUMMYTYPE,"x"), Integer(DUMMYTYPE,10)),
-                Assign(Name(DUMMYTYPE,"x"), Add(DUMMYTYPE,Name(DUMMYTYPE,"x"), Integer(DUMMYTYPE,1))),
-                Print(Add(DUMMYTYPE,Integer(DUMMYTYPE,1035), Name(DUMMYTYPE,("x")))),
-                Print(Integer(DUMMYTYPE,20)),
-            ],
-        ),
-        (
-            [
-                Function(
-                    Name(DUMMYTYPE,"add1twice"),
-                    [Name(DUMMYTYPE,"x")],
-                    [Assign(Name(DUMMYTYPE,"x"), Add(DUMMYTYPE,Name(DUMMYTYPE,"x"), Add(DUMMYTYPE,Integer(DUMMYTYPE,1), Integer(DUMMYTYPE,1)))), Return(Name(DUMMYTYPE,"x"))],
-                ),
-                DeclareValue(Name(DUMMYTYPE,"x"), Integer(DUMMYTYPE,10)),
-                Print(Add(DUMMYTYPE,Multiply(DUMMYTYPE,Integer(DUMMYTYPE,23), Integer(DUMMYTYPE,45)), CallFn(DUMMYTYPE,Name(DUMMYTYPE,"add1twice"), [Name(DUMMYTYPE,"x")]))),
-                Print(Name(DUMMYTYPE,"x")),
-            ],
-            [
-                Function(
-                    Name(DUMMYTYPE,"add1twice"),
-                    [Name(DUMMYTYPE,"x")],
-                    [Assign(Name(DUMMYTYPE,"x"), Add(DUMMYTYPE,Name(DUMMYTYPE,"x"), Integer(DUMMYTYPE,2))), Return(Name(DUMMYTYPE,"x"))],
-                ),
-                DeclareValue(Name(DUMMYTYPE,("x")), Integer(DUMMYTYPE,10)),
-                Print(Add(DUMMYTYPE,Integer(DUMMYTYPE,1035), CallFn(DUMMYTYPE,Name(DUMMYTYPE,"add1twice"), [Name(DUMMYTYPE,"x")]))),
-                Print(Name(DUMMYTYPE,"x")),
+                DeclareValue(Name(UNKNOWN_TYPE,"x"), Integer(UNKNOWN_TYPE,10)),
+                Assign(Name(UNKNOWN_TYPE,"x"), Add(UNKNOWN_TYPE,Name(UNKNOWN_TYPE,"x"), Integer(UNKNOWN_TYPE,1))),
+                Print(Add(UNKNOWN_TYPE,Integer(UNKNOWN_TYPE,1035), Name(UNKNOWN_TYPE,("x")))),
+                Print(Integer(UNKNOWN_TYPE,20)),
             ],
         ),
         (
             [
                 Function(
-                    Name(DUMMYTYPE,"miscmath"),
-                    [Name(DUMMYTYPE,"a"), Name(DUMMYTYPE,"b")],
-                    [
-                        IfElse(
-                            Relation(DUMMYTYPE,RelationOp("<"), Name(DUMMYTYPE,"a"), Add(DUMMYTYPE,Integer(DUMMYTYPE,5), Integer(DUMMYTYPE,3))),
-                            [
-                                Return(
-                                    Multiply(DUMMYTYPE,
-                                        Add(DUMMYTYPE,Integer(DUMMYTYPE,3), Integer(DUMMYTYPE,4)),
-                                        Add(DUMMYTYPE,Name(DUMMYTYPE,"a"), Multiply(DUMMYTYPE,Name(DUMMYTYPE,"a"), Name(DUMMYTYPE,"b"))),
-                                    )
-                                )
-                            ],
-                            [Return(Integer(DUMMYTYPE,4))],
-                        )
-                    ],
+                    Name(UNKNOWN_TYPE,"add1twice"),
+                    [Name(UNKNOWN_TYPE,"x")],
+                    [Assign(Name(UNKNOWN_TYPE,"x"), Add(UNKNOWN_TYPE,Name(UNKNOWN_TYPE,"x"), Add(UNKNOWN_TYPE,Integer(UNKNOWN_TYPE,1), Integer(UNKNOWN_TYPE,1)))), Return(Name(UNKNOWN_TYPE,"x"))],
                 ),
-                DeclareValue(Name(DUMMYTYPE,"x"), Integer(DUMMYTYPE,3)),
-                Print(CallFn(DUMMYTYPE,Name(DUMMYTYPE,"miscmath"), [Add(DUMMYTYPE,Integer(DUMMYTYPE,2), Add(DUMMYTYPE,Integer(DUMMYTYPE,2), Integer(DUMMYTYPE,7))), Name(DUMMYTYPE,"x")])),
+                DeclareValue(Name(UNKNOWN_TYPE,"x"), Integer(UNKNOWN_TYPE,10)),
+                Print(Add(UNKNOWN_TYPE,Multiply(UNKNOWN_TYPE,Integer(UNKNOWN_TYPE,23), Integer(UNKNOWN_TYPE,45)), CallFn(UNKNOWN_TYPE,Name(UNKNOWN_TYPE,"add1twice"), [Name(UNKNOWN_TYPE,"x")]))),
+                Print(Name(UNKNOWN_TYPE,"x")),
             ],
             [
                 Function(
-                    Name(DUMMYTYPE,"miscmath"),
-                    [Name(DUMMYTYPE,"a"), Name(DUMMYTYPE,"b")],
+                    Name(UNKNOWN_TYPE,"add1twice"),
+                    [Name(UNKNOWN_TYPE,"x")],
+                    [Assign(Name(UNKNOWN_TYPE,"x"), Add(UNKNOWN_TYPE,Name(UNKNOWN_TYPE,"x"), Integer(UNKNOWN_TYPE,2))), Return(Name(UNKNOWN_TYPE,"x"))],
+                ),
+                DeclareValue(Name(UNKNOWN_TYPE,("x")), Integer(UNKNOWN_TYPE,10)),
+                Print(Add(UNKNOWN_TYPE,Integer(UNKNOWN_TYPE,1035), CallFn(UNKNOWN_TYPE,Name(UNKNOWN_TYPE,"add1twice"), [Name(UNKNOWN_TYPE,"x")]))),
+                Print(Name(UNKNOWN_TYPE,"x")),
+            ],
+        ),
+        (
+            [
+                Function(
+                    Name(UNKNOWN_TYPE,"miscmath"),
+                    [Name(UNKNOWN_TYPE,"a"), Name(UNKNOWN_TYPE,"b")],
                     [
                         IfElse(
-                            Relation(DUMMYTYPE,RelationOp("<"), Name(DUMMYTYPE,"a"), Integer(DUMMYTYPE,8)),
+                            Relation(UNKNOWN_TYPE,RelationOp("<"), Name(UNKNOWN_TYPE,"a"), Add(UNKNOWN_TYPE,Integer(UNKNOWN_TYPE,5), Integer(UNKNOWN_TYPE,3))),
                             [
                                 Return(
-                                    Multiply(DUMMYTYPE,
-                                        Integer(DUMMYTYPE,7),
-                                        Add(DUMMYTYPE,Name(DUMMYTYPE,"a"), Multiply(DUMMYTYPE,Name(DUMMYTYPE,"a"), Name(DUMMYTYPE,"b"))),
+                                    Multiply(UNKNOWN_TYPE,
+                                        Add(UNKNOWN_TYPE,Integer(UNKNOWN_TYPE,3), Integer(UNKNOWN_TYPE,4)),
+                                        Add(UNKNOWN_TYPE,Name(UNKNOWN_TYPE,"a"), Multiply(UNKNOWN_TYPE,Name(UNKNOWN_TYPE,"a"), Name(UNKNOWN_TYPE,"b"))),
                                     )
                                 )
                             ],
-                            [Return(Integer(DUMMYTYPE,4))],
+                            [Return(Integer(UNKNOWN_TYPE,4))],
                         )
                     ],
                 ),
-                DeclareValue(Name(DUMMYTYPE,"x"), Integer(DUMMYTYPE,3)),
-                Print(CallFn(DUMMYTYPE,Name(DUMMYTYPE,"miscmath"), [Integer(DUMMYTYPE,11), Name(DUMMYTYPE,"x")])),
+                DeclareValue(Name(UNKNOWN_TYPE,"x"), Integer(UNKNOWN_TYPE,3)),
+                Print(CallFn(UNKNOWN_TYPE,Name(UNKNOWN_TYPE,"miscmath"), [Add(UNKNOWN_TYPE,Integer(UNKNOWN_TYPE,2), Add(UNKNOWN_TYPE,Integer(UNKNOWN_TYPE,2), Integer(UNKNOWN_TYPE,7))), Name(UNKNOWN_TYPE,"x")])),
+            ],
+            [
+                Function(
+                    Name(UNKNOWN_TYPE,"miscmath"),
+                    [Name(UNKNOWN_TYPE,"a"), Name(UNKNOWN_TYPE,"b")],
+                    [
+                        IfElse(
+                            Relation(UNKNOWN_TYPE,RelationOp("<"), Name(UNKNOWN_TYPE,"a"), Integer(UNKNOWN_TYPE,8)),
+                            [
+                                Return(
+                                    Multiply(UNKNOWN_TYPE,
+                                        Integer(UNKNOWN_TYPE,7),
+                                        Add(UNKNOWN_TYPE,Name(UNKNOWN_TYPE,"a"), Multiply(UNKNOWN_TYPE,Name(UNKNOWN_TYPE,"a"), Name(UNKNOWN_TYPE,"b"))),
+                                    )
+                                )
+                            ],
+                            [Return(Integer(UNKNOWN_TYPE,4))],
+                        )
+                    ],
+                ),
+                DeclareValue(Name(UNKNOWN_TYPE,"x"), Integer(UNKNOWN_TYPE,3)),
+                Print(CallFn(UNKNOWN_TYPE,Name(UNKNOWN_TYPE,"miscmath"), [Integer(UNKNOWN_TYPE,11), Name(UNKNOWN_TYPE,"x")])),
             ],
         ),
     )

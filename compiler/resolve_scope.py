@@ -1,4 +1,4 @@
-# resolve.py
+# resolve_scope.py
 """Resolve variable scope across entire program AST: replace each variable definition or use with an
 explicit Global or Local classification (by subtituting in new Local and Global subclasses for objects).
 """
@@ -34,7 +34,7 @@ def resolve_scope_statements(statements: list[Statement], scope: Scope = Scope()
 
 def resolve_scope_statement(s: Statement, scope: Scope) -> Statement:
     """Resolve all variable scopes in this statement (including recursively on contained statement blocks
-    if relevenat). For example, the generic Declare class becomes GlobalVar or LocalVar."""
+    if relevant). For example, the generic Declare class becomes GlobalVar or LocalVar."""
     # print("DEBUG: "+str(s))
     match s:
         case Print(x):
@@ -80,48 +80,47 @@ def resolve_scope_expr(e: Expression, scope: Scope) -> Expression:
     match e:
         case Name(t, x):
             if scope.getscope(x) == "local":
-                return LocalName(DUMMYTYPE, x)
+                return LocalName(t, x)
             elif scope.getscope(x) == "global":
-                return GlobalName(DUMMYTYPE, x)
+                return GlobalName(t, x)
             else:
                 raise RuntimeError("Name %s referenced before definition" % x)
         case Add(t, x, y):
-            return Add(DUMMYTYPE, 
+            return Add(t, 
                 resolve_scope_expr(x, scope),
                 resolve_scope_expr(y, scope),
             )
         case Multiply(t, x, y):
-            return Multiply(DUMMYTYPE, 
+            return Multiply(t, 
                 resolve_scope_expr(x, scope),
                 resolve_scope_expr(y, scope),
             )
         case Subtract(t, x, y):
-            return Subtract(DUMMYTYPE, 
+            return Subtract(t, 
                 resolve_scope_expr(x, scope),
                 resolve_scope_expr(y, scope),
             )
         case Divide(t, x, y):
-            return Divide(DUMMYTYPE, 
+            return Divide(t, 
                 resolve_scope_expr(x, scope),
                 resolve_scope_expr(y, scope),
             )
         case Modulo(t, x, y):
-            return Modulo(DUMMYTYPE, 
+            return Modulo(t, 
                 resolve_scope_expr(x, scope),
                 resolve_scope_expr(y, scope),
             )
         case CallFn(t, name, params):
             # resolve scope of any variable passed as parameter
-            return CallFn(DUMMYTYPE, name, [resolve_scope_expr(p, scope) for p in params])
+            return CallFn(t, name, [resolve_scope_expr(p, scope) for p in params])
         case Relation(t, op, left, right):
-            return Relation(DUMMYTYPE, op, resolve_scope_expr(left, scope), resolve_scope_expr(right, scope))
+            return Relation(t, op, resolve_scope_expr(left, scope), resolve_scope_expr(right, scope))
         case Integer() | RelationOp():
             return e
         case _:
             raise RuntimeError(f"Unhandled resolve_scope Expression {e}")
 
 
-# prog = Program([While(Relation(RelationOp("<"), Name(DUMMYTYPE, "x"), Integer(DUMMYTYPE, 5)),[Return(Integer(DUMMYTYPE, 5))])])
 # print(prog)
 # print(format_program(resolve_scopes(prog)))
 # quit()
@@ -132,38 +131,38 @@ def resolve_scope_expr(e: Expression, scope: Scope) -> Expression:
 if __name__ == "__main__":
     ast = Program(
         [
-            Declare(Name(DUMMYTYPE, "x")),
-            Assign(Name(DUMMYTYPE, "x"), Integer(DUMMYTYPE, 42)),
+            Declare(Name(TEST_TYPE, "x")),
+            Assign(Name(TEST_TYPE, "x"), Integer(TEST_TYPE, 42)),
             Function(
-                Name(DUMMYTYPE, "f"),
-                [Name(DUMMYTYPE, "y")],
-                [Declare(Name(DUMMYTYPE, "t")), Assign(Name(DUMMYTYPE, "t"), Multiply(DUMMYTYPE,Name(DUMMYTYPE, "x"), Name(DUMMYTYPE, "y"))), Return(Name(DUMMYTYPE, "t"))],
+                Name(TEST_TYPE, "f"),
+                [Name(TEST_TYPE, "y")],
+                [Declare(Name(TEST_TYPE, "t")), Assign(Name(TEST_TYPE, "t"), Multiply(TEST_TYPE,Name(TEST_TYPE, "x"), Name(TEST_TYPE, "y"))), Return(Name(TEST_TYPE, "t"))],
             ),
             Function(
-                Name(DUMMYTYPE, "g"),
-                [Name(DUMMYTYPE, "x")],
-                [Return(Name(DUMMYTYPE, "x"))],
+                Name(TEST_TYPE, "g"),
+                [Name(TEST_TYPE, "x")],
+                [Return(Name(TEST_TYPE, "x"))],
             ),
             # CHECK: The 'x' in h(z) should be global x, as the local x from g(x) was for that function only...
             Function(
-                Name(DUMMYTYPE, "h"),
-                [Name(DUMMYTYPE, "z")],
-                [Return(Name(DUMMYTYPE, "x"))],
+                Name(TEST_TYPE, "h"),
+                [Name(TEST_TYPE, "z")],
+                [Return(Name(TEST_TYPE, "x"))],
             ),
             IfElse(
-                Relation(DUMMYTYPE,RelationOp("=="), Name(DUMMYTYPE, "x"), Integer(DUMMYTYPE, 5)),
+                Relation(TEST_TYPE,RelationOp("=="), Name(TEST_TYPE, "x"), Integer(TEST_TYPE, 5)),
                 [  # CHECK: this x should be local because it's declared inside an If
-                    Declare(Name(DUMMYTYPE, "x")),
-                    Assign(Name(DUMMYTYPE, "x"), Integer(DUMMYTYPE, 13)),
-                    Print(CallFn(DUMMYTYPE,Name(DUMMYTYPE, "f"), [Name(DUMMYTYPE, "x")])),
+                    Declare(Name(TEST_TYPE, "x")),
+                    Assign(Name(TEST_TYPE, "x"), Integer(TEST_TYPE, 13)),
+                    Print(CallFn(TEST_TYPE,Name(TEST_TYPE, "f"), [Name(TEST_TYPE, "x")])),
                 ],
                 [
                     # CHECK: this x should be global again since x is not declared locally in the else
-                    Print(Name(DUMMYTYPE, "x"))
+                    Print(Name(TEST_TYPE, "x"))
                 ],
             ),
             # CHECK: this x should be global
-            Print(Name(DUMMYTYPE, "x")),
+            Print(Name(TEST_TYPE, "x")),
         ]
     )
     # print(ast)
@@ -174,29 +173,29 @@ if __name__ == "__main__":
 
     assert resolve_scopes(ast) == Program(
         [
-            GlobalVar(Name(DUMMYTYPE, "x")),
-            Assign(GlobalName(DUMMYTYPE, "x"), Integer(DUMMYTYPE, 42)),
+            GlobalVar(Name(TEST_TYPE, "x")),
+            Assign(GlobalName(TEST_TYPE, "x"), Integer(TEST_TYPE, 42)),
             Function(
-                Name(DUMMYTYPE, "f"),
-                [Name(DUMMYTYPE, "y")],
+                Name(TEST_TYPE, "f"),
+                [Name(TEST_TYPE, "y")],
                 [
-                    LocalVar(Name(DUMMYTYPE, "t")),
-                    Assign(LocalName(DUMMYTYPE, "t"), Multiply(DUMMYTYPE,GlobalName(DUMMYTYPE, "x"), LocalName(DUMMYTYPE, "y"))),
-                    Return(LocalName(DUMMYTYPE, "t")),
+                    LocalVar(Name(TEST_TYPE, "t")),
+                    Assign(LocalName(TEST_TYPE, "t"), Multiply(TEST_TYPE,GlobalName(TEST_TYPE, "x"), LocalName(TEST_TYPE, "y"))),
+                    Return(LocalName(TEST_TYPE, "t")),
                 ],
             ),
-            Function(Name(DUMMYTYPE, "g"), [Name(DUMMYTYPE, "x")], statements=[Return(LocalName(DUMMYTYPE, "x"))]),
-            Function(Name(DUMMYTYPE, "h"), [Name(DUMMYTYPE, "z")], statements=[Return(GlobalName(DUMMYTYPE, "x"))]),
+            Function(Name(TEST_TYPE, "g"), [Name(TEST_TYPE, "x")], statements=[Return(LocalName(TEST_TYPE, "x"))]),
+            Function(Name(TEST_TYPE, "h"), [Name(TEST_TYPE, "z")], statements=[Return(GlobalName(TEST_TYPE, "x"))]),
             IfElse(
-                Relation(DUMMYTYPE,RelationOp("=="), GlobalName(DUMMYTYPE, "x"), Integer(DUMMYTYPE, 5)),
+                Relation(TEST_TYPE,RelationOp("=="), GlobalName(TEST_TYPE, "x"), Integer(TEST_TYPE, 5)),
                 [
-                    LocalVar(Name(DUMMYTYPE, "x")),
-                    Assign(LocalName(DUMMYTYPE, "x"), Integer(DUMMYTYPE, 13)),
-                    Print(CallFn(DUMMYTYPE,Name(DUMMYTYPE, "f"), [LocalName(DUMMYTYPE, "x")])),
+                    LocalVar(Name(TEST_TYPE, "x")),
+                    Assign(LocalName(TEST_TYPE, "x"), Integer(TEST_TYPE, 13)),
+                    Print(CallFn(TEST_TYPE,Name(TEST_TYPE, "f"), [LocalName(TEST_TYPE, "x")])),
                 ],
-                [Print(GlobalName(DUMMYTYPE, "x"))],
+                [Print(GlobalName(TEST_TYPE, "x"))],
             ),
-            Print(GlobalName(DUMMYTYPE, "x")),
+            Print(GlobalName(TEST_TYPE, "x")),
         ]
     )
 
@@ -204,11 +203,11 @@ if __name__ == "__main__":
     ast = Program(
         [
             Function(
-                Name(DUMMYTYPE, "f"),
-                [Name(DUMMYTYPE, "y")],
-                [Declare(Name(DUMMYTYPE, "t")), Assign(Name(DUMMYTYPE, "t"), Multiply(DUMMYTYPE,Name(DUMMYTYPE, "x"), Name(DUMMYTYPE, "y"))), Return(Name(DUMMYTYPE, "t"))],
+                Name(TEST_TYPE, "f"),
+                [Name(TEST_TYPE, "y")],
+                [Declare(Name(TEST_TYPE, "t")), Assign(Name(TEST_TYPE, "t"), Multiply(TEST_TYPE,Name(TEST_TYPE, "x"), Name(TEST_TYPE, "y"))), Return(Name(TEST_TYPE, "t"))],
             ),
-            Print(Name(DUMMYTYPE, "t")),
+            Print(Name(TEST_TYPE, "t")),
         ]
     )
     #    print("----\n%s" % format_program(ast))

@@ -36,9 +36,9 @@ def unscript_toplevel(prog: Program, argmode: bool=False) -> Program:
         # Assumes this will be linked to a wrapper that passes argc,arg1,arg2 to this user code function
         # The following resolve_scope compiler pass will see those arg variables being used in user code,
         #   match them to the mainuser(argc,arg1,arg2) function signature, and scope them as local variables
-        newprog.append(Function(Name(DUMMYTYPE,"mainuser"), [Name(DUMMYTYPE,"argc"), Name(DUMMYTYPE,"arg1"), Name(DUMMYTYPE,"arg2")], main))
+        newprog.append(Function(Name(Type("int"),"mainuser"), [Name(Type("int"),"argc"), Name(TEST_TYPE,"arg1"), Name(TEST_TYPE,"arg2")], main))
     else: 
-        newprog.append(Function(Name(DUMMYTYPE,"main"), [], main))
+        newprog.append(Function(Name(Type("int"),"main"), [], main))
     return Program(newprog)
 
 
@@ -48,22 +48,22 @@ def unscript_toplevel(prog: Program, argmode: bool=False) -> Program:
 if __name__ == "__main__":
     ast = Program(
         [
-            Declare(Name(DUMMYTYPE,"x")),
-            Assign(Name(DUMMYTYPE,"x"), Integer(DUMMYTYPE,42)),
+            Declare(Name(TEST_TYPE,"x")),
+            Assign(Name(TEST_TYPE,"x"), Integer(TEST_TYPE,42)),
             Function(
-                Name(DUMMYTYPE,"f"),
-                [Name(DUMMYTYPE,"y")],
-                [Declare(Name(DUMMYTYPE,"t")), Assign(Name(DUMMYTYPE,"t"), Multiply(DUMMYTYPE, Name(DUMMYTYPE,"x"), Name(DUMMYTYPE,"y"))), Return(Name(DUMMYTYPE,"t"))],
+                Name(TEST_TYPE,"f"),
+                [Name(TEST_TYPE,"y")],
+                [Declare(Name(TEST_TYPE,"t")), Assign(Name(TEST_TYPE,"t"), Multiply(TEST_TYPE, Name(TEST_TYPE,"x"), Name(TEST_TYPE,"y"))), Return(Name(TEST_TYPE,"t"))],
             ),
             IfElse(
-                Relation(DUMMYTYPE, RelationOp("=="), Name(DUMMYTYPE,"x"), Integer(DUMMYTYPE,5)),
+                Relation(TEST_TYPE, RelationOp("=="), Name(TEST_TYPE,"x"), Integer(TEST_TYPE,5)),
                 [
-                    Declare(Name(DUMMYTYPE,"x")),
-                    Assign(Name(DUMMYTYPE,"x"), Integer(DUMMYTYPE,13)),
+                    Declare(Name(TEST_TYPE,"x")),
+                    Assign(Name(TEST_TYPE,"x"), Integer(TEST_TYPE,13)),
                 ],
-                [Print(Name(DUMMYTYPE,"x"))],
+                [Print(Name(TEST_TYPE,"x"))],
             ),
-            Print(Name(DUMMYTYPE,"x")),
+            Print(Name(TEST_TYPE,"x")),
         ]
     )
     #    print(format_program(ast))
@@ -74,27 +74,27 @@ if __name__ == "__main__":
 
     assert prog == Program(
         [
-            GlobalVar(Name(DUMMYTYPE,"x")),
+            GlobalVar(Name(TEST_TYPE,"x")),
             Function(
-                Name(DUMMYTYPE,"f"),
-                [Name(DUMMYTYPE,"y")],
+                Name(TEST_TYPE,"f"),
+                [Name(TEST_TYPE,"y")],
                 [
-                    LocalVar(Name(DUMMYTYPE,"t")),
-                    Assign(LocalName(DUMMYTYPE,"t"), Multiply(DUMMYTYPE, GlobalName(DUMMYTYPE,"x"), LocalName(DUMMYTYPE,"y"))),
-                    Return(LocalName(DUMMYTYPE,"t")),
+                    LocalVar(Name(TEST_TYPE,"t")),
+                    Assign(LocalName(TEST_TYPE,"t"), Multiply(TEST_TYPE, GlobalName(TEST_TYPE,"x"), LocalName(TEST_TYPE,"y"))),
+                    Return(LocalName(TEST_TYPE,"t")),
                 ],
             ),
             Function(
-                Name(DUMMYTYPE,"main"),
+                Name(Type("int"),"main"),
                 [],
                 [
-                    Assign(GlobalName(DUMMYTYPE,"x"), Integer(DUMMYTYPE,42)),
+                    Assign(GlobalName(TEST_TYPE,"x"), Integer(TEST_TYPE,42)),
                     IfElse(
-                        Relation(DUMMYTYPE,RelationOp("=="), GlobalName(DUMMYTYPE,"x"), Integer(DUMMYTYPE,5)),
-                        [LocalVar(Name(DUMMYTYPE,"x")), Assign(LocalName(DUMMYTYPE,"x"), Integer(DUMMYTYPE,13))],
-                        [Print(GlobalName(DUMMYTYPE,"x"))],
+                        Relation(TEST_TYPE,RelationOp("=="), GlobalName(TEST_TYPE,"x"), Integer(TEST_TYPE,5)),
+                        [LocalVar(Name(TEST_TYPE,"x")), Assign(LocalName(TEST_TYPE,"x"), Integer(TEST_TYPE,13))],
+                        [Print(GlobalName(TEST_TYPE,"x"))],
                     ),
-                    Print(GlobalName(DUMMYTYPE,"x")),
+                    Print(GlobalName(TEST_TYPE,"x")),
                 ],
             ),
         ]

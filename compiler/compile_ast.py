@@ -17,6 +17,7 @@ import strconst_enum
 import elif_rewrite
 import for_rewrite
 import foldconstants
+import resolve_type
 import resolve_scope
 import unscript
 import defaultreturns
@@ -54,6 +55,7 @@ def compile(program: Program, llvm_str_output: bool = True, debug: bool = False,
                    ("elif_rewrite", "rewrite if..elif.else clauses as nested if..else", elif_rewrite.elif_program),
                    ("for_rewrite", "rewrite for loops as whiles", for_rewrite.for_program),
                    ("fold constants", "pre-compute math on constants", foldconstants.fold_constants),
+                   ("resolve type", "assign types to expressions", resolve_type.resolve_types),
                    ("deinit", "separate variable declartion from assignment", deinit.deinit_variables),
                    ("strconst", "extract and uniquely number string constants", strconst_enum.strconst_program),
                    ("unscript", "move top-level statements to main() except globalvar and strconst", unscript.unscript_toplevel, argmode),
