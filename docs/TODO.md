@@ -144,3 +144,22 @@ I kept quick and dirty during-class To-Dos and also in quick TODO items at the t
 * [X] if..elseif..elseif..else -> nested if
 * [x] for.. -> while
 
+## Scratchpad notes
+
+Thinking about types, their challenges, and questions about approach:
+* How to map types down to machine level
+* What operations do we want to support-- do we allow adding to a char type for example?
+* Paths to arrays/lists/vectors -- what is their representation at a low level-- is it a block of memory, and if so how do you grow and shrink it?
+* What about structs? (single type with multiple parts)
+* Do you build to handle related types, for example a mult() function that can take ints or floats or a mix?
+  * Subtypes e.g. int and float inherit from num?
+  * Enums: Concrete list of subtypes e.g. Enum num { int, float, etc }? Give each type its own (add, mult, etc) methods
+
+Impl approaches:
+* Give every expression a type? 
+  * Is this an attribute of all expressions, or a wrapper class such as TypedExpression(str: typename, expr: expression).
+  * the current base Expression class has no attributes (just inherited classes such as MathOp, CallFn, etc add attributes)
+
+
+
+
