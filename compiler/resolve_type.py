@@ -87,6 +87,8 @@ def resolve_type_expr(e: Expression) -> Expression:
             ry = resolve_type_expr(y)   
             if rx.wtype == Type('int') and ry.wtype == Type('int'):
                 return Add(Type("int"),rx,ry)
+            elif rx.wtype == Type('float') and ry.wtype == Type('float'):
+                return Add(Type("float"),rx,ry)
             else:
                 raise RuntimeError(f"Mismatched types {rx.wtype.name} + {ry.wtype.name} in {e}")
         case Multiply(t, x, y):
@@ -94,6 +96,8 @@ def resolve_type_expr(e: Expression) -> Expression:
             ry = resolve_type_expr(y)
             if rx.wtype == Type('int') and ry.wtype == Type('int'):
                 return Multiply(Type("int"),rx,ry)
+            elif rx.wtype == Type('float') and ry.wtype == Type('float'):
+                return Multiply(Type("float"),rx,ry)
             else:
                 raise RuntimeError(f"Unable to infer type in {e}")
         case Subtract(t, x, y):
@@ -101,6 +105,8 @@ def resolve_type_expr(e: Expression) -> Expression:
             ry = resolve_type_expr(y)
             if rx.wtype == Type('int') and ry.wtype == Type('int'):
                 return Subtract(Type("int"),rx,ry)
+            elif rx.wtype == Type('float') and ry.wtype == Type('float'):
+                return Subtract(Type("float"),rx,ry)
             else:
                 raise RuntimeError(f"Unable to infer type in {e}")
         case Divide(t, x, y):
@@ -108,6 +114,8 @@ def resolve_type_expr(e: Expression) -> Expression:
             ry = resolve_type_expr(y)
             if rx.wtype == Type('int') and ry.wtype == Type('int'):
                 return Divide(Type("int"),rx,ry)
+            elif rx.wtype == Type('float') and ry.wtype == Type('float'):
+                return Divide(Type("float"),rx,ry)
             else:
                 raise RuntimeError(f"Unable to infer type in {e}")
         case Modulo(t, x, y):
@@ -115,6 +123,8 @@ def resolve_type_expr(e: Expression) -> Expression:
             ry = resolve_type_expr(y)
             if rx.wtype == Type('int') and ry.wtype == Type('int'):
                 return Modulo(Type("int"),rx,ry)
+            elif rx.wtype == Type('float') and ry.wtype == Type('float'):
+                return Modulo(Type("float"),rx,ry)
             else:
                 raise RuntimeError(f"Unable to infer type in {e}")
         case CallFn(t, name, params):
@@ -127,6 +137,9 @@ def resolve_type_expr(e: Expression) -> Expression:
         case Integer(t, x):
             # this case may be redundant if handled in parser
             return Integer(Type("int"), x)
+        case Float(t, x):
+            # this case may be redundant if handled in parser
+            return Float(Type("float"), x)
         case RelationOp():
             return e
         case _:

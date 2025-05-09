@@ -115,7 +115,7 @@ def resolve_scope_expr(e: Expression, scope: Scope) -> Expression:
             return CallFn(t, name, [resolve_scope_expr(p, scope) for p in params])
         case Relation(t, op, left, right):
             return Relation(t, op, resolve_scope_expr(left, scope), resolve_scope_expr(right, scope))
-        case Integer() | RelationOp():
+        case Integer() | Float() | RelationOp():
             return e
         case _:
             raise RuntimeError(f"Unhandled resolve_scope Expression {e}")

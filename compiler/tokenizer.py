@@ -71,6 +71,7 @@ class Token:
 def token_list_eq(a: list[Token], b: list[Token]):
     """Check if two lists of tokens are equal, meaning the type and value fields
     match up, ignoring mismatch of irrelevant fields like sourceline."""
+    #print(a,b) # DEBUG
     if len(a) != len(b):
         return False
     for i, toka in enumerate(a):
@@ -85,7 +86,15 @@ def token_eq(a: Token, b: Token):
     Ignore irrelevant fields like sourceline."""
     return a.toktype == b.toktype and a.tokvalue == b.tokvalue
 
-
+def isfloat(s: str) -> bool:
+    """Check if string s is a float literal (contains only numeric digits or a '.', 
+    and the '.' cannot be the first character)"""
+    for c in s:
+        if c not in "0123456789.":
+            return False
+    if s.count(".") == 1 and s[0] != ".":
+        return True
+    
 def tokenize(text: str) -> list[Token]:
     """Primary function to tokenize source into Token() objects for later parsing."""
     tokens = []
@@ -109,11 +118,14 @@ def tokenize(text: str) -> list[Token]:
                 i += 1
             substr = ""
             continue
-        if substr.isnumeric():
-            while i + 1 < len(text) and text[i + 1].isnumeric():
+        if substr.isnumeric() or isfloat(substr):
+            while i + 1 < len(text) and (text[i + 1].isnumeric() or text[i + 1] == "."):
                 i += 1
                 substr += text[i]
-            tokens.append(Token("INTEGER", substr, sourceline, i - sourcecoldelta))
+            if isfloat(substr):
+                tokens.append(Token("FLOAT", substr, sourceline, i - sourcecoldelta))
+            else:
+                tokens.append(Token("INTEGER", substr, sourceline, i - sourcecoldelta))
             substr = ""
         elif substr.isalpha():
             # first char of name must be alpabetic, later can be alphanumeric
@@ -181,17 +193,6 @@ if __name__ == "__main__":
     printcolor("Running tokenizer unit tests...")
 
     assert token_list_eq(
-        tokenize("print 123 + xy;"),
-        [
-            Token("PRINT", "print"),
-            Token("INTEGER", "123"),
-            Token("PLUS", "+"),
-            Token("NAME", "xy"),
-            Token("SEMI", ";"),
-        ],
-    )
-
-    assert token_list_eq(
         tokenize('+ - * / % = < > <= >= != { } ( ) , ; == #'),
         [
             Token("PLUS", "+"),
@@ -228,6 +229,28 @@ if __name__ == "__main__":
             Token("FOR", "for"),
             Token("RETURN", "return"),
             Token("FUNC", "func"),
+        ],
+    )
+
+    assert token_list_eq(
+        tokenize("print 123 + xy;"),
+        [
+            Token("PRINT", "print"),
+            Token("INTEGER", "123"),
+            Token("PLUS", "+"),
+            Token("NAME", "xy"),
+            Token("SEMI", ";"),
+        ],
+    )
+
+    assert token_list_eq(
+        tokenize("var f = 1.5;"),
+        [
+            Token("VAR", "var"),
+            Token("NAME", "f"),
+            Token("ASSIGN", "="),
+            Token("FLOAT", "1.5"),
+            Token("SEMI", ";"),
         ],
     )
 

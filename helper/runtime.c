@@ -13,3 +13,8 @@ int _print_int(int x) {
   printf("%i\n", x);
   return 0;
 }
+
+int _print_float(double f) {
+  printf("%lf\n", f);
+  return 0;
+}

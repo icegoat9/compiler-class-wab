@@ -151,7 +151,7 @@ def fmt_expr(e: Expression, nested: bool = False) -> str:
     if FORMAT_DEBUG:
         print(e)
     match e:
-        case Integer(t, n):
+        case Integer(t, n) | Float(t, n):
             if FORMAT_SHOWTYPE:
                 return f"{fmt_type(t)}{n}"
             return f"{n}"

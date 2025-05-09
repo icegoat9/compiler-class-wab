@@ -1,4 +1,5 @@
 declare i32 @_print_int(i32)
+declare i32 @_print_float(double)
 declare i32 @printf(ptr noundef, ...)
 
 define i32 @fact(i32 %.arg_n) {

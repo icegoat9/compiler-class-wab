@@ -69,7 +69,7 @@ def expr_instructions(expr: Expression) -> EXPR:
     """Transform a single expression to its EXPR() state machine representation. This calls itself
     recursively on parameters of many expressions, to process nested expressions."""
     match expr:
-        case Integer(t, x):
+        case Integer(t, x) | Float(t, x):
             return EXPR(t, [PUSH(x)])
         case Add(t, left, right):
             return EXPR(t, expr_instructions(left).instructions + expr_instructions(right).instructions + [ADD()])

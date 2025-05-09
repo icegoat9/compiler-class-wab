@@ -96,6 +96,10 @@ class Scope:
 class Integer(Expression):
     n : int
 
+@dataclass
+class Float(Expression):
+    n : float
+
 # Variable references (e.g., 'x')
 class GlobalName(Name): pass
 class LocalName(Name): pass

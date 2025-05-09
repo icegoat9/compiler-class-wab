@@ -62,7 +62,7 @@ def fold_expression(e: Expression) -> Expression:
     """Perform the work of actively computing constant math within the given expression and
     returning a simplified expression."""
     match e:
-        case Integer() | Name() | RelationOp():
+        case Integer() | Float() | Name() | RelationOp():
             return e
         # COMMENTED OUT, as this is rewritten at the parser level to be Subtract(0,x) so Negate doesn't reach here?
         #        case Negate(x):

@@ -157,6 +157,8 @@ class Parser:
             self.expect("RPAREN")
         elif self.checkahead("INTEGER"):
             term = self.parse_integer()
+        elif self.checkahead("FLOAT"):
+            term = self.parse_float()
         elif self.checkahead("SUB"):
             # unary negation operator since not in the middle of a binop expression
             # (if we were processing '5-4', this sectin of code would trigger on INTEGER not SUB, and then below would trigger on SUB)
@@ -352,6 +354,10 @@ class Parser:
         tok = self.expect("INTEGER")
         return Integer(UNKNOWN_TYPE, int(tok.tokvalue))
 
+    def parse_float(self) -> Float:
+        tok = self.expect("FLOAT")
+        return Float(UNKNOWN_TYPE, float(tok.tokvalue))
+
     def parse_name(self) -> Name:
         tok = self.expect("NAME")
         return Name(UNKNOWN_TYPE, tok.tokvalue)
@@ -478,6 +484,7 @@ if __name__ == "__main__":
     tests = {
         "print 1;": Print(Integer(UNKNOWN_TYPE, 1)),
         "var x = 1;": DeclareValue(Name(UNKNOWN_TYPE, "x"), Integer(UNKNOWN_TYPE, 1)),
+        "var x = 1.5;": DeclareValue(Name(UNKNOWN_TYPE, "x"), Float(UNKNOWN_TYPE, 1.5)),
 #        "var x;": Declare(Name(UNKNOWN_TYPE, "x")),
         "var x int;": Declare(Name(Type("int"), "x")),
         "while 1 < 1 { }": While(Relation(UNKNOWN_TYPE, RelationOp("<"), Integer(UNKNOWN_TYPE, 1), Integer(UNKNOWN_TYPE, 1)), []),

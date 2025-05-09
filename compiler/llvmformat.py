@@ -14,25 +14,31 @@ as well as adding human-readable formatting such as block indents.
 from model import *
 from printcolor import *
 
-def format_llvm(program : Program) -> str:
-    output = [ 'declare i32 @_print_int(i32)', 'declare i32 @printf(ptr noundef, ...)']
+
+def format_llvm(program: Program) -> str:
+    output = [
+        "declare i32 @_print_int(i32)",
+        "declare i32 @_print_float(double)",
+        "declare i32 @printf(ptr noundef, ...)",
+    ]
     # output = [ 'declare i32 @_print_int(i32)', 'declare i32 @_scan_int()' ]
     for s in program.statements:
         match s:
             case GlobalVar(name):
-                output.append(f'@{name.str} = global i32 0')
+                output.append(f"@{name.str} = global i32 0")
             case StrConstNum(n, txt):
                 ## TODO: revise len(txt) to handle escape characters such as \13, \n, etc
                 output.append(f'@.str.{n} = private unnamed_addr constant [{len(txt) + 2} x i8] c"{txt}\n\\00"')
             case Function(name, params, body):
-                pstr = ', '.join([f'i32 %{p.str}' for p in params])
-                output.append(f'\ndefine i32 @{name.str}({pstr}) {{')
+                pstr = ", ".join([f"i32 %{p.str}" for p in params])
+                output.append(f"\ndefine i32 @{name.str}({pstr}) {{")
                 for block in body:
-                    output.append(f'{block.label}:')
+                    output.append(f"{block.label}:")
                     for inst in block.instructions:
-                        output.append(f'    {inst.op}')
-                output.append('}')
-    return '\n'.join(output)
+                        output.append(f"    {inst.op}")
+                output.append("}")
+    return "\n".join(output)
+
 
 ######################################################
 # Tests (if run directly vs. imported as module)
