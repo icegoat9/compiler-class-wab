@@ -38,7 +38,7 @@ class Statement:
     pass
 
 # placeholder for expressions without typing implemented yet
-DUMMYTYPE = "DUMMYTYPE"
+DUMMYTYPE = "?"
 
 @dataclass
 class Expression:

@@ -7,6 +7,9 @@ all intermediate compiler steps, and have human-readable expressions of all clas
 involved."""
 
 # Cleanup TODO
+# [ ] display type info for values...
+# [ ] add type info for all expressions
+# [ ] generalize use of FORMAT_SHOWTYPE vs. this hard-coding
 # [X] docstrings
 # [X] conceptual description / high-level comments
 # [ ] add assertion-based unit tests? but this will be brittle as format output is for human
@@ -25,6 +28,7 @@ from printcolor import *
 
 FORMAT_TAB = "   "  # string per indentation level
 FORMAT_DEBUG = False
+FORMAT_SHOWTYPE = True # show type info
 
 # Format a complete program
 def format_program(program: Program) -> str:
@@ -147,52 +151,73 @@ def fmt_expr(e: Expression, nested: bool = False) -> str:
     if FORMAT_DEBUG:
         print(e)
     match e:
-        case Integer(n):
-            return str(n)
-        case GlobalName(x):
-            return "global[%s]" % x
-        case LocalName(x):
-            return "local[%s]" % x
-        case Name(x) | RelationOp(x):
+        case Integer(t, n):
+            if FORMAT_SHOWTYPE:
+                return f"{{{t}}}{n}"
+            return f"{n}"
+        case GlobalName(t, x):
+            if FORMAT_SHOWTYPE:
+               return "{{{t}}}global[{x}]"
+            return "global[{x}]"
+        case LocalName(t, x):
+            if FORMAT_SHOWTYPE:
+                return f"{{{t}}}local[{x}]"
+            return f"local[{x}]"
+        case Name(t, x) | RelationOp(t, x):
+            if FORMAT_SHOWTYPE:
+                return f"{{{t}}}{x}"
             return x
         #        case Negate(left):
         #            strtxt = "-%s" % (fmt_expr(left, nested=True))
         #            if nested:
         #                strtxt = "(%s)" % strtxt
         #            return strtxt
-        case Add(left, right):
+        case Add(t, left, right):
             strtxt = "%s + %s" % (fmt_expr(left, nested=True), fmt_expr(right, nested=True))
+            if FORMAT_SHOWTYPE:
+                strtxt = f"{{{t}}}({strtxt})"
             if nested:
                 strtxt = "(%s)" % strtxt
             return strtxt
-        case Multiply(left, right):
+        case Multiply(t, left, right):
             strtxt = "%s * %s" % (fmt_expr(left, nested=True), fmt_expr(right, nested=True))
+            if FORMAT_SHOWTYPE:
+                strtxt = f"{{{t}}}({strtxt})"
             if nested:
                 strtxt = "(%s)" % strtxt
             return strtxt
-        case Subtract(left, right):
+        case Subtract(t, left, right):
             strtxt = "%s - %s" % (fmt_expr(left, nested=True), fmt_expr(right, nested=True))
+            if FORMAT_SHOWTYPE:
+                strtxt = f"{{{t}}}({strtxt})"
             if nested:
                 strtxt = "(%s)" % strtxt
             return strtxt
-        case Divide(left, right):
+        case Divide(t, left, right):
             strtxt = "%s / %s" % (fmt_expr(left, nested=True), fmt_expr(right, nested=True))
+            if FORMAT_SHOWTYPE:
+                strtxt = f"{{{t}}}({strtxt})"
             if nested:
                 strtxt = "(%s)" % strtxt
             return strtxt
-        case Modulo(left, right):
+        case Modulo(t, left, right):
             strtxt = "%s % %s" % (fmt_expr(left, nested=True), fmt_expr(right, nested=True))
+            if FORMAT_SHOWTYPE:
+                strtxt = f"{{{t}}}({strtxt})"
             if nested:
                 strtxt = "(%s)" % strtxt
             return strtxt
         #    elif isinstance(e, Variable):
         #        return fmt_expr(e.name)
-        case Relation(op, left, right):
+        case Relation(t, op, left, right):
             return "%s %s %s" % (fmt_expr(left, nested=True), fmt_expr(op), fmt_expr(right, nested=True))
-        case CallFn(name, params):
+        case CallFn(t, name, params):
             # apply fmt_expr() to each parameter in list, then join with ,
             paramstr = ", ".join(map(fmt_expr, params))
-            return "%s(%s)" % (fmt_expr(name), paramstr)
+            strtxt = "%s(%s)" % (fmt_expr(name), paramstr)
+            if FORMAT_SHOWTYPE:
+                strtxt = f"{{{t}}}" + strtxt
+            return strtxt
         # Now add cases for 'expression instructions' , the 'machine' section of model.py
         # Note: looking at someone else's approach, realized I don't have to call out each case and
         #       can use repr(e) for all INSTRUCTIONs
@@ -214,7 +239,7 @@ def fmt_expr(e: Expression, nested: bool = False) -> str:
             return "LLVM('%s')" % op
         case INSTRUCTION():
             return repr(e)
-        case EXPR(lst):
+        case EXPR(t, lst):
             # return repr(e)
             # TODO: not sure how to best represent this cleanly
             # return "EXPR(%s)" % ", ".join([repr(x) for x in lst])

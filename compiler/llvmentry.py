@@ -26,7 +26,7 @@ def llvm_entry_program(program: Program) -> Program:
                 allocate_code = []
                 for p in params:
                     localarg = f".arg_{p.str}"
-                    llvm_params.append(Name(localarg))
+                    llvm_params.append(Name(DUMMYTYPE,localarg))
                     allocate_code.append(LLVM(f"%{p.str} = alloca i32"))
                     allocate_code.append(LLVM(f"store i32 %{localarg}, i32* %{p.str}"))
                 allocate_code.append(LLVM(f"br label %{body[0].label}"))

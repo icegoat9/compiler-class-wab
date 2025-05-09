@@ -1,4 +1,5 @@
 declare i32 @_print_int(i32)
+declare i32 @printf(ptr noundef, ...)
 @x = global i32 0
 @y = global i32 0
 @min = global i32 0

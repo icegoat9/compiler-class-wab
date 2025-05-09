@@ -1,4 +1,5 @@
 declare i32 @_print_int(i32)
+declare i32 @printf(ptr noundef, ...)
 
 define i32 @factre(i32 %.arg_x, i32 %.arg_n) {
 entry:

@@ -44,13 +44,13 @@ def statement_instructions(s: Statement) -> Statement:
             return STATEMENT([PRINT_STR_CONST(n)])
         case StrConstNum(n, txt):
             return s # for now, treat like global variable declaration and ignore
-        case Assign(GlobalName(x), y):
+        case Assign(GlobalName(t, x), y):
             return STATEMENT(y.instructions + [STORE_GLOBAL(x)])
-        case Assign(LocalName(x), y):
+        case Assign(LocalName(t, x), y):
             return STATEMENT(y.instructions + [STORE_LOCAL(x)])
-        case LocalName(x):
+        case LocalName(t, x):
             return STATEMENT([LOAD_LOCAL(x.str)])
-        case GlobalName(x):
+        case GlobalName(t, x):
             return STATEMENT([LOAD_GLOBAL(x.str)])
         case LocalVar(x):
             return STATEMENT([LOCAL(x.str)])
