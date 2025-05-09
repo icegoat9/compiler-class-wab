@@ -69,18 +69,18 @@ def expr_instructions(expr: Expression) -> EXPR:
     """Transform a single expression to its EXPR() state machine representation. This calls itself
     recursively on parameters of many expressions, to process nested expressions."""
     match expr:
-        case Integer(x):
-            return EXPR([PUSH(x)])
-        case Add(left, right):
-            return EXPR(expr_instructions(left).instructions + expr_instructions(right).instructions + [ADD()])
-        case Multiply(left, right):
-            return EXPR(expr_instructions(left).instructions + expr_instructions(right).instructions + [MUL()])
-        case Subtract(left, right):
-            return EXPR(expr_instructions(left).instructions + expr_instructions(right).instructions + [SUB()])
-        case Divide(left, right):
-            return EXPR(expr_instructions(left).instructions + expr_instructions(right).instructions + [DIV()])
-        case Modulo(left, right):
-            return EXPR(expr_instructions(left).instructions + expr_instructions(right).instructions + [MOD()])
+        case Integer(t, x):
+            return EXPR(t, [PUSH(x)])
+        case Add(t, left, right):
+            return EXPR(t, expr_instructions(left).instructions + expr_instructions(right).instructions + [ADD()])
+        case Multiply(t, left, right):
+            return EXPR(t, expr_instructions(left).instructions + expr_instructions(right).instructions + [MUL()])
+        case Subtract(t, left, right):
+            return EXPR(t, expr_instructions(left).instructions + expr_instructions(right).instructions + [SUB()])
+        case Divide(t, left, right):
+            return EXPR(t, expr_instructions(left).instructions + expr_instructions(right).instructions + [DIV()])
+        case Modulo(t, left, right):
+            return EXPR(t, expr_instructions(left).instructions + expr_instructions(right).instructions + [MOD()])
         # COMMENTED OUT -- already done earlier at parser level to rewrite to Subtract(0,x) so won't reach here
         #        case Negate(left):
         #            # rewrite -x as 0-x expression, representing '(0-x)'
@@ -88,34 +88,34 @@ def expr_instructions(expr: Expression) -> EXPR:
         #            return EXPR([PUSH(0)] + expr_instructions(left).instructions + [ SUB() ])
         case RelationOp(x):
             if x == "<":
-                return EXPR([LT()])
+                return EXPR(DUMMYTYPE,[LT()])
             elif x == "==":
-                return EXPR([EQ()])
+                return EXPR(DUMMYTYPE,[EQ()])
             elif x == ">":
-                return EXPR([GT()])
+                return EXPR(DUMMYTYPE,[GT()])
             elif x == ">=":
-                return EXPR([GTE()])
+                return EXPR(DUMMYTYPE,[GTE()])
             elif x == "<=":
-                return EXPR([LTE()])
+                return EXPR(DUMMYTYPE,[LTE()])
             elif x == "!=":
-                return EXPR([NEQ()])
+                return EXPR(DUMMYTYPE,[NEQ()])
             # Todo: error case?
-        case Relation(op, left, right):
-            return EXPR(
+        case Relation(t, op, left, right):
+            return EXPR(t, 
                 expr_instructions(left).instructions
                 + expr_instructions(right).instructions
                 + expr_instructions(op).instructions
             )
-        case LocalName(x):
-            return EXPR([LOAD_LOCAL(x)])
-        case GlobalName(x):
-            return EXPR([LOAD_GLOBAL(x)])
-        case CallFn(Name(fname), params):
+        case LocalName(t, x):
+            return EXPR(t, [LOAD_LOCAL(x)])
+        case GlobalName(t, x):
+            return EXPR(t, [LOAD_GLOBAL(x)])
+        case CallFn(t, Name(tname, fname), params):
             pushparams = []
             # Push each parameter onto the stack: parameters themselves are expressions
             for p in params:
                 pushparams.extend(expr_instructions(p).instructions)
-            return EXPR(pushparams + [CALL(fname, len(params))])
+            return EXPR(t, pushparams + [CALL(fname, len(params))])
         case _:
             raise RuntimeError("Can't generate EXPR code for Expression %s" % expr)
 
@@ -123,30 +123,33 @@ def expr_instructions(expr: Expression) -> EXPR:
 # Tests (if run directly vs. imported as module)
 
 if __name__ == "__main__":
-    expr = Add(Integer(2), GlobalName("x"))
+    expr = Add(DUMMYTYPE,Integer(DUMMYTYPE,2), GlobalName(DUMMYTYPE,"x"))
     #    print(expr_instructions(expr))
     #    print(EXPR([PUSH(2), LOAD_GLOBAL("x"), ADD()]))
     expr2 = expr_instructions(expr)
     # print(expr2)
     # print("formatted: %s" % fmt_expr(expr2))
-    assert expr2 == EXPR([PUSH(2), LOAD_GLOBAL("x"), ADD()])
+    assert expr2 == EXPR(DUMMYTYPE,[PUSH(2), LOAD_GLOBAL("x"), ADD()])
 
-    assert expr_instructions(Relation(RelationOp("<"), Integer(5), GlobalName("x"))) == EXPR(
+    assert expr_instructions(Relation(DUMMYTYPE,RelationOp("<"), Integer(DUMMYTYPE,5), GlobalName(DUMMYTYPE,"x"))) == EXPR(
+        DUMMYTYPE,
         [PUSH(5), LOAD_GLOBAL("x"), LT()]
     )
 
     # call function f(3,4)
     # print(expr_instructions(CallFn(Name("f"), [Integer(3), Integer(4)])))
-    assert expr_instructions(CallFn(Name("f"), [Integer(3), Integer(4)])) == EXPR([PUSH(3), PUSH(4), CALL("f", 2)])
+    # print(expr_instructions(CallFn(DUMMYTYPE,Name(DUMMYTYPE,"f"), [Integer(DUMMYTYPE,3), Integer(DUMMYTYPE,4)])))
+    # print(EXPR(DUMMYTYPE,[PUSH(3), PUSH(4), CALL("f", 2)]))
+    assert expr_instructions(CallFn(DUMMYTYPE,Name(DUMMYTYPE,"f"), [Integer(DUMMYTYPE,3), Integer(DUMMYTYPE,4)])) == EXPR(DUMMYTYPE,[PUSH(3), PUSH(4), CALL("f", 2)])
 
     # 42 + x
-    a = expr_instructions(Add(Integer(42), LocalName("x")))
-    assert a == EXPR([PUSH(42), LOAD_LOCAL("x"), ADD()])
+    a = expr_instructions(Add(DUMMYTYPE,Integer(DUMMYTYPE,42), LocalName(DUMMYTYPE,"x")))
+    assert a == EXPR(DUMMYTYPE,[PUSH(42), LOAD_LOCAL("x"), ADD()])
 
     # (42 + x) * 65
-    b = expr_instructions(Multiply(Add(Integer(42), LocalName("x")), Integer(65)))
+    b = expr_instructions(Multiply(DUMMYTYPE,Add(DUMMYTYPE,Integer(DUMMYTYPE,42), LocalName(DUMMYTYPE,"x")), Integer(DUMMYTYPE,65)))
     #    print(b)
     #    print(fmt_expr(b))
-    assert b == EXPR([PUSH(42), LOAD_LOCAL("x"), ADD(), PUSH(65), MUL()])
+    assert b == EXPR(DUMMYTYPE,[PUSH(42), LOAD_LOCAL("x"), ADD(), PUSH(65), MUL()])
 
     printcolor("tests PASSED", ansicode.green)
