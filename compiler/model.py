@@ -40,6 +40,11 @@ class Statement:
 # placeholder for expressions without typing implemented yet
 DUMMYTYPE = "?"
 
+# Language data types ("int", "float", etc..)
+@dataclass 
+class Type:
+    name : str
+
 @dataclass
 class Expression:
     wtype : str

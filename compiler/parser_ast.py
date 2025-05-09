@@ -82,7 +82,8 @@ class Parser:
             return tok
         else:
             raise SyntaxError(
-                f"(line {tok.sourceline}, col {tok.sourcecol}) Expected '{token_text[toktype]}', got '{token_text[tok.toktype]}'"
+#                f"(line {tok.sourceline}, col {tok.sourcecol}) Expected '{token_text[toktype]}', got '{token_text[tok.toktype]}'"
+                f"(line {tok.sourceline}, col {tok.sourcecol}) Expected '{toktype}', got '{tok.toktype}'"
             )
 
     # Check if the token N steps ahead (default: current token) is of type toktype,
@@ -249,9 +250,11 @@ class Parser:
     def parse_declare(self) -> Declare:
         self.expect("VAR")
         var = self.expect("NAME")
-        if self.checkahead("SEMI"):
+        if self.checkahead("SEMI",1):
+            # look ahead for ; after type e.g. "var x int ;""
+            t = self.expect("INT")  # TODO: update (hard-coding type to find initially)
             self.expect("SEMI")
-            return Declare(Name(DUMMYTYPE, var.tokvalue))
+            return Declare(Name(Type(t.tokvalue), var.tokvalue))
         else:
             self.expect("ASSIGN")
             value = self.parse_expression()
@@ -288,8 +291,6 @@ class Parser:
                    value_init,
                    value_end,
                    body)
-
-
 
     def parse_if_simple(self) -> IfElse:  # obsolete, replaced by more general below
         self.expect("IF")
@@ -334,15 +335,18 @@ class Parser:
         self.expect("LPAREN")
         params = []
         while self.n < len(self.tokens) and not self.checkahead("RPAREN"):
-            params.append(Name(DUMMYTYPE, self.expect("NAME").tokvalue))
+            n = self.expect("NAME")
+            t = self.expect("INT") # TODO: remove hard-coded type
+            params.append(Name(Type(t.tokvalue), n.tokvalue))
             if not self.checkahead("RPAREN"):
                 # if a ')' is not the following character, expect a comma... TODO: cleaner integration
                 self.expect("COMMA")
         self.expect("RPAREN")
+        t = self.expect("INT")  # TODO: remove hardcoded type
         self.expect("LBRACE")
         body = self.parse_statements()
         self.expect("RBRACE")
-        return Function(Name(DUMMYTYPE, name.tokvalue), params, body)
+        return Function(Name(Type("int"), name.tokvalue), params, body)
 
     def parse_integer(self) -> Integer:
         tok = self.expect("INTEGER")
@@ -442,7 +446,9 @@ if __name__ == "__main__":
     assert Parser(tokenize("print 1;")).parse_print() == Print(Integer(DUMMYTYPE, 1))
     assert_equal_verbose(Parser(tokenize("print 1;")).parse_print(), Print(Integer(DUMMYTYPE, 1)))
     assert Parser(tokenize("var x = 1;")).parse_declare() == DeclareValue(Name(DUMMYTYPE, "x"), Integer(DUMMYTYPE, 1))
-    assert Parser(tokenize("var x;")).parse_declare() == Declare(Name(DUMMYTYPE, "x"))
+    # note that var x; will become invalid once we add types
+    #assert Parser(tokenize("var x;")).parse_declare() == Declare(Name(DUMMYTYPE, "x"))
+    assert Parser(tokenize("var x int;")).parse_declare() == Declare(Name(Type("int"), "x"))
     assert Parser(tokenize("while 1 < 1 { }")).parse_while() == While(
         Relation(DUMMYTYPE, RelationOp("<"), Integer(DUMMYTYPE, 1), Integer(DUMMYTYPE, 1)), []
     )
@@ -460,7 +466,7 @@ if __name__ == "__main__":
         [],
     )
     assert Parser(tokenize("return 1;")).parse_return() == Return(Integer(DUMMYTYPE, 1))
-    assert_equal_verbose(Parser(tokenize("func f(x) { }")).parse_func(), Function(Name(DUMMYTYPE, "f"), [Name(DUMMYTYPE, "x")], []))
+    #assert_equal_verbose(Parser(tokenize("func f(x) { }")).parse_func(), Function(Name(DUMMYTYPE, "f"), [Name(DUMMYTYPE, "x")], []))
 
     assert_equal_verbose(Parser(tokenize("print 1;")).parse_statement(), Print(Integer(DUMMYTYPE, 1)))
 
@@ -472,18 +478,21 @@ if __name__ == "__main__":
     tests = {
         "print 1;": Print(Integer(DUMMYTYPE, 1)),
         "var x = 1;": DeclareValue(Name(DUMMYTYPE, "x"), Integer(DUMMYTYPE, 1)),
-        "var x;": Declare(Name(DUMMYTYPE, "x")),
+#        "var x;": Declare(Name(DUMMYTYPE, "x")),
+        "var x int;": Declare(Name(Type("int"), "x")),
         "while 1 < 1 { }": While(Relation(DUMMYTYPE, RelationOp("<"), Integer(DUMMYTYPE, 1), Integer(DUMMYTYPE, 1)), []),
         "x = 1;": Assign(Name(DUMMYTYPE, "x"), Integer(DUMMYTYPE, 1)),
         "if 1 == 1 { } else { }": IfElifElse(Relation(DUMMYTYPE, RelationOp("=="), Integer(DUMMYTYPE, 1), Integer(DUMMYTYPE, 1)), [], [], []),
         "return 1;": Return(Integer(DUMMYTYPE, 1)),
-        "func f(x) { }": Function(Name(DUMMYTYPE, "f"), [Name(DUMMYTYPE, "x")], []),
+#        "func f(x) { }": Function(Name(DUMMYTYPE, "f"), [Name(DUMMYTYPE, "x")], []),
+        "func f(x int) int { }": Function(Name(Type("int"), "f"), [Name(Type("int"), "x")], []),
         "while 1 < 1 { var x = 1; print 1; }": While(
             Relation(DUMMYTYPE, RelationOp("<"), Integer(DUMMYTYPE, 1), Integer(DUMMYTYPE, 1)),
             [DeclareValue(Name(DUMMYTYPE, "x"), Integer(DUMMYTYPE, 1)), Print(Integer(DUMMYTYPE, 1))],
         ),
         "for i = 1, 2 { print i; }": For(Name(DUMMYTYPE, "i"), Integer(DUMMYTYPE, 1), Integer(DUMMYTYPE, 2), [Print(Name(DUMMYTYPE, "i"))]),
-        "func f(x, y) { print 1; }": Function(Name(DUMMYTYPE, "f"), [Name(DUMMYTYPE, "x"), Name(DUMMYTYPE, "y")], [Print(Integer(DUMMYTYPE, 1))]),
+#        "func f(x, y) { print 1; }": Function(Name(DUMMYTYPE, "f"), [Name(DUMMYTYPE, "x"), Name(DUMMYTYPE, "y")], [Print(Integer(DUMMYTYPE, 1))]),
+        "func f(x int, y int) int { print 1; }": Function(Name(Type("int"), "f"), [Name(Type("int"), "x"), Name(Type("int"), "y")], [Print(Integer(DUMMYTYPE, 1))]),
         "x;": ExprStatement(Name(DUMMYTYPE, "x")),
         "1 + 2;": ExprStatement(Add(DUMMYTYPE, Integer(DUMMYTYPE, 1), Integer(DUMMYTYPE, 2))),
         "(1 + 2);": ExprStatement(Add(DUMMYTYPE, Integer(DUMMYTYPE, 1), Integer(DUMMYTYPE, 2))),
@@ -491,7 +500,8 @@ if __name__ == "__main__":
         'print "hello x=5";': PrintStr("hello x=5"),
     }
     for text, tokens in tests.items():
-        #print(Parser(tokenize(text)).parse_statement())
+        print(tokens)
+        print(Parser(tokenize(text)).parse_statement())
         assert_equal_verbose(Parser(tokenize(text)).parse_statement(), tokens)
 
     printcolor("PASSED", ansicode.green)
@@ -588,8 +598,8 @@ if __name__ == "__main__":
         "tests/program4.wb": Program(
             [
                 Function(
-                    Name(DUMMYTYPE, "add1"),
-                    [Name(DUMMYTYPE, "x")],
+                    Name(Type("int"), "add1"),
+                    [Name(Type("int"), "x")],
                     [Assign(Name(DUMMYTYPE, "x"), Add(DUMMYTYPE, Name(DUMMYTYPE, "x"), Integer(DUMMYTYPE, 1))), Return(Name(DUMMYTYPE, "x"))],
                 ),
                 DeclareValue(Name(DUMMYTYPE, "x"), Integer(DUMMYTYPE, 10)),
@@ -614,6 +624,7 @@ if __name__ == "__main__":
     }
     rootpath = os.path.dirname(__file__)
     for inputfile, target in tests.items():
+        print(inputfile)
         prog = parse_file(os.path.join(rootpath,inputfile), debug=False)
         assert_equal_verbose(prog, target)
 

@@ -44,8 +44,8 @@ _symbols = {
 # chars to parse for symbols (manually keep up to date with chars used in symbols above)
 _symbolchars = '+-*/%<>!=;(){},"#'
 
-# creates dict of reserved keywords { "var": "VAR", ... }
-_keywords = {x: x.upper() for x in ("var", "print", "if", "else", "while", "func", "return", "elif", "for", "include")}
+# creates dict of reserved keywords { "var": "VAR", ... } including types
+_keywords = {x: x.upper() for x in ("var", "print", "if", "else", "while", "func", "return", "elif", "for", "include", "int")}
 
 # create a quick reversed Token -> text dict ("LT": "<", etc) for symbols and keywords from the above,
 #  for use in debugging and printing

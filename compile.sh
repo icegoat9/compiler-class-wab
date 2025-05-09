@@ -39,9 +39,11 @@ if python3 compiler/compile_ast.py $COMPILE_EXTRA $FILEPATH.wb > $FILEPATH.ll; t
 
     # Run clang, disable "overriding the module target triple" OSX warning
     # Include helper C functions that implement basic system I/O
+
     # Also generate machine code in .s file for manual inspection if desired
-    echo "${BLUE}clang -S $FILE.ll -o $FILE.s$RESETCOLOR"
-    clang -Wno-override-module -S $FILEPATH.ll -o $FILEPATH.s
+    # echo "${BLUE}clang -S $FILE.ll -o $FILE.s$RESETCOLOR"
+    # clang -Wno-override-module -S $FILEPATH.ll -o $FILEPATH.s
+
     echo "${BLUE}clang $FILE.ll helper/runtime.c $LINK_EXTRA -o $FILE.exe$RESETCOLOR"
     clang -Wno-override-module $FILEPATH.ll helper/runtime.c $LINK_EXTRA -o $FILEPATH.exe
 fi
