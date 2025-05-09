@@ -166,6 +166,7 @@ class Parser:
             term = self.parse_term()
             # raise SyntaxError("Error: Unary negation operator - not fully implemented, buggy, aborting")
             return Subtract(UNKNOWN_TYPE, Integer(UNKNOWN_TYPE, 0), term)
+            #return Negate(UNKNOWN_TYPE, term)  # TBD
         elif self.checkahead("NAME"):
             if self.checkahead("LPAREN", 1):
                 term = self.parse_callfn()

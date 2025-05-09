@@ -92,6 +92,11 @@ I kept quick and dirty during-class To-Dos and also in quick TODO items at the t
   * [ ] [Enums](https://docs.python.org/3/library/enum.html#module-enum), including new functionality / syntax in 3.11 that someone in class mentioned: StrEnum? ('uses value not name of the enum member')
   * [ ] Python ... operator
 * [ ] PEG grammars
+* Links shared in class chats with other students:
+  * https://learn.microsoft.com/en-us/shows/seth-juarez/anders-hejlsberg-on-modern-compiler-construction
+  * https://www.youtube.com/watch?v=N6b44kMS6OM
+  * https://godbolt.org/
+
 
 ## Bug fixing and related
 * [ ] For loop variable redeclare issue noted above
@@ -163,5 +168,32 @@ Impl approaches:
   * the current base Expression class has no attributes (just inherited classes such as MathOp, CallFn, etc add attributes)
 
 Questions during implementation:
-* Do I want a Type() class or not, e.g. Integer(Type("int"),5) vs Integer("int",5)
+* Do I want a Type() class or not, e.g. Integer(Type("int"),5) vs Integer("int",5).
+  I went with this with the idea it would aid with debugging, it lets us format the AST
+  types more easily... but it's unclear how/if it will be useful.
 
+Did some initial work on this, wrapped my head around it, ideas for next steps:
+* Get "print 3.14;"  working -- generate appropriate stack code
+  * When you PUSH an int vs. a float to the "stack", need to store that type info somewhere--
+    maybe we push an object to the stack rather than just a value (so POP() reads an object
+    with both type and value, so we know which LLVM instruction to generate)
+* separate type-specific instructions e.g. PUSH() vs FPUSH(), ADD() vs FADD(), to let the code
+  for each stay focused and more aligned with the eventual machine code?
+* Generating appropriate assembly for int vs. float (should be easy once the AST is in place,
+  just copying in the proper instructions)
+* Resolve the redundant typing on function calls, where Callfn() has types assigned to both the
+  CallFn expression itself and the CallFn's name (maybe give the name an "UNUSED_TYPE" value?)
+  * But need the name's type for inferring type elsewhere
+  * Give things like ComparisonOp expressions this UNUSED_TYPE as well as the operator "=="
+    has no type itself, just so it will trigger an error if ever referenced?
+* Math operator type conversion, e.g. "int + float => float"
+* Handle unary negation with varying types (rethink where it happens, can't happen at the parser
+  stage since we don't know types at that stage)
+  * Test case floats.wb parses except for this
+* inferring type on argv? maybe have them default to float?
+* Replace "global type table / symbols table" with one that could have local scope
+  (for now, defining ints and floats with the same name in different functions will cause
+  bugs)
+* in type resolver, through an exception if we try to reassign a type to something
+  (to a new value if for example it's resolved as int and float at different points, or perhaps
+  even if type is assigned to something that already has a type)

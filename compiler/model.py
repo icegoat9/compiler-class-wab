@@ -128,6 +128,11 @@ class DeclareValue(Statement):
 #class Variable(Expression):
 #    name : Name
 
+
+@dataclass
+class Negate(Expression):  #TODO: implement / use in parser and beyond
+    left: Expression
+
 @dataclass 
 class MathOp(Expression):
     left : Expression
