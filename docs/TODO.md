@@ -162,5 +162,6 @@ Impl approaches:
   * Is this an attribute of all expressions, or a wrapper class such as TypedExpression(str: typename, expr: expression).
   * the current base Expression class has no attributes (just inherited classes such as MathOp, CallFn, etc add attributes)
 
-
+Questions during implementation:
+* Do I want a Type() class or not, e.g. Integer(Type("int"),5) vs Integer("int",5)
 

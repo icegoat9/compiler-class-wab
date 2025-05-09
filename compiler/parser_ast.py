@@ -252,7 +252,7 @@ class Parser:
         var = self.expect("NAME")
         if self.checkahead("SEMI",1):
             # look ahead for ; after type e.g. "var x int ;""
-            t = self.expect("INT")  # TODO: update (hard-coding type to find initially)
+            t = self.expect("TYPE")
             self.expect("SEMI")
             return Declare(Name(Type(t.tokvalue), var.tokvalue))
         else:
@@ -336,17 +336,17 @@ class Parser:
         params = []
         while self.n < len(self.tokens) and not self.checkahead("RPAREN"):
             n = self.expect("NAME")
-            t = self.expect("INT") # TODO: remove hard-coded type
+            t = self.expect("TYPE") 
             params.append(Name(Type(t.tokvalue), n.tokvalue))
             if not self.checkahead("RPAREN"):
                 # if a ')' is not the following character, expect a comma... TODO: cleaner integration
                 self.expect("COMMA")
         self.expect("RPAREN")
-        t = self.expect("INT")  # TODO: remove hardcoded type
+        t = self.expect("TYPE")
         self.expect("LBRACE")
         body = self.parse_statements()
         self.expect("RBRACE")
-        return Function(Name(Type("int"), name.tokvalue), params, body)
+        return Function(Name(Type(t.tokvalue), name.tokvalue), params, body)
 
     def parse_integer(self) -> Integer:
         tok = self.expect("INTEGER")
@@ -500,8 +500,8 @@ if __name__ == "__main__":
         'print "hello x=5";': PrintStr("hello x=5"),
     }
     for text, tokens in tests.items():
-        # print(tokens)
-        # print(Parser(tokenize(text)).parse_statement())
+        print(tokens)
+        print(Parser(tokenize(text)).parse_statement())
         assert_equal_verbose(Parser(tokenize(text)).parse_statement(), tokens)
 
     printcolor("PASSED", ansicode.green)

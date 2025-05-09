@@ -45,7 +45,9 @@ _symbols = {
 _symbolchars = '+-*/%<>!=;(){},"#'
 
 # creates dict of reserved keywords { "var": "VAR", ... } including types
-_keywords = {x: x.upper() for x in ("var", "print", "if", "else", "while", "func", "return", "elif", "for", "include", "int")}
+_reswords = {x: x.upper() for x in ("var", "print", "if", "else", "while", "func", "return", "elif", "for", "include")}
+_types = {x: x.upper() for x in ("int", "float", "char")}
+_keywords = _reswords | _types
 
 # create a quick reversed Token -> text dict ("LT": "<", etc) for symbols and keywords from the above,
 #  for use in debugging and printing
@@ -118,8 +120,10 @@ def tokenize(text: str) -> list[Token]:
             while i + 1 < len(text) and text[i + 1].isalnum():
                 i += 1
                 substr += text[i]
-            if substr in _keywords:
-                tokens.append(Token(_keywords[substr], substr, sourceline, i - sourcecoldelta))
+            if substr in _types:
+                tokens.append(Token("TYPE", substr, sourceline, i - sourcecoldelta))
+            elif substr in _reswords:
+                tokens.append(Token(_reswords[substr], substr, sourceline, i - sourcecoldelta))
             else:
                 tokens.append(Token("NAME", substr, sourceline, i - sourcecoldelta))
             substr = ""
@@ -238,6 +242,16 @@ if __name__ == "__main__":
             Token("NAME", "x"),
             Token("ASSIGN", "="),
             Token("INTEGER", "6"),
+            Token("SEMI", ";"),
+        ],
+    )
+
+    assert token_list_eq(
+        tokenize("var x int;"),
+        [
+            Token("VAR", "var"),
+            Token("NAME", "x"),
+            Token("TYPE", "int"),
             Token("SEMI", ";"),
         ],
     )

@@ -43,7 +43,8 @@ class Type:
     name : str
 
 # placeholder for expressions without typing implemented yet
-DUMMYTYPE = Type("?")
+DUMMYTYPE = Type("dummy")
+UNKNOWN_TYPE = Type("?")
 
 @dataclass
 class Expression:
