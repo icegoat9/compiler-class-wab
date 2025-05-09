@@ -500,8 +500,8 @@ if __name__ == "__main__":
         'print "hello x=5";': PrintStr("hello x=5"),
     }
     for text, tokens in tests.items():
-        print(tokens)
-        print(Parser(tokenize(text)).parse_statement())
+        # print(tokens)
+        # print(Parser(tokenize(text)).parse_statement())
         assert_equal_verbose(Parser(tokenize(text)).parse_statement(), tokens)
 
     printcolor("PASSED", ansicode.green)

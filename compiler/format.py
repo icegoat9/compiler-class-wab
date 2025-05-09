@@ -153,19 +153,21 @@ def fmt_expr(e: Expression, nested: bool = False) -> str:
     match e:
         case Integer(t, n):
             if FORMAT_SHOWTYPE:
-                return f"{{{t}}}{n}"
+                return f"{fmt_type(t)}{n}"
             return f"{n}"
         case GlobalName(t, x):
             if FORMAT_SHOWTYPE:
-               return "{{{t}}}global[{x}]"
+               return f"{fmt_type(t)}global[{x}]"
             return "global[{x}]"
         case LocalName(t, x):
             if FORMAT_SHOWTYPE:
-                return f"{{{t}}}local[{x}]"
+                return f"{fmt_type(t)}local[{x}]"
             return f"local[{x}]"
-        case Name(t, x) | RelationOp(t, x):
+        case Name(t, x):
             if FORMAT_SHOWTYPE:
-                return f"{{{t}}}{x}"
+                return f"{fmt_type(t)}{x}"
+            return x
+        case RelationOp(x):
             return x
         #        case Negate(left):
         #            strtxt = "-%s" % (fmt_expr(left, nested=True))
@@ -175,35 +177,35 @@ def fmt_expr(e: Expression, nested: bool = False) -> str:
         case Add(t, left, right):
             strtxt = "%s + %s" % (fmt_expr(left, nested=True), fmt_expr(right, nested=True))
             if FORMAT_SHOWTYPE:
-                strtxt = f"{{{t}}}({strtxt})"
+                strtxt = f"{fmt_type(t)}({strtxt})"
             if nested:
                 strtxt = "(%s)" % strtxt
             return strtxt
         case Multiply(t, left, right):
             strtxt = "%s * %s" % (fmt_expr(left, nested=True), fmt_expr(right, nested=True))
             if FORMAT_SHOWTYPE:
-                strtxt = f"{{{t}}}({strtxt})"
+                strtxt = f"{fmt_type(t)}({strtxt})"
             if nested:
                 strtxt = "(%s)" % strtxt
             return strtxt
         case Subtract(t, left, right):
             strtxt = "%s - %s" % (fmt_expr(left, nested=True), fmt_expr(right, nested=True))
             if FORMAT_SHOWTYPE:
-                strtxt = f"{{{t}}}({strtxt})"
+                strtxt = f"{fmt_type(t)}({strtxt})"
             if nested:
                 strtxt = "(%s)" % strtxt
             return strtxt
         case Divide(t, left, right):
             strtxt = "%s / %s" % (fmt_expr(left, nested=True), fmt_expr(right, nested=True))
             if FORMAT_SHOWTYPE:
-                strtxt = f"{{{t}}}({strtxt})"
+                strtxt = f"{fmt_type(t)}({strtxt})"
             if nested:
                 strtxt = "(%s)" % strtxt
             return strtxt
         case Modulo(t, left, right):
             strtxt = "%s % %s" % (fmt_expr(left, nested=True), fmt_expr(right, nested=True))
             if FORMAT_SHOWTYPE:
-                strtxt = f"{{{t}}}({strtxt})"
+                strtxt = f"{fmt_type(t)}({strtxt})"
             if nested:
                 strtxt = "(%s)" % strtxt
             return strtxt
@@ -216,7 +218,7 @@ def fmt_expr(e: Expression, nested: bool = False) -> str:
             paramstr = ", ".join(map(fmt_expr, params))
             strtxt = "%s(%s)" % (fmt_expr(name), paramstr)
             if FORMAT_SHOWTYPE:
-                strtxt = f"{{{t}}}" + strtxt
+                strtxt = f"{fmt_type(t)}" + strtxt
             return strtxt
         # Now add cases for 'expression instructions' , the 'machine' section of model.py
         # Note: looking at someone else's approach, realized I don't have to call out each case and
@@ -246,3 +248,6 @@ def fmt_expr(e: Expression, nested: bool = False) -> str:
             return "EXPR([%s])" % ", ".join([fmt_expr(x) for x in lst])
         case _:
             raise RuntimeError(f"Can't format {e}")
+
+def fmt_type(t: Type):
+    return f"{ansicode.green}{{{t.name}}}{ansicode.reset}"
