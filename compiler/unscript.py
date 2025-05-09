@@ -36,9 +36,9 @@ def unscript_toplevel(prog: Program, argmode: bool=False) -> Program:
         # Assumes this will be linked to a wrapper that passes argc,arg1,arg2 to this user code function
         # The following resolve_scope compiler pass will see those arg variables being used in user code,
         #   match them to the mainuser(argc,arg1,arg2) function signature, and scope them as local variables
-        newprog.append(Function(Name("mainuser"), [Name("argc"), Name("arg1"), Name("arg2")], main))
+        newprog.append(Function(Name(DUMMYTYPE,"mainuser"), [Name(DUMMYTYPE,"argc"), Name(DUMMYTYPE,"arg1"), Name(DUMMYTYPE,"arg2")], main))
     else: 
-        newprog.append(Function(Name("main"), [], main))
+        newprog.append(Function(Name(DUMMYTYPE,"main"), [], main))
     return Program(newprog)
 
 
@@ -48,22 +48,22 @@ def unscript_toplevel(prog: Program, argmode: bool=False) -> Program:
 if __name__ == "__main__":
     ast = Program(
         [
-            Declare(Name("x")),
-            Assign(Name("x"), Integer(42)),
+            Declare(Name(DUMMYTYPE,"x")),
+            Assign(Name(DUMMYTYPE,"x"), Integer(DUMMYTYPE,42)),
             Function(
-                Name("f"),
-                [Name("y")],
-                [Declare(Name("t")), Assign(Name("t"), Multiply(Name("x"), Name("y"))), Return(Name("t"))],
+                Name(DUMMYTYPE,"f"),
+                [Name(DUMMYTYPE,"y")],
+                [Declare(Name(DUMMYTYPE,"t")), Assign(Name(DUMMYTYPE,"t"), Multiply(DUMMYTYPE, Name(DUMMYTYPE,"x"), Name(DUMMYTYPE,"y"))), Return(Name(DUMMYTYPE,"t"))],
             ),
             IfElse(
-                Relation(RelationOp("=="), Name("x"), Integer(5)),
+                Relation(DUMMYTYPE, RelationOp("=="), Name(DUMMYTYPE,"x"), Integer(DUMMYTYPE,5)),
                 [
-                    Declare(Name("x")),
-                    Assign(Name("x"), Integer(13)),
+                    Declare(Name(DUMMYTYPE,"x")),
+                    Assign(Name(DUMMYTYPE,"x"), Integer(DUMMYTYPE,13)),
                 ],
-                [Print(Name("x"))],
+                [Print(Name(DUMMYTYPE,"x"))],
             ),
-            Print(Name("x")),
+            Print(Name(DUMMYTYPE,"x")),
         ]
     )
     #    print(format_program(ast))
@@ -74,27 +74,27 @@ if __name__ == "__main__":
 
     assert prog == Program(
         [
-            GlobalVar(Name("x")),
+            GlobalVar(Name(DUMMYTYPE,"x")),
             Function(
-                Name("f"),
-                [Name("y")],
+                Name(DUMMYTYPE,"f"),
+                [Name(DUMMYTYPE,"y")],
                 [
-                    LocalVar(Name("t")),
-                    Assign(LocalName("t"), Multiply(GlobalName("x"), LocalName("y"))),
-                    Return(LocalName("t")),
+                    LocalVar(Name(DUMMYTYPE,"t")),
+                    Assign(LocalName(DUMMYTYPE,"t"), Multiply(DUMMYTYPE, GlobalName(DUMMYTYPE,"x"), LocalName(DUMMYTYPE,"y"))),
+                    Return(LocalName(DUMMYTYPE,"t")),
                 ],
             ),
             Function(
-                Name("main"),
+                Name(DUMMYTYPE,"main"),
                 [],
                 [
-                    Assign(GlobalName("x"), Integer(42)),
+                    Assign(GlobalName(DUMMYTYPE,"x"), Integer(DUMMYTYPE,42)),
                     IfElse(
-                        Relation(RelationOp("=="), GlobalName("x"), Integer(5)),
-                        [LocalVar(Name("x")), Assign(LocalName("x"), Integer(13))],
-                        [Print(GlobalName("x"))],
+                        Relation(DUMMYTYPE,RelationOp("=="), GlobalName(DUMMYTYPE,"x"), Integer(DUMMYTYPE,5)),
+                        [LocalVar(Name(DUMMYTYPE,"x")), Assign(LocalName(DUMMYTYPE,"x"), Integer(DUMMYTYPE,13))],
+                        [Print(GlobalName(DUMMYTYPE,"x"))],
                     ),
-                    Print(GlobalName("x")),
+                    Print(GlobalName(DUMMYTYPE,"x")),
                 ],
             ),
         ]
