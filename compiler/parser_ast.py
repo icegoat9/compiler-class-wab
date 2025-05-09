@@ -65,7 +65,6 @@ def parse_program(tokens: list[Token]) -> Program:
 ###########################
 ## Parser class
 
-
 class Parser:
     def __init__(self, tokens):
         self.tokens = tokens
@@ -163,7 +162,7 @@ class Parser:
             self.expect("SUB")
             term = self.parse_term()
             # raise SyntaxError("Error: Unary negation operator - not fully implemented, buggy, aborting")
-            return Subtract(Integer(0), term)
+            return Subtract(DUMMYTYPE, Integer(DUMMYTYPE, 0), term)
         elif self.checkahead("NAME"):
             if self.checkahead("LPAREN", 1):
                 term = self.parse_callfn()
@@ -185,23 +184,23 @@ class Parser:
         if self.checkahead("PLUS"):
             self.expect("PLUS")
             term2 = self.parse_term()
-            return Add(term, term2)
+            return Add(DUMMYTYPE, term, term2)
         elif self.checkahead("TIMES"):
             self.expect("TIMES")
             term2 = self.parse_term()
-            return Multiply(term, term2)
+            return Multiply(DUMMYTYPE, term, term2)
         elif self.checkahead("SUB"):
             self.expect("SUB")
             term2 = self.parse_term()
-            return Subtract(term, term2)
+            return Subtract(DUMMYTYPE, term, term2)
         elif self.checkahead("DIV"):
             self.expect("DIV")
             term2 = self.parse_term()
-            return Divide(term, term2)
+            return Divide(DUMMYTYPE, term, term2)
         elif self.checkahead("MOD"):
             self.expect("MOD")
             term2 = self.parse_term()
-            return Modulo(term, term2)
+            return Modulo(DUMMYTYPE, term, term2)
         else:
             return term
 
@@ -252,19 +251,19 @@ class Parser:
         var = self.expect("NAME")
         if self.checkahead("SEMI"):
             self.expect("SEMI")
-            return Declare(Name(var.tokvalue))
+            return Declare(Name(DUMMYTYPE, var.tokvalue))
         else:
             self.expect("ASSIGN")
             value = self.parse_expression()
             self.expect("SEMI")
-            return DeclareValue(Name(var.tokvalue), value)
+            return DeclareValue(Name(DUMMYTYPE, var.tokvalue), value)
 
     def parse_assign(self) -> Assign:
         var = self.expect("NAME")
         self.expect("ASSIGN")
         value = self.parse_expression()
         self.expect("SEMI")
-        return Assign(Name(var.tokvalue), value)
+        return Assign(Name(DUMMYTYPE, var.tokvalue), value)
 
     def parse_while(self) -> While:
         self.expect("WHILE")
@@ -285,7 +284,7 @@ class Parser:
         self.expect("LBRACE")
         body = self.parse_statements()
         self.expect("RBRACE")
-        return For(Name(var_init.tokvalue), 
+        return For(Name(DUMMYTYPE, var_init.tokvalue), 
                    value_init,
                    value_end,
                    body)
@@ -335,7 +334,7 @@ class Parser:
         self.expect("LPAREN")
         params = []
         while self.n < len(self.tokens) and not self.checkahead("RPAREN"):
-            params.append(Name(self.expect("NAME").tokvalue))
+            params.append(Name(DUMMYTYPE, self.expect("NAME").tokvalue))
             if not self.checkahead("RPAREN"):
                 # if a ')' is not the following character, expect a comma... TODO: cleaner integration
                 self.expect("COMMA")
@@ -343,15 +342,15 @@ class Parser:
         self.expect("LBRACE")
         body = self.parse_statements()
         self.expect("RBRACE")
-        return Function(Name(name.tokvalue), params, body)
+        return Function(Name(DUMMYTYPE, name.tokvalue), params, body)
 
     def parse_integer(self) -> Integer:
         tok = self.expect("INTEGER")
-        return Integer(int(tok.tokvalue))
+        return Integer(DUMMYTYPE, int(tok.tokvalue))
 
     def parse_name(self) -> Name:
         tok = self.expect("NAME")
-        return Name(tok.tokvalue)
+        return Name(DUMMYTYPE, tok.tokvalue)
 
     def parse_callfn(self) -> CallFn:
         name = self.expect("NAME")
@@ -363,43 +362,43 @@ class Parser:
                 # if a ')' is not the following character, expect a comma... TODO: cleaner integration
                 self.expect("COMMA")
         self.expect("RPAREN")
-        return CallFn(Name(name.tokvalue), params)
+        return CallFn(DUMMYTYPE, Name(DUMMYTYPE, name.tokvalue), params)
 
     def parse_relation_eq(self) -> Relation:
         left = self.parse_expression()
         self.expect("EQ")
         right = self.parse_expression()
-        return Relation(RelationOp("=="), left, right)
+        return Relation(DUMMYTYPE, RelationOp("=="), left, right)
 
     def parse_relation_lt(self) -> Relation:
         left = self.parse_expression()
         self.expect("LT")
         right = self.parse_expression()
-        return Relation(RelationOp("<"), left, right)
+        return Relation(DUMMYTYPE, RelationOp("<"), left, right)
 
     def parse_relation_gt(self) -> Relation:
         left = self.parse_expression()
         self.expect("GT")
         right = self.parse_expression()
-        return Relation(RelationOp(">"), left, right)
+        return Relation(DUMMYTYPE, RelationOp(">"), left, right)
 
     def parse_relation_lte(self) -> Relation:
         left = self.parse_expression()
         self.expect("LTE")
         right = self.parse_expression()
-        return Relation(RelationOp("<="), left, right)
+        return Relation(DUMMYTYPE, RelationOp("<="), left, right)
 
     def parse_relation_gte(self) -> Relation:
         left = self.parse_expression()
         self.expect("GTE")
         right = self.parse_expression()
-        return Relation(RelationOp(">="), left, right)
+        return Relation(DUMMYTYPE, RelationOp(">="), left, right)
 
     def parse_relation_neq(self) -> Relation:
         left = self.parse_expression()
         self.expect("NEQ")
         right = self.parse_expression()
-        return Relation(RelationOp("!="), left, right)
+        return Relation(DUMMYTYPE, RelationOp("!="), left, right)
 
 
 ################################
@@ -435,35 +434,35 @@ if __name__ == "__main__":
 
     # assert Parser(tokenize("1 + 2")).parse_add() == Add(Integer(1), Integer(2))
     # assert Parser(tokenize("1 * 2")).parse_multiply() == Multiply(Integer(1), Integer(2))
-    assert Parser(tokenize("1 == 2")).parse_relation_eq() == Relation(RelationOp("=="), Integer(1), Integer(2))
-    assert Parser(tokenize("1 < 2")).parse_relation_lt() == Relation(RelationOp("<"), Integer(1), Integer(2))
+    assert Parser(tokenize("1 == 2")).parse_relation_eq() == Relation(DUMMYTYPE, RelationOp("=="), Integer(DUMMYTYPE, 1), Integer(DUMMYTYPE, 2))
+    assert Parser(tokenize("1 < 2")).parse_relation_lt() == Relation(DUMMYTYPE, RelationOp("<"), Integer(DUMMYTYPE, 1), Integer(DUMMYTYPE, 2))
     # assert Parser(tokenize("<")).parse_relation_op() == RelationOp("<")
-    assert Parser(tokenize("1 < 2")).parse_relation() == Relation(RelationOp("<"), Integer(1), Integer(2))
+    assert Parser(tokenize("1 < 2")).parse_relation() == Relation(DUMMYTYPE, RelationOp("<"), Integer(DUMMYTYPE, 1), Integer(DUMMYTYPE, 2))
 
-    assert Parser(tokenize("print 1;")).parse_print() == Print(Integer(1))
-    assert_equal_verbose(Parser(tokenize("print 1;")).parse_print(), Print(Integer(1)))
-    assert Parser(tokenize("var x = 1;")).parse_declare() == DeclareValue(Name("x"), Integer(1))
-    assert Parser(tokenize("var x;")).parse_declare() == Declare(Name("x"))
+    assert Parser(tokenize("print 1;")).parse_print() == Print(Integer(DUMMYTYPE, 1))
+    assert_equal_verbose(Parser(tokenize("print 1;")).parse_print(), Print(Integer(DUMMYTYPE, 1)))
+    assert Parser(tokenize("var x = 1;")).parse_declare() == DeclareValue(Name(DUMMYTYPE, "x"), Integer(DUMMYTYPE, 1))
+    assert Parser(tokenize("var x;")).parse_declare() == Declare(Name(DUMMYTYPE, "x"))
     assert Parser(tokenize("while 1 < 1 { }")).parse_while() == While(
-        Relation(RelationOp("<"), Integer(1), Integer(1)), []
+        Relation(DUMMYTYPE, RelationOp("<"), Integer(DUMMYTYPE, 1), Integer(DUMMYTYPE, 1)), []
     )
-    assert Parser(tokenize("x = 1;")).parse_assign() == Assign(Name("x"), Integer(1))
+    assert Parser(tokenize("x = 1;")).parse_assign() == Assign(Name(DUMMYTYPE, "x"), Integer(DUMMYTYPE, 1))
     assert Parser(tokenize("if 1 == 1 { } else { }")).parse_if_simple() == IfElse(
-        Relation(RelationOp("=="), Integer(1), Integer(1)), [], []
+        Relation(DUMMYTYPE, RelationOp("=="), Integer(DUMMYTYPE, 1), Integer(DUMMYTYPE, 1)), [], []
     )
     assert Parser(tokenize("if 1 == 1 { } elif 1 == 2 { } elif 1 == 3 { } else { }")).parse_if_elif() == IfElifElse(
-        Relation(RelationOp("=="), Integer(1), Integer(1)),
+        Relation(DUMMYTYPE, RelationOp("=="), Integer(DUMMYTYPE, 1), Integer(DUMMYTYPE, 1)),
         [],
         [
-            IfElse(Relation(RelationOp("=="), Integer(1), Integer(2)), [], []),
-            IfElse(Relation(RelationOp("=="), Integer(1), Integer(3)), [], []),
+            IfElse(Relation(DUMMYTYPE, RelationOp("=="), Integer(DUMMYTYPE, 1), Integer(DUMMYTYPE, 2)), [], []),
+            IfElse(Relation(DUMMYTYPE, RelationOp("=="), Integer(DUMMYTYPE, 1), Integer(DUMMYTYPE, 3)), [], []),
         ],
         [],
     )
-    assert Parser(tokenize("return 1;")).parse_return() == Return(Integer(1))
-    assert_equal_verbose(Parser(tokenize("func f(x) { }")).parse_func(), Function(Name("f"), [Name("x")], []))
+    assert Parser(tokenize("return 1;")).parse_return() == Return(Integer(DUMMYTYPE, 1))
+    assert_equal_verbose(Parser(tokenize("func f(x) { }")).parse_func(), Function(Name(DUMMYTYPE, "f"), [Name(DUMMYTYPE, "x")], []))
 
-    assert_equal_verbose(Parser(tokenize("print 1;")).parse_statement(), Print(Integer(1)))
+    assert_equal_verbose(Parser(tokenize("print 1;")).parse_statement(), Print(Integer(DUMMYTYPE, 1)))
 
     # assert_equal_verbose(Parser(tokenize("func f(x) { }")).parse_func(), Function(Name("f"), [Name("xs")], []))  #intentional error
 
@@ -471,24 +470,24 @@ if __name__ == "__main__":
 
     print("Testing generic parse_statement() for various inputs...")
     tests = {
-        "print 1;": Print(Integer(1)),
-        "var x = 1;": DeclareValue(Name("x"), Integer(1)),
-        "var x;": Declare(Name("x")),
-        "while 1 < 1 { }": While(Relation(RelationOp("<"), Integer(1), Integer(1)), []),
-        "x = 1;": Assign(Name("x"), Integer(1)),
-        "if 1 == 1 { } else { }": IfElifElse(Relation(RelationOp("=="), Integer(1), Integer(1)), [], [], []),
-        "return 1;": Return(Integer(1)),
-        "func f(x) { }": Function(Name("f"), [Name("x")], []),
+        "print 1;": Print(Integer(DUMMYTYPE, 1)),
+        "var x = 1;": DeclareValue(Name(DUMMYTYPE, "x"), Integer(DUMMYTYPE, 1)),
+        "var x;": Declare(Name(DUMMYTYPE, "x")),
+        "while 1 < 1 { }": While(Relation(DUMMYTYPE, RelationOp("<"), Integer(DUMMYTYPE, 1), Integer(DUMMYTYPE, 1)), []),
+        "x = 1;": Assign(Name(DUMMYTYPE, "x"), Integer(DUMMYTYPE, 1)),
+        "if 1 == 1 { } else { }": IfElifElse(Relation(DUMMYTYPE, RelationOp("=="), Integer(DUMMYTYPE, 1), Integer(DUMMYTYPE, 1)), [], [], []),
+        "return 1;": Return(Integer(DUMMYTYPE, 1)),
+        "func f(x) { }": Function(Name(DUMMYTYPE, "f"), [Name(DUMMYTYPE, "x")], []),
         "while 1 < 1 { var x = 1; print 1; }": While(
-            Relation(RelationOp("<"), Integer(1), Integer(1)),
-            [DeclareValue(Name("x"), Integer(1)), Print(Integer(1))],
+            Relation(DUMMYTYPE, RelationOp("<"), Integer(DUMMYTYPE, 1), Integer(DUMMYTYPE, 1)),
+            [DeclareValue(Name(DUMMYTYPE, "x"), Integer(DUMMYTYPE, 1)), Print(Integer(DUMMYTYPE, 1))],
         ),
-        "for i = 1, 2 { print i; }": For(Name("i"), Integer(1), Integer(2), [Print(Name("i"))]),
-        "func f(x, y) { print 1; }": Function(Name("f"), [Name("x"), Name("y")], [Print(Integer(1))]),
-        "x;": ExprStatement(Name("x")),
-        "1 + 2;": ExprStatement(Add(Integer(1), Integer(2))),
-        "(1 + 2);": ExprStatement(Add(Integer(1), Integer(2))),
-        "f(5,x);": ExprStatement(CallFn(Name("f"), [Integer(5), Name("x")])),
+        "for i = 1, 2 { print i; }": For(Name(DUMMYTYPE, "i"), Integer(DUMMYTYPE, 1), Integer(DUMMYTYPE, 2), [Print(Name(DUMMYTYPE, "i"))]),
+        "func f(x, y) { print 1; }": Function(Name(DUMMYTYPE, "f"), [Name(DUMMYTYPE, "x"), Name(DUMMYTYPE, "y")], [Print(Integer(DUMMYTYPE, 1))]),
+        "x;": ExprStatement(Name(DUMMYTYPE, "x")),
+        "1 + 2;": ExprStatement(Add(DUMMYTYPE, Integer(DUMMYTYPE, 1), Integer(DUMMYTYPE, 2))),
+        "(1 + 2);": ExprStatement(Add(DUMMYTYPE, Integer(DUMMYTYPE, 1), Integer(DUMMYTYPE, 2))),
+        "f(5,x);": ExprStatement(CallFn(DUMMYTYPE, Name(DUMMYTYPE, "f"), [Integer(DUMMYTYPE, 5), Name(DUMMYTYPE, "x")])),
         'print "hello x=5";': PrintStr("hello x=5"),
     }
     for text, tokens in tests.items():
@@ -499,24 +498,24 @@ if __name__ == "__main__":
 
     print("Testing parse_expression()...")
     tests = {
-        "1": Integer(1),
-        "x": Name("x"),
-        "f(5,x)": CallFn(Name("f"), [Integer(5), Name("x")]),
-        "(1)": Integer(1),
-        "(f(5,x))": CallFn(Name("f"), [Integer(5), Name("x")]),
-        "1 + 2": Add(Integer(1), Integer(2)),
-        "x + 5": Add(Name("x"), Integer(5)),
-        "(3 + 4)": Add(Integer(3), Integer(4)),
-        "(3 + 4) * 5": Multiply(Add(Integer(3), Integer(4)), Integer(5)),
-        "1 - (2 / 3)": Subtract(Integer(1), Divide(Integer(2), Integer(3))),
-        "-2": Subtract(Integer(0), Integer(2)),
+        "1": Integer(DUMMYTYPE, 1),
+        "x": Name(DUMMYTYPE, "x"),
+        "f(5,x)": CallFn(DUMMYTYPE, Name(DUMMYTYPE, "f"), [Integer(DUMMYTYPE, 5), Name(DUMMYTYPE, "x")]),
+        "(1)": Integer(DUMMYTYPE, 1),
+        "(f(5,x))": CallFn(DUMMYTYPE, Name(DUMMYTYPE, "f"), [Integer(DUMMYTYPE, 5), Name(DUMMYTYPE, "x")]),
+        "1 + 2": Add(DUMMYTYPE, Integer(DUMMYTYPE, 1), Integer(DUMMYTYPE, 2)),
+        "x + 5": Add(DUMMYTYPE, Name(DUMMYTYPE, "x"), Integer(DUMMYTYPE, 5)),
+        "(3 + 4)": Add(DUMMYTYPE, Integer(DUMMYTYPE, 3), Integer(DUMMYTYPE, 4)),
+        "(3 + 4) * 5": Multiply(DUMMYTYPE, Add(DUMMYTYPE, Integer(DUMMYTYPE, 3), Integer(DUMMYTYPE, 4)), Integer(DUMMYTYPE, 5)),
+        "1 - (2 / 3)": Subtract(DUMMYTYPE, Integer(DUMMYTYPE, 1), Divide(DUMMYTYPE, Integer(DUMMYTYPE, 2), Integer(DUMMYTYPE, 3))),
+        "-2": Subtract(DUMMYTYPE, Integer(DUMMYTYPE, 0), Integer(DUMMYTYPE, 2)),
         # though it's unclear if below is behavior we want, allowing double unary ops...
-        "--2": Subtract(Integer(0), Subtract(Integer(0), Integer(2))),
-        "-x": Subtract(Integer(0), Name("x")),
-        "-(1 + 2)": Subtract(Integer(0), Add(Integer(1), Integer(2))),
-        "3 + -4": Add(Integer(3), Subtract(Integer(0), Integer(4))),
-        "-5 + 6": Add(Subtract(Integer(0), Integer(5)), Integer(6)),
-        "5 % 3": Modulo(Integer(5), Integer(3)),
+        "--2": Subtract(DUMMYTYPE, Integer(DUMMYTYPE, 0), Subtract(DUMMYTYPE, Integer(DUMMYTYPE, 0), Integer(DUMMYTYPE, 2))),
+        "-x": Subtract(DUMMYTYPE, Integer(DUMMYTYPE, 0), Name(DUMMYTYPE, "x")),
+        "-(1 + 2)": Subtract(DUMMYTYPE, Integer(DUMMYTYPE, 0), Add(DUMMYTYPE, Integer(DUMMYTYPE, 1), Integer(DUMMYTYPE, 2))),
+        "3 + -4": Add(DUMMYTYPE, Integer(DUMMYTYPE, 3), Subtract(DUMMYTYPE, Integer(DUMMYTYPE, 0), Integer(DUMMYTYPE, 4))),
+        "-5 + 6": Add(DUMMYTYPE, Subtract(DUMMYTYPE, Integer(DUMMYTYPE, 0), Integer(DUMMYTYPE, 5)), Integer(DUMMYTYPE, 6)),
+        "5 % 3": Modulo(DUMMYTYPE, Integer(DUMMYTYPE, 5), Integer(DUMMYTYPE, 3)),
     }
     for text, tokens in tests.items():
         assert_equal_verbose(Parser(tokenize(text)).parse_expression(), tokens)
@@ -527,10 +526,10 @@ if __name__ == "__main__":
     assert_equal_verbose(
         Parser(tokenize("print 1; print xyz; print (2); print f(1, x, (2 * 3) + xyz);")).parse_statements(),
         [
-            Print(Integer(1)),
-            Print(Name("xyz")),
-            Print(Integer(2)),
-            Print(CallFn(Name("f"), [Integer(1), Name("x"), Add(Multiply(Integer(2), Integer(3)), Name("xyz"))])),
+            Print(Integer(DUMMYTYPE, 1)),
+            Print(Name(DUMMYTYPE, "xyz")),
+            Print(Integer(DUMMYTYPE, 2)),
+            Print(CallFn(DUMMYTYPE, Name(DUMMYTYPE, "f"), [Integer(DUMMYTYPE, 1), Name(DUMMYTYPE, "x"), Add(DUMMYTYPE, Multiply(DUMMYTYPE, Integer(DUMMYTYPE, 2), Integer(DUMMYTYPE, 3)), Name(DUMMYTYPE, "xyz"))])),
         ],
     )
 
@@ -538,10 +537,10 @@ if __name__ == "__main__":
         parse_program(tokenize("print 1; print xyz; print (2); print f(1, x, (2 * 3) + xyz);")),
         Program(
             [
-                Print(Integer(1)),
-                Print(Name("xyz")),
-                Print(Integer(2)),
-                Print(CallFn(Name("f"), [Integer(1), Name("x"), Add(Multiply(Integer(2), Integer(3)), Name("xyz"))])),
+                Print(Integer(DUMMYTYPE, 1)),
+                Print(Name(DUMMYTYPE, "xyz")),
+                Print(Integer(DUMMYTYPE, 2)),
+                Print(CallFn(DUMMYTYPE, Name(DUMMYTYPE, "f"), [Integer(DUMMYTYPE, 1), Name(DUMMYTYPE, "x"), Add(DUMMYTYPE, Multiply(DUMMYTYPE, Integer(DUMMYTYPE, 2), Integer(DUMMYTYPE, 3)), Name(DUMMYTYPE, "xyz"))])),
             ]
         ),
     )
@@ -553,62 +552,62 @@ if __name__ == "__main__":
     tests = {
         "tests/program1.wb": Program(
             [
-                DeclareValue(Name("x"), Integer(10)),
-                Assign(Name("x"), Add(Name("x"), Integer(1))),
-                Print(Add(Multiply(Integer(23), Integer(45)), Name("x"))),
+                DeclareValue(Name(DUMMYTYPE, "x"), Integer(DUMMYTYPE, 10)),
+                Assign(Name(DUMMYTYPE, "x"), Add(DUMMYTYPE, Name(DUMMYTYPE, "x"), Integer(DUMMYTYPE, 1))),
+                Print(Add(DUMMYTYPE, Multiply(DUMMYTYPE, Integer(DUMMYTYPE, 23), Integer(DUMMYTYPE, 45)), Name(DUMMYTYPE, "x"))),
             ]
         ),
         "tests/program2.wb": Program(
             [
-                DeclareValue(Name("x"), Integer(3)),
-                DeclareValue(Name("y"), Integer(4)),
-                DeclareValue(Name("min"), Integer(0)),
+                DeclareValue(Name(DUMMYTYPE, "x"), Integer(DUMMYTYPE, 3)),
+                DeclareValue(Name(DUMMYTYPE, "y"), Integer(DUMMYTYPE, 4)),
+                DeclareValue(Name(DUMMYTYPE, "min"), Integer(DUMMYTYPE, 0)),
                 IfElifElse(
-                    Relation(RelationOp("<"), Name("x"), Name("y")),
-                    [Assign(Name("min"), Name("x"))],
+                    Relation(DUMMYTYPE, RelationOp("<"), Name(DUMMYTYPE, "x"), Name(DUMMYTYPE, "y")),
+                    [Assign(Name(DUMMYTYPE, "min"), Name(DUMMYTYPE, "x"))],
                     [],
-                    [Assign(Name("min"), Name("y"))],
+                    [Assign(Name(DUMMYTYPE, "min"), Name(DUMMYTYPE, "y"))],
                 ),
-                Print(Name("min")),
+                Print(Name(DUMMYTYPE, "min")),
             ]
         ),
         "tests/program3.wb": Program(
             [
-                DeclareValue(Name("result"), Integer(1)),
-                DeclareValue(Name("x"), Integer(1)),
+                DeclareValue(Name(DUMMYTYPE, "result"), Integer(DUMMYTYPE, 1)),
+                DeclareValue(Name(DUMMYTYPE, "x"), Integer(DUMMYTYPE, 1)),
                 While(
-                    Relation(RelationOp("<"), Name("x"), Integer(10)),
+                    Relation(DUMMYTYPE, RelationOp("<"), Name(DUMMYTYPE, "x"), Integer(DUMMYTYPE, 10)),
                     [
-                        Assign(Name("result"), Multiply(Name("result"), Name("x"))),
-                        Assign(Name("x"), Add(Name("x"), Integer(1))),
+                        Assign(Name(DUMMYTYPE, "result"), Multiply(DUMMYTYPE, Name(DUMMYTYPE, "result"), Name(DUMMYTYPE, "x"))),
+                        Assign(Name(DUMMYTYPE, "x"), Add(DUMMYTYPE, Name(DUMMYTYPE, "x"), Integer(DUMMYTYPE, 1))),
                     ],
                 ),
-                Print(Name("result")),
+                Print(Name(DUMMYTYPE, "result")),
             ]
         ),
         "tests/program4.wb": Program(
             [
                 Function(
-                    Name("add1"),
-                    [Name("x")],
-                    [Assign(Name("x"), Add(Name("x"), Integer(1))), Return(Name("x"))],
+                    Name(DUMMYTYPE, "add1"),
+                    [Name(DUMMYTYPE, "x")],
+                    [Assign(Name(DUMMYTYPE, "x"), Add(DUMMYTYPE, Name(DUMMYTYPE, "x"), Integer(DUMMYTYPE, 1))), Return(Name(DUMMYTYPE, "x"))],
                 ),
-                DeclareValue(Name("x"), Integer(10)),
-                Print(Add(Multiply(Integer(23), Integer(45)), CallFn(Name("add1"), [Name("x")]))),
-                Print(Name("x")),
+                DeclareValue(Name(DUMMYTYPE, "x"), Integer(DUMMYTYPE, 10)),
+                Print(Add(DUMMYTYPE, Multiply(DUMMYTYPE, Integer(DUMMYTYPE, 23), Integer(DUMMYTYPE, 45)), CallFn(DUMMYTYPE, Name(DUMMYTYPE, "add1"), [Name(DUMMYTYPE, "x")]))),
+                Print(Name(DUMMYTYPE, "x")),
             ]
         ),
         "tests/elif.wb": Program(
             [
-                DeclareValue(Name("x"), Integer(1)),
+                DeclareValue(Name(DUMMYTYPE, "x"), Integer(DUMMYTYPE, 1)),
                 IfElifElse(
-                    Relation(RelationOp(">"), Name("x"), Integer(2)),
-                    [Print(Integer(99))],
+                    Relation(DUMMYTYPE, RelationOp(">"), Name(DUMMYTYPE, "x"), Integer(DUMMYTYPE, 2)),
+                    [Print(Integer(DUMMYTYPE, 99))],
                     [
-                        IfElse(Relation(RelationOp("=="), Name("x"), Integer(2)), [Print(Integer(2))], []),
-                        IfElse(Relation(RelationOp("=="), Name("x"), Integer(1)), [Print(Integer(1))], []),
+                        IfElse(Relation(DUMMYTYPE, RelationOp("=="), Name(DUMMYTYPE, "x"), Integer(DUMMYTYPE, 2)), [Print(Integer(DUMMYTYPE, 2))], []),
+                        IfElse(Relation(DUMMYTYPE, RelationOp("=="), Name(DUMMYTYPE, "x"), Integer(DUMMYTYPE, 1)), [Print(Integer(DUMMYTYPE, 1))], []),
                     ],
-                    [Print(Integer(0))],
+                    [Print(Integer(DUMMYTYPE, 0))],
                 ),
             ]
         ),

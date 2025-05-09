@@ -37,8 +37,12 @@ from dataclasses import dataclass
 class Statement:
     pass
 
+# placeholder for expressions without typing implemented yet
+DUMMYTYPE = "DUMMYTYPE"
+
+@dataclass
 class Expression:
-    pass
+    wtype : str
 
 @dataclass
 class Name(Expression):

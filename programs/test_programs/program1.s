@@ -1,30 +1,26 @@
 	.section	__TEXT,__text,regular,pure_instructions
 	.build_version macos, 15, 0
-	.globl	_main                           ; -- Begin function main
-	.p2align	2
-_main:                                  ; @main
+	.globl	_main                           ## -- Begin function main
+	.p2align	4, 0x90
+_main:                                  ## @main
 	.cfi_startproc
-; %bb.0:                                ; %entry
-	stp	x29, x30, [sp, #-16]!           ; 16-byte Folded Spill
+## %bb.0:                               ## %entry
+	pushq	%rax
 	.cfi_def_cfa_offset 16
-	.cfi_offset w30, -8
-	.cfi_offset w29, -16
-	b	LBB0_1
-LBB0_1:                                 ; %L1
-	adrp	x8, _x@PAGE
-	mov	w9, #10                         ; =0xa
-	str	w9, [x8, _x@PAGEOFF]
-	ldr	w9, [x8, _x@PAGEOFF]
-	add	w9, w9, #1
-	str	w9, [x8, _x@PAGEOFF]
-	ldr	w8, [x8, _x@PAGEOFF]
-	add	w0, w8, #1035
-	bl	__print_int
-	mov	w0, #0                          ; =0x0
-	ldp	x29, x30, [sp], #16             ; 16-byte Folded Reload
-	ret
+	jmp	LBB0_1
+LBB0_1:                                 ## %L1
+	movl	$10, _x(%rip)
+	movl	_x(%rip), %eax
+	addl	$1, %eax
+	movl	%eax, _x(%rip)
+	movl	_x(%rip), %edi
+	addl	$1035, %edi                     ## imm = 0x40B
+	callq	__print_int
+	xorl	%eax, %eax
+	popq	%rcx
+	retq
 	.cfi_endproc
-                                        ; -- End function
-	.globl	_x                              ; @x
+                                        ## -- End function
+	.globl	_x                              ## @x
 .zerofill __DATA,__common,_x,4,2
 .subsections_via_symbols

@@ -85,6 +85,7 @@ I kept quick and dirty during-class To-Dos and also in quick TODO items at the t
 
 * [ ] Read the Crafting Interpreters book, see what ideas it inspires
 * [ ] Dig into generating machine code without LLVM (e.g. ARM64 or Webassembly), at least for a simple program to understand it
+* [ ] Second edition of Programming Language Design by Scott
 * [ ] LSP (Language Server Protocol)
 * [ ] IDE integration w/ AST
 * [ ] Python
@@ -154,12 +155,12 @@ Thinking about types, their challenges, and questions about approach:
 * Do you build to handle related types, for example a mult() function that can take ints or floats or a mix?
   * Subtypes e.g. int and float inherit from num?
   * Enums: Concrete list of subtypes e.g. Enum num { int, float, etc }? Give each type its own (add, mult, etc) methods
+* Reading tip: chapter 7 of second edition of Programming Language Design by Scott
 
 Impl approaches:
 * Give every expression a type? 
   * Is this an attribute of all expressions, or a wrapper class such as TypedExpression(str: typename, expr: expression).
   * the current base Expression class has no attributes (just inherited classes such as MathOp, CallFn, etc add attributes)
-
 
 
 
