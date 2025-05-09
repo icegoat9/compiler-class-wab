@@ -1,5 +1,11 @@
 # Overview
 
+> [!NOTE]  
+> This branch is a scratchpad for a day of poking around with ideas for how to support
+> different types in the compiler. It's not working yet-- it's mostly a place to blow up
+> the structure and make major changes without disturbing the baseline compiler.
+> It's on hold after that one day but I may come back to it.
+
 I spent one intense week taking Dave Beazley's [Compiler Class](https://www.dabeaz.com/compiler.html), in which each student writes a [compiler](https://en.wikipedia.org/wiki/Compiler) from scratch, using no outside libraries[^1] or frameworks.
 
 [^1]: Depending what we mean by "no outside libraries". The compiler we each wrote generates machine-agnostic LLVM assembly code, but if we want to run the result on our computer we still use Clang to compile this 'intermediate representation' assembly code down to the machine code for the specific chip architecture we're using.

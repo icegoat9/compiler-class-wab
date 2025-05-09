@@ -96,6 +96,7 @@ I kept quick and dirty during-class To-Dos and also in quick TODO items at the t
   * https://learn.microsoft.com/en-us/shows/seth-juarez/anders-hejlsberg-on-modern-compiler-construction
   * https://www.youtube.com/watch?v=N6b44kMS6OM
   * https://godbolt.org/
+  * LLVM history https://www.youtube.com/watch?v=yCd3CzGSte8
 
 
 ## Bug fixing and related
