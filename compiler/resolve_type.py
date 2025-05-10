@@ -84,47 +84,53 @@ def resolve_type_expr(e: Expression) -> Expression:
             return Name(t, x)
         case Add(t, x, y):
             rx = resolve_type_expr(x)
-            ry = resolve_type_expr(y)   
-            if rx.wtype == Type('int') and ry.wtype == Type('int'):
-                return Add(Type("int"),rx,ry)
-            elif rx.wtype == Type('float') and ry.wtype == Type('float'):
-                return Add(Type("float"),rx,ry)
+            ry = resolve_type_expr(y) 
+            if (rx.wtype == Type('int') or rx.wtype == Type('float')) and (ry.wtype == Type('int') or ry.wtype == Type('float')):
+                if rx.wtype == Type('int') and ry.wtype == Type('int'):
+                    return Add(Type("int"),rx,ry)
+                else:
+                    # if one or both of the operands is float, return float
+                    return Add(Type("float"),rx,ry)
             else:
                 raise RuntimeError(f"Mismatched types {rx.wtype.name} + {ry.wtype.name} in {e}")
         case Multiply(t, x, y):
             rx = resolve_type_expr(x)
             ry = resolve_type_expr(y)
-            if rx.wtype == Type('int') and ry.wtype == Type('int'):
-                return Multiply(Type("int"),rx,ry)
-            elif rx.wtype == Type('float') and ry.wtype == Type('float'):
-                return Multiply(Type("float"),rx,ry)
+            if (rx.wtype == Type('int') or rx.wtype == Type('float')) and (ry.wtype == Type('int') or ry.wtype == Type('float')):
+                if rx.wtype == Type('int') and ry.wtype == Type('int'):
+                    return Multiply(Type("int"),rx,ry)
+                else:
+                    return Multiply(Type("float"),rx,ry)
             else:
                 raise RuntimeError(f"Unable to infer type in {e}")
         case Subtract(t, x, y):
             rx = resolve_type_expr(x)
             ry = resolve_type_expr(y)
-            if rx.wtype == Type('int') and ry.wtype == Type('int'):
-                return Subtract(Type("int"),rx,ry)
-            elif rx.wtype == Type('float') and ry.wtype == Type('float'):
-                return Subtract(Type("float"),rx,ry)
+            if (rx.wtype == Type('int') or rx.wtype == Type('float')) and (ry.wtype == Type('int') or ry.wtype == Type('float')):
+                if rx.wtype == Type('int') and ry.wtype == Type('int'):
+                    return Subtract(Type("int"),rx,ry)
+                else:
+                    return Subtract(Type("float"),rx,ry)
             else:
                 raise RuntimeError(f"Unable to infer type in {e}")
         case Divide(t, x, y):
             rx = resolve_type_expr(x)
             ry = resolve_type_expr(y)
-            if rx.wtype == Type('int') and ry.wtype == Type('int'):
-                return Divide(Type("int"),rx,ry)
-            elif rx.wtype == Type('float') and ry.wtype == Type('float'):
-                return Divide(Type("float"),rx,ry)
+            if (rx.wtype == Type('int') or rx.wtype == Type('float')) and (ry.wtype == Type('int') or ry.wtype == Type('float')):
+                if rx.wtype == Type('int') and ry.wtype == Type('int'):
+                    return Divide(Type("int"),rx,ry)
+                else:
+                    return Divide(Type("float"),rx,ry)
             else:
                 raise RuntimeError(f"Unable to infer type in {e}")
         case Modulo(t, x, y):
             rx = resolve_type_expr(x)
             ry = resolve_type_expr(y)
-            if rx.wtype == Type('int') and ry.wtype == Type('int'):
-                return Modulo(Type("int"),rx,ry)
-            elif rx.wtype == Type('float') and ry.wtype == Type('float'):
-                return Modulo(Type("float"),rx,ry)
+            if (rx.wtype == Type('int') or rx.wtype == Type('float')) and (ry.wtype == Type('int') or ry.wtype == Type('float')):
+                if rx.wtype == Type('int') and ry.wtype == Type('int'):
+                    return Modulo(Type("int"),rx,ry)
+                else:
+                    return Modulo(Type("float"),rx,ry)
             else:
                 raise RuntimeError(f"Unable to infer type in {e}")
         case CallFn(t, name, params):

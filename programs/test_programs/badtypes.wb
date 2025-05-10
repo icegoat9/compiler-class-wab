@@ -1,4 +1,13 @@
-func f(x int, y float) int {
-    var z = x + y;      // Type error. int + float
+var int i;
+
+func f(xa int, ya float) float {
+    var za = xa + ya;      // Type error (int + float)? Could coerce types to float...
+    return za;
+}
+
+func g(x int, y float) int {
+    var z = x + y;      // Type error (int + float)? Could coerce types to float, but return z below would be a type mismatch with function...
     return z;
 }
+
+i = f(3, 4.5);   // Type error: try to assign float to int
