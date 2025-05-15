@@ -82,6 +82,7 @@ def create_llvm(block: BLOCK) -> BLOCK:
     to LLVM(register-based management and is where handling of future new compiler instructions would live.
     """
     ops = []
+    # Experimental WIP: push (type, value) tuples to stack instead of just values
     stack = []
     for instr in block.instructions:
         # print("*debug: %s" % instr)
@@ -89,17 +90,23 @@ def create_llvm(block: BLOCK) -> BLOCK:
         # printcolor("stack: %s %s" % (ansicode.reset, stack))
         match instr:
             case PUSH():
-                stack.append(str(instr.value))
+                stack.append(("int", str(instr.value)))
+            case FPUSH():
+                stack.append(("float", str(instr.value)))
             ## math ops
-            case ADD():
+            case ADD():   # integer addition
                 right = stack.pop()
                 left = stack.pop()
+                rval, lval = right[1], left[1]
                 result = next_register()
                 ops.append(LLVM(f"{result} = add i32 {left}, {right}"))
                 stack.append(result)
+            case FADD():  # float addition
+                pass
             case MUL():
                 right = stack.pop()
                 left = stack.pop()
+                rval, lval = right[1], left[1]
                 result = next_register()
                 ops.append(LLVM(f"{result} = mul i32 {left}, {right}"))
                 stack.append(result)
@@ -205,8 +212,11 @@ def create_llvm(block: BLOCK) -> BLOCK:
                 ops.append(LLVM(f"ret i32 {val}"))
             ## printing
             case PRINT():
-                val = stack.pop()
-                ops.append(LLVM(f"call i32 (i32) @_print_int(i32 {val})"))
+                vtype,val = stack.pop()
+                if vtype == "int":
+                    ops.append(LLVM(f"call i32 (i32) @_print_int(i32 {val})"))
+                elif vtype == "float":
+                    ops.append(LLVM(f"call i32 (i32) @_print_float(double {val})"))
             case PRINT_STR_CONST(n):
                 ops.append(LLVM(f"call i32 (ptr, ...) @printf(ptr noundef @.str.{n})"))
             # case INPUT():

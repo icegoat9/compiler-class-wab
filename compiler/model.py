@@ -259,8 +259,14 @@ class PUSH(INSTRUCTION):
     value: int
     def __repr__(self):
         return f"PUSH({self.value})"
+    
+class FPUSH(INSTRUCTION):
+    value: float
+    def __repr__(self):
+        return f"FPUSH({self.value})"
 
 class ADD(INSTRUCTION): pass
+class FADD(INSTRUCTION): pass
 class MUL(INSTRUCTION): pass
 class SUB(INSTRUCTION): pass
 class DIV(INSTRUCTION): pass
