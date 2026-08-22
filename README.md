@@ -12,7 +12,7 @@ cset	w8, gt
 tbnz	w8, #0, LBB0_4
 ```
 
-It's not just a translation, as the fundamental structure of user code and compiled code are different in terms of how branching, flow control, and passing variables works, and the compiler has to for example identify and track scope of global and local variables with the same name. See [docs/compile_passes_example.md](docs/compile_passes_example.md) for a bit more detail, showing a very simple program taken through each successive compile pass we wrote, and what the intermediate states look like.
+It's not just a translation, as the fundamental structure of user code and compiled code are different in terms of how branching, flow control, and passing variables works, and the compiler has to for example identify and track scope of global and local variables with the same name. See [compile_passes_example.md](docs/compile_passes_example.md) for a bit more detail, showing a very simple program taken through each successive compile pass we wrote, and what the intermediate states look like.
 
 I enjoyed the experience, learned a lot, and found it a bit brain-burning as well. By the end I'd written a working compiler from a simple language to assembly code. I'm sure it has various bugs and edge cases, and it certainly contains some hacky or non-ideal code-- but the experience was the real goal, not the end result (I used no AI-- the whole point was to understand how something works by struggling, iterating, and having 'aha' moments). 
 
