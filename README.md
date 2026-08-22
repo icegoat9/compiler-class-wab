@@ -4,22 +4,17 @@ I spent one intense week taking Dave Beazley's [Compiler Class](https://www.dabe
 
 [^1]: Depending what we mean by "no outside libraries". The compiler we each wrote generates machine-agnostic LLVM assembly code, but if we want to run the result on our computer we still use Clang to compile this 'intermediate representation' assembly code down to the machine code for the specific chip architecture we're using.
 
-I enjoyed the experience, learned a lot, and found it a bit brain-burning as well. By the end I'd written a working compiler from a simple language to assembly code. I'm sure it has various bugs and edge cases, and it certainly contains some hacky or non-ideal code-- but the experience was the real goal...
+Basically, how do we transform user code like `while x <= 10 {' into machine code like:
 
-A quick taste of a few transformations in the compilation process of a single line of user code through machine instructions:
-
-``` llvm
-while x <= 10 {
- ...
-while [LOAD_GLOBAL('x'), PUSH(10), LTE()] {
- ...
-%.r2 = icmp sle i32 %.r1, 10
-br i1 %.r2, label %L2, label %L3
- ...
+```
 subs	w8, w8, #10
 cset	w8, gt
 tbnz	w8, #0, LBB0_4
 ```
+
+It's not just a translation, as the fundamental structure of user code and compiled code are different in terms of how branching, flow control, and passing variables works, and the compiler has to for example identify and track scope of global and local variables with the same name. See [docs/compile_passes_example.md](docs/compile_passes_example.md) for a bit more detail, showing a very simple program taken through each successive compile pass we wrote, and what the intermediate states look like.
+
+I enjoyed the experience, learned a lot, and found it a bit brain-burning as well. By the end I'd written a working compiler from a simple language to assembly code. I'm sure it has various bugs and edge cases, and it certainly contains some hacky or non-ideal code-- but the experience was the real goal, not the end result (I used no AI-- the whole point was to understand how something works by struggling, iterating, and having 'aha' moments). 
 
 After the class I did some light cleanup and moved my work to this repo, to play around with in the future if inspiration strikes. (I also picked up a copy of [Crafting Interpreters](https://craftinginterpreters.com/) for some light reading.)
 
