@@ -4,7 +4,7 @@ I spent one intense week taking Dave Beazley's [Compiler Class](https://www.dabe
 
 [^1]: Depending what we mean by "no outside libraries". The compiler we each wrote generates machine-agnostic LLVM assembly code, but if we want to run the result on our computer we still use Clang to compile this 'intermediate representation' assembly code down to the machine code for the specific chip architecture we're using.
 
-Basically, how do we transform user code like `while x <= 10 {' into machine code like:
+Basically, how do we transform user code like `while x <= 10 {` into machine code like:
 
 ```
 subs	w8, w8, #10
